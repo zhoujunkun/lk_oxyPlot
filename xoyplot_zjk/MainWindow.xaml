@@ -1,0 +1,25 @@
+﻿                                                                                                                                                                                                       <Window x:Class="xoyplot_zjk.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:local="clr-namespace:xoyplot_zjk"                                                                                                                                                                                                                                                                                             
+        mc:Ignorable="d"                                                                                                                                                                                                                                                                                                                               
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <oxy:Plot LegendBackground="Black" >
+            <oxy:Plot.Axes >
+                <!--<oxy:TimeSpanAxis Title="Time" />-->
+                <oxy:LinearAxis   MajorGridlineThickness="2" TicklineColor="LightBlue" TickStyle="Crossing"   MajorStep="5" MinorStep="1" Position="Left"/>
+                <oxy:LinearAxis  MajorGridlineThickness="2" TicklineColor="LightBlue" TickStyle="Crossing"   MajorStep="5" MinorStep="1" Position="Bottom"/>
+            </oxy:Plot.Axes>
+            <!--<oxy:Plot.Series>
+                <oxy:LineSeries ItemsSource="{Binding Data}" Visibility="{Binding IsChecked, ElementName=cbShow, Converter={StaticResource bool2vis}}"/>
+            </oxy:Plot.Series>-->
+            
+        </oxy:Plot>
+        <!--<oxy:PlotView  Model="{Binding plotModel}" Margin="0"/>-->
+        
+    </Grid>
+</Window>

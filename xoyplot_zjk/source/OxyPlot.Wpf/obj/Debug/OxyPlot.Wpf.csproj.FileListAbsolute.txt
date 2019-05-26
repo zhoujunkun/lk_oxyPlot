@@ -1,0 +1,16 @@
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\bin\Debug\OxyPlot.Wpf.dll
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\bin\Debug\OxyPlot.Wpf.pdb
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\bin\Debug\OxyPlot.dll
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\bin\Debug\OxyPlot.pdb
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\obj\Debug\OxyPlot.Wpf.csprojAssemblyReference.cache
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\obj\Debug\OxyPlot.Wpf_MarkupCompile.cache
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\obj\Debug\OxyPlot.Wpf_MarkupCompile.lref
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\obj\Debug\Themes\Generic.baml
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\obj\Debug\OxyPlot.Wpf.g.resources
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\obj\Debug\OxyPlot.Wpf.Properties.Resources.resources
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\obj\Debug\OxyPlot.Wpf.csproj.GenerateResource.cache
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\obj\Debug\OxyPlot.Wpf.csproj.CoreCompileInputs.cache
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\obj\Debug\OxyPlot.Wpf.csproj.CopyComplete
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\obj\Debug\OxyPlot.Wpf.dll
+C:\Users\90336\Desktop\learning\git\oxyplot\Source\OxyPlot.Wpf\obj\Debug\OxyPlot.Wpf.pdb
