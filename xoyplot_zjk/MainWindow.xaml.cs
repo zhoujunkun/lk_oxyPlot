@@ -25,16 +25,21 @@ namespace xoyplot_zjk
     public partial class MainWindow : Window
     {
         public PlotModel plotModel { get; set; }
+
+        private readonly Task task;
+        private int refresh;
+        private string title;
+        private bool complete;
         public MainWindow()
         {
-            this.plotModel = new PlotModel();
-            this.plotModel.Series.Add(new FunctionSeries());
-            
+
+            this.Points = new List<DataPoint>();
+          
             //plotModel.LegendBackground = OxyColor.FromArgb(200, 255, 255, 255);
             // plotModel.LegendBorder = OxyColors.Black;
-            plotModel.LegendOrientation = LegendOrientation.Horizontal;
-            plotModel.LegendPlacement = LegendPlacement.Outside;
-            plotModel.LegendPosition = LegendPosition.RightTop;
+            //plotModel.LegendOrientation = LegendOrientation.Horizontal;
+            //plotModel.LegendPlacement = LegendPlacement.Outside;
+            //plotModel.LegendPosition = LegendPosition.RightTop;
             //
             //var linerAxis = new LinearAxis();
             //linerAxis.MajorStep = 1;
@@ -56,31 +61,86 @@ namespace xoyplot_zjk
             //plotModel.Axes.Add(linearAxis2);
 
             //function series
-            var functionSeries1 = new FunctionSeries();
 
-            DataContext = this;
+
             var worker = new BackgroundWorker { WorkerSupportsCancellation = true };
-            double x = 0;
-            Func<double, double> z_func = (Y) => Y;
+
             worker.DoWork += (s, e) =>
             {
+                double x = 0;
+                double y = 0;
                 while (!worker.CancellationPending)
                 {
-                    lock (this.plotModel.SyncRoot)
-                    {
-                        this.plotModel.Title = "Plot udated: " + DateTime.Now;
-                        //    this.plotModel.Series[0] = new FunctionSeries(z_func, x, x + 4, 1.0);
-                        //   plotModel.Series[0].Title = "距离";
-                      
-                    }
-                    x += 0.1;
-                    plotModel.InvalidatePlot(true);
+                    Title = "Plot updated: " + DateTime.Now;
+                    Points.Add(new DataPoint(x, Math.Sin(y)));
+                    // Change the refresh flag, this will trig InvalidatePlot() on the Plot control
+                    this.Refresh++;
+                   // lk_plot.InvalidateFlag++;
+                    y += 0.1;
+                    x += 1;
+                    //if(x>20)
+                    //{
+                    //    lk_Y.MinimumRange = x - 20;
+                    //}
+                    
+                    this.Refresh++;
                     Thread.Sleep(100);
                 }
             };
-
             worker.RunWorkerAsync();
             this.Closed += (s, e) => worker.CancelAsync();
+            DataContext = this;
+
+        }
+
+        public void Close()
+        {
+            this.complete = true;
+            this.task.Wait();
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public IList<DataPoint> Points { get; set; }
+
+        public string Title
+        {
+            get
+            {
+                return this.title;
+            }
+
+            set
+            {
+                this.title = value;
+                this.RaisePropertyChanged("Title");
+            }
+        }
+
+        public int Refresh
+        {
+            get
+            {
+                return this.refresh;
+            }
+
+            set
+            {
+                if (this.refresh == value)
+                {
+                    return;
+                }
+
+                this.refresh = value;
+                this.RaisePropertyChanged("Refresh");
+            }
+        }
+        protected void RaisePropertyChanged(string property)
+        {
+            var handler = this.PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(property));
+            }
         }
     }
 }

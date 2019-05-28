@@ -8,18 +8,22 @@
         mc:Ignorable="d"                                                                                                                                                                                                                                                                                                                               
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <oxy:Plot LegendBackground="Black" >
+        <oxy:Plot Name="lk_plot"  InvalidateFlag="{Binding Refresh}" >
             <oxy:Plot.Axes >
-                <!--<oxy:TimeSpanAxis Title="Time" />-->
                 <oxy:LinearAxis   MajorGridlineThickness="2" TicklineColor="LightBlue" TickStyle="Crossing"   MajorStep="5" MinorStep="1" Position="Left"/>
-                <oxy:LinearAxis  MajorGridlineThickness="2" TicklineColor="LightBlue" TickStyle="Crossing"   MajorStep="5" MinorStep="1" Position="Bottom"/>
+                <oxy:LinearAxis Name="lk_Y" MajorGridlineThickness="2" TicklineColor="LightBlue" TickStyle="Crossing"   MajorStep="5" MinorStep="1"  Position="Bottom"/>
             </oxy:Plot.Axes>
-            <!--<oxy:Plot.Series>
-                <oxy:LineSeries ItemsSource="{Binding Data}" Visibility="{Binding IsChecked, ElementName=cbShow, Converter={StaticResource bool2vis}}"/>
-            </oxy:Plot.Series>-->
-            
+            <oxy:Plot.Series>
+                <oxy:LineSeries ItemsSource="{Binding Points}" >
+                   
+                </oxy:LineSeries>
+
+
+
+            </oxy:Plot.Series>
+           
         </oxy:Plot>
-        <!--<oxy:PlotView  Model="{Binding plotModel}" Margin="0"/>-->
+      
         
     </Grid>
 </Window>
