@@ -5,25 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:local="clr-namespace:xoyplot_zjk"                                                                                                                                                                                                                                                                                             
-        mc:Ignorable="d"                                                                                                                                                                                                                                                                                                                               
+        mc:Ignorable="d"                
+       DataContext="{Binding RelativeSource={RelativeSource Self}}"                                                                                                                                                                                                               
         Title="MainWindow" Height="450" Width="800">
+                                                                                                                                                                                                        
     <Grid>
-        <oxy:Plot Name="lk_plot"  InvalidateFlag="{Binding Refresh}" >
-            <oxy:Plot.Axes >
-                <oxy:LinearAxis   MajorGridlineThickness="2" TicklineColor="LightBlue" TickStyle="Crossing"   MajorStep="5" MinorStep="1" Position="Left"/>
-                <oxy:LinearAxis Name="lk_Y" MajorGridlineThickness="2" TicklineColor="LightBlue" TickStyle="Crossing"   MajorStep="5" MinorStep="1"  Position="Bottom"/>
+        <oxy:Plot Margin="80,0,0.333,-0.333">
+            <oxy:Plot.Axes>
+                <!--<oxy:TimeSpanAxis MaximumRange="100" Title="Time" StringFormat="g" Position="Bottom"/>-->
+                <oxy:LinearAxis Title="Position" Position="Left" MinimumRange="5"/>
+                <oxy:LinearAxis Name="lk_yaxi" Title="Position"  Position="Bottom"  />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
-                <oxy:LineSeries ItemsSource="{Binding Points}" >
-                   
-                </oxy:LineSeries>
-
-
-
+                <oxy:LineSeries  Name="lk_seris" LabelFormatString="{}{0:N0}" ItemsSource="{Binding Data}" />
             </oxy:Plot.Series>
-           
         </oxy:Plot>
-      
-        
+        <Button Content="显示" Click="btn_click_show" HorizontalAlignment="Left" Margin="20,100,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Content="产生数据" Click="btn_click_new" HorizontalAlignment="Left" Margin="19,144,0,0" VerticalAlignment="Top" Width="75"/>
     </Grid>
 </Window>
