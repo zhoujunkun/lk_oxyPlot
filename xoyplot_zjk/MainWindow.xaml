@@ -10,17 +10,23 @@
         Title="MainWindow" Height="450" Width="800">
                                                                                                                                                                                                         
     <Grid>
-        <oxy:Plot Margin="80,0,0.333,-0.333">
+        <oxy:Plot InvalidateFlag="{Binding Refresh}" Margin="80,0,0.333,-0.333">
             <oxy:Plot.Axes>
                 <!--<oxy:TimeSpanAxis MaximumRange="100" Title="Time" StringFormat="g" Position="Bottom"/>-->
                 <oxy:LinearAxis Title="Position" Position="Left" MinimumRange="5"/>
-                <oxy:LinearAxis Name="lk_yaxi" Title="Position"  Position="Bottom"  />
+                <oxy:LinearAxis Minimum="{Binding lk_Minimum}" Name="lk_yaxi" Title="Position"  Position="Bottom"  />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
-                <oxy:LineSeries  Name="lk_seris" LabelFormatString="{}{0:N0}" ItemsSource="{Binding Data}" />
+                <oxy:LineSeries MarkerFill="Green" MarkerType="Circle" Title="距离" DataFieldX="Time"
+                        DataFieldY="Distance" LabelFormatString="{}{1:N0}"
+                        ItemsSource="{Binding Measurements}"
+                        StrokeThickness="2" Color="Blue" />
+                <oxy:LineSeries Title="信号" MarkerFill="Green" MarkerType="Circle" DataFieldY="Sighal" Color="Red"  DataFieldX="Time"
+                                LabelFormatString="{}{1:N0}" ItemsSource="{Binding Measurements}" 
+                                />
             </oxy:Plot.Series>
         </oxy:Plot>
-        <Button Content="显示" Click="btn_click_show" HorizontalAlignment="Left" Margin="20,100,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button Content="产生数据" Click="btn_click_new" HorizontalAlignment="Left" Margin="19,144,0,0" VerticalAlignment="Top" Width="75"/>
+        <!--<Button Content="显示" Click="btn_click_show" HorizontalAlignment="Left" Margin="20,100,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Content="产生数据" Click="btn_click_new" HorizontalAlignment="Left" Margin="19,144,0,0" VerticalAlignment="Top" Width="75"/>-->
     </Grid>
 </Window>

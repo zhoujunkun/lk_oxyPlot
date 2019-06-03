@@ -24,63 +24,124 @@ namespace xoyplot_zjk
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window,INotifyPropertyChanged 
     {
-        DispatcherTimer timer = new DispatcherTimer();
+
+        private readonly Task task;
+
+        private int refresh;
+
+        private string title;
+        private double minimum;
+        int count;
+        private bool complete;
         Random rnd = new Random();
-        double time = 0d;
-        public MainWindow()
+        public MainWindow() 
         {
-            timer.Interval = TimeSpan.FromMilliseconds(50);
-            timer.Tick += Timer_Tick;
-            timer.IsEnabled = true;
-            
+            Measurements = new Collection<Measurement>();
+            this.Points = new List<DataPoint>();
+            this.task = Task.Factory.StartNew(
+                () =>
+                {
+                    double x = 0;
+                    while (!complete)
+                    {
+                        this.Title = "Plot updated: " + DateTime.Now;
+                        //  this.Points.Add(new DataPoint(x, Math.Sin(x)));
+                       // this.Points.Add(new DataPoint(x, rnd.NextDouble() * 5));
+                        this.Measurements.Add(new Measurement
+                        {
+                          Time=x,
+                          Distance= rnd.NextDouble() * 5,
+                          Sighal=Math.Sin(x)
+                        });
+                        // Change the refresh flag, this will trig InvalidatePlot() on the Plot control
+                        this.Refresh++;
+                        count++;
+                        x += 1;
+                        if (Measurements.Count > 100)
+                        {
+                            Measurements.RemoveAt(0);
+                        }
+                        if (count > range)
+                        {
+                            lk_Minimum = count - range;
+                        }
+                        Thread.Sleep(50);
+                    }
+                });
+
+            DataContext = this;
         }
         int remve_index = 0;
         int range = 50;
-        private void Timer_Tick(object sender, EventArgs e)
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public IList<DataPoint> Points { get; set; }
+
+        public string Title
         {
-            Data.Add(new DataPoint(time++, rnd.NextDouble() * 5));
-            if(Data.Count>100)
+            get
             {
-                Data.RemoveAt(0);
+                return this.title;
             }
-            if(time > range)
+
+            set
             {
-                lk_yaxi.Minimum = time - range;
+                this.title = value;
+                this.RaisePropertyChanged("Title");
             }
         }
-        public ObservableCollection<DataPoint> Data
+        public double lk_Minimum
         {
-            get { return (ObservableCollection<DataPoint>)GetValue(DataProperty); }
-            set { SetValue(DataProperty, value); }
-        }
-        // Using a DependencyProperty as the backing store for Data.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DataProperty =
-            DependencyProperty.Register("Data", typeof(ObservableCollection<DataPoint>), typeof(MainWindow), new PropertyMetadata(new ObservableCollection<DataPoint>()));
-        private void CheckBox_Changed(object sender, RoutedEventArgs e)
-        {
-            timer.IsEnabled = (sender as CheckBox)?.IsChecked ?? false;
-            if (timer.IsEnabled)
+            get
             {
-                // Reset
-                time = 0d;
-                Data = new ObservableCollection<DataPoint>();
+                return this.minimum;
+            }
+
+            set
+            {
+                this.minimum = value;
+                this.RaisePropertyChanged("lk_Minimum");
+            }
+        }
+        public int Refresh
+        {
+            get
+            {
+                return this.refresh;
+            }
+
+            set
+            {
+                if (this.refresh == value)
+                {
+                    return;
+                }
+
+                this.refresh = value;
+                this.RaisePropertyChanged("Refresh");
+            }
+        }
+        protected void RaisePropertyChanged(string property)
+        {
+            var handler = this.PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(property));
             }
         }
 
-        private void btn_click_show(object sender, RoutedEventArgs e)
-        {
-            
-          //  Data.Clear();
-            Data.RemoveAt(1);
-        }
+        public Collection<Measurement> Measurements { get; private set; }
+    }
 
-        private void btn_click_new(object sender, RoutedEventArgs e)
-        {
-            // Reset
-            time = 0d;
-            Data = new ObservableCollection<DataPoint>();
-        }
+    public class Measurement
+    {
+        public double Time { get; set; }
+        public double Sighal { get; set; }
+        public double Distance { get; set; }
+
+     
     }
 }
