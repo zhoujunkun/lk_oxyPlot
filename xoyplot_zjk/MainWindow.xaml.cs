@@ -19,6 +19,7 @@ using System.Windows.Threading;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
+using ZSeial;
 namespace xoyplot_zjk
 {
     /// <summary>
@@ -26,8 +27,9 @@ namespace xoyplot_zjk
     /// </summary>
     public partial class MainWindow : Window,INotifyPropertyChanged 
     {
+        public z_serial lk_serial;
 
-        private readonly Task task;
+        private  Task task;
 
         private int refresh;
 
@@ -38,40 +40,12 @@ namespace xoyplot_zjk
         Random rnd = new Random();
         public MainWindow() 
         {
+            InitializeComponent();
+            zk_serial_init();
             Measurements = new Collection<Measurement>();
             this.Points = new List<DataPoint>();
-            this.task = Task.Factory.StartNew(
-                () =>
-                {
-                    double x = 0;
-                    while (!complete)
-                    {
-                        this.Title = "Plot updated: " + DateTime.Now;
-                        //  this.Points.Add(new DataPoint(x, Math.Sin(x)));
-                       // this.Points.Add(new DataPoint(x, rnd.NextDouble() * 5));
-                        this.Measurements.Add(new Measurement
-                        {
-                          Time=x,
-                          Distance= rnd.NextDouble() * 5,
-                          Sighal=Math.Sin(x)
-                        });
-                        // Change the refresh flag, this will trig InvalidatePlot() on the Plot control
-                        this.Refresh++;
-                        count++;
-                        x += 1;
-                        if (Measurements.Count > 100)
-                        {
-                            Measurements.RemoveAt(0);
-                        }
-                        if (count > range)
-                        {
-                            lk_Minimum = count - range;
-                        }
-                        Thread.Sleep(50);
-                    }
-                });
-
             DataContext = this;
+            
         }
         int remve_index = 0;
         int range = 50;
@@ -134,6 +108,50 @@ namespace xoyplot_zjk
         }
 
         public Collection<Measurement> Measurements { get; private set; }
+
+        private void slider_value_change(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
+        }
+        public void zk_serial_init()
+        {
+            lk_serial = new z_serial(btn_connect, baud_Selcet, "115200");
+            lk_serial.addComList(Com_Selcet);
+        }
+        double x = 0;
+        private void btn_start(object sender, RoutedEventArgs e)
+        {
+            task = Task.Factory.StartNew(
+                          () =>
+                          {
+                              
+                              while (!complete)
+                              {
+                                  this.Title = "Plot updated: " + DateTime.Now;
+                        //  this.Points.Add(new DataPoint(x, Math.Sin(x)));
+                        // this.Points.Add(new DataPoint(x, rnd.NextDouble() * 5));
+                        this.Measurements.Add(new Measurement
+                                  {
+                                      Time = x,
+                                      Distance = rnd.NextDouble() * 5,
+                                      Sighal = Math.Sin(x)
+                                  });
+                        // Change the refresh flag, this will trig InvalidatePlot() on the Plot control
+                        this.Refresh++;
+                                  count++;
+                                  x += 1;
+                                  if (Measurements.Count > 100)
+                                  {
+                                      Measurements.RemoveAt(0);
+                                  }
+                                  if (count > range)
+                                  {
+                                      lk_Minimum = count - range;
+                                  }
+                                  Thread.Sleep(50);
+                              }
+                          });
+        }
     }
 
     public class Measurement

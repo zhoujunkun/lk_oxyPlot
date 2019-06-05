@@ -1,36 +1,57 @@
-﻿        <Window x:Class="xoyplot_zjk.MainWindow"
+﻿<Window x:Class="xoyplot_zjk.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:oxy="http://oxyplot.org/wpf"
-        xmlns:local="clr-namespace:xoyplot_zjk"                                                                                                                                                                                                                                                                                             
-        mc:Ignorable="d"                
-         DataContext="{Binding RelativeSource={RelativeSource Self}}"                                                                                                                                                                                                               
+        xmlns:local="clr-namespace:xoyplot_zjk"      
+         xmlns:oxy="http://oxyplot.org/wpf"
+        mc:Ignorable="d"                                                                                                                                                                                                                    
         Title="迈测激光" Height="450" Width="800">
-                                                                                                                                                                                                        
+
     <Grid>
-        <oxy:Plot InvalidateFlag="{Binding Refresh}" Margin="80,0,0.333,-0.333">
-            <oxy:Plot.Axes>
-                <oxy:LinearAxis Title="Distance" Unit="cm" Position="Left" MinimumRange="5"/>
-                <oxy:LinearAxis  MaximumRange="50"  Minimum="{Binding lk_Minimum}" Name="lk_yaxi"  Position="Bottom"  />
-            </oxy:Plot.Axes>
-            <oxy:Plot.Series>
-                <oxy:LineSeries MarkerFill="Green" MarkerType="Circle" Title="距离" DataFieldX="Time"
-                        DataFieldY="Distance" LabelFormatString="{}{1:N0}"                  
-                        ItemsSource="{Binding Measurements}"
-                        StrokeThickness="2" Color="SkyBlue" />
-                <oxy:LineSeries Title="信号" MarkerFill="Green" MarkerType="Circle" DataFieldY="Sighal" Color="Red"  DataFieldX="Time"
+        <TabControl  HorizontalAlignment="Left" Height="419" VerticalAlignment="Top" Width="792">
+            <TabItem Header="显示" FontSize="18">
+                <Grid Background="#FFF1F1F1">
+
+                    <GroupBox Header="曲线" HorizontalAlignment="Left" Height="384" Margin="143,0,0,0" VerticalAlignment="Top" Width="643" BorderBrush="#FF5C7787">
+                        <Grid>
+                            <oxy:Plot InvalidateFlag="{Binding Refresh}" Margin="0,1,0,0" Background="White" Height="353" VerticalAlignment="Top" HorizontalAlignment="Left" Width="631">
+                                <oxy:Plot.Axes>
+                                    <oxy:LinearAxis Title="Distance" Unit="cm" Position="Left" MinimumRange="5"/>
+                                    <oxy:LinearAxis  MaximumRange="50"  Minimum="{Binding lk_Minimum}" x:Name="lk_yaxi"  Position="Bottom"  />
+                                </oxy:Plot.Axes>
+                                <oxy:LineSeries MarkerFill="Green" MarkerType="Circle" Title="距离" DataFieldX="Time"
+                                      DataFieldY="Distance" LabelFormatString="{}{1:N0}"                  
+                                      ItemsSource="{Binding Measurements}"
+                                      StrokeThickness="2" Color="SkyBlue" />
+                                <oxy:LineSeries Title="信号" MarkerFill="Green" MarkerType="Circle" DataFieldY="Sighal" Color="Red"  DataFieldX="Time"
                                 LabelFormatString="{}{1:N0}" ItemsSource="{Binding Measurements}" 
                                 />
-            </oxy:Plot.Series>
-        </oxy:Plot>
-        <Button Content="连接" HorizontalAlignment="Left" Margin="567,-20,0,0" VerticalAlignment="Top" Width="68" Height="20"/>
-        <ComboBox HorizontalAlignment="Left" Margin="407,-20,0,0" VerticalAlignment="Top" Width="120"/>
-        <Label Content="选择(com)：" HorizontalAlignment="Left" Margin="328,-22,0,0" VerticalAlignment="Top"/>
-        <Button Content="开始" HorizontalAlignment="Left" Margin="10,82,0,0" VerticalAlignment="Top" Width="60"/>
-        <Button Content="停止" HorizontalAlignment="Left" Margin="9,124,0,0" VerticalAlignment="Top" Width="60"/>
-        <!--<Button Content="显示" Click="btn_click_show" HorizontalAlignment="Left" Margin="20,100,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button Content="产生数据" Click="btn_click_new" HorizontalAlignment="Left" Margin="19,144,0,0" VerticalAlignment="Top" Width="75"/>-->
+                            </oxy:Plot>
+                        </Grid>
+                    </GroupBox>
+                    <Slider  Orientation="Vertical" Value="25" HorizontalAlignment="Left" ValueChanged="slider_value_change" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True" x:Name="slider_first" Margin="16,122,0,0" VerticalAlignment="Top" Height="133" Width="22" Background="{x:Null}" BorderBrush="White" Foreground="White"/>
+                    <Slider Orientation="Vertical"  Value="45" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True"  Name="slider_second" HorizontalAlignment="Left" Margin="65,122,0,0" VerticalAlignment="Top" Height="133" Width="24"/>
+                    <Slider Orientation="Vertical"  Value="90" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True" Name="slider_third" HorizontalAlignment="Left" Margin="106,123,0,0" VerticalAlignment="Top" Height="133" Width="24"/>
+                    <TextBlock Text="{Binding Value, ElementName=slider_first}" HorizontalAlignment="Left" Margin="21,102,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="21" Width="25" FontSize="16"/>
+                    <RadioButton  HorizontalAlignment="Left" Margin="18,262,0,0" VerticalAlignment="Top"/>
+                    <RadioButton  HorizontalAlignment="Left" Margin="109,261,0,0" VerticalAlignment="Top"/>
+                    <RadioButton  HorizontalAlignment="Left" Margin="67,262,0,0" VerticalAlignment="Top"/>
+                    <TextBlock Text="{Binding Value, ElementName=slider_third}"  HorizontalAlignment="Left" Margin="105,102,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="21" Width="33" FontSize="16"/>
+                    <TextBlock Text="{Binding Value, ElementName=slider_second}" HorizontalAlignment="Left" Margin="69,102,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="21" Width="27" FontSize="16"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="2,6,0,0" TextWrapping="Wrap" Text="提示：标定都使用黑板标定" VerticalAlignment="Top" Height="56" Width="136" FontSize="10" Foreground="#FFE08282"/>
+                    <Button Content="开始" Click="btn_start" HorizontalAlignment="Left" Margin="34,58,0,0" VerticalAlignment="Top" Width="75"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="设置" FontSize="18">
+                <Grid >
+
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+        <Button Name="btn_connect" Content="连接" HorizontalAlignment="Left" Margin="697,5,0,0" VerticalAlignment="Top" Width="68" Height="20"/>
+        <ComboBox Name="baud_Selcet" HorizontalAlignment="Left" Margin="124,4,0,0" VerticalAlignment="Top" Width="88" Height="20"/>
+        <ComboBox x:Name="Com_Selcet" HorizontalAlignment="Left" Margin="518,5,0,0" VerticalAlignment="Top" Width="158" Height="20"/>
     </Grid>
 </Window>
