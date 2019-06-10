@@ -152,6 +152,18 @@ namespace xoyplot_zjk
                               }
                           });
         }
+        /// <summary>
+        /// 串口连接
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_serial_connect(object sender, RoutedEventArgs e)
+        {
+
+            //Com_Selcet.SelectedItem.ToString();
+
+            //lk_serial.Com_connect()
+        }
     }
 
     public class Measurement

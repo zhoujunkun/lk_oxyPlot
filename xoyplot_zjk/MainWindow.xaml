@@ -12,8 +12,12 @@
         <TabControl  HorizontalAlignment="Left" Height="419" VerticalAlignment="Top" Width="792">
             <TabItem Header="显示" FontSize="18">
                 <Grid Background="#FFF1F1F1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="24*"/>
+                        <ColumnDefinition Width="107*"/>
+                    </Grid.ColumnDefinitions>
 
-                    <GroupBox Header="曲线" HorizontalAlignment="Left" Height="384" Margin="143,0,0,0" VerticalAlignment="Top" Width="643" BorderBrush="#FF5C7787">
+                    <GroupBox Header="曲线" HorizontalAlignment="Left" Height="384" Margin="143,0,0,0" VerticalAlignment="Top" Width="643" BorderBrush="#FF5C7787" Grid.ColumnSpan="2">
                         <Grid>
                             <oxy:Plot InvalidateFlag="{Binding Refresh}" Margin="0,1,0,0" Background="White" Height="353" VerticalAlignment="Top" HorizontalAlignment="Left" Width="631">
                                 <oxy:Plot.Axes>
@@ -30,17 +34,41 @@
                             </oxy:Plot>
                         </Grid>
                     </GroupBox>
-                    <Slider  Orientation="Vertical" Value="25" HorizontalAlignment="Left" ValueChanged="slider_value_change" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True" x:Name="slider_first" Margin="16,122,0,0" VerticalAlignment="Top" Height="133" Width="22" Background="{x:Null}" BorderBrush="White" Foreground="White"/>
-                    <Slider Orientation="Vertical"  Value="45" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True"  Name="slider_second" HorizontalAlignment="Left" Margin="65,122,0,0" VerticalAlignment="Top" Height="133" Width="24"/>
-                    <Slider Orientation="Vertical"  Value="90" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True" Name="slider_third" HorizontalAlignment="Left" Margin="106,123,0,0" VerticalAlignment="Top" Height="133" Width="24"/>
-                    <TextBlock Text="{Binding Value, ElementName=slider_first}" HorizontalAlignment="Left" Margin="21,102,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="21" Width="25" FontSize="16"/>
-                    <RadioButton  HorizontalAlignment="Left" Margin="18,262,0,0" VerticalAlignment="Top"/>
                     <RadioButton  HorizontalAlignment="Left" Margin="109,261,0,0" VerticalAlignment="Top"/>
-                    <RadioButton  HorizontalAlignment="Left" Margin="67,262,0,0" VerticalAlignment="Top"/>
-                    <TextBlock Text="{Binding Value, ElementName=slider_third}"  HorizontalAlignment="Left" Margin="105,102,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="21" Width="33" FontSize="16"/>
-                    <TextBlock Text="{Binding Value, ElementName=slider_second}" HorizontalAlignment="Left" Margin="69,102,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="21" Width="27" FontSize="16"/>
                     <TextBlock HorizontalAlignment="Left" Margin="2,6,0,0" TextWrapping="Wrap" Text="提示：标定都使用黑板标定" VerticalAlignment="Top" Height="56" Width="136" FontSize="10" Foreground="#FFE08282"/>
                     <Button Content="开始" Click="btn_start" HorizontalAlignment="Left" Margin="34,58,0,0" VerticalAlignment="Top" Width="75"/>
+                    <TabControl   Margin="0,158,0,0">
+                        <TabItem   Header="1档">
+                            <TabItem.Background>
+                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                    <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                                    <GradientStop Color="White" Offset="1"/>
+                                </LinearGradientBrush>
+                            </TabItem.Background>
+                            <Grid Background="#FFE5E5E5">
+                                <Slider  Orientation="Vertical" Value="25" HorizontalAlignment="Left" ValueChanged="slider_value_change" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True" x:Name="slider_first" Margin="10,33,0,0" VerticalAlignment="Top" Height="133" Width="22" Background="#FF448E85" BorderBrush="White" Foreground="White" RenderTransformOrigin="-1.258,0.476"/>
+                                <TextBlock Text="{Binding Value, ElementName=slider_first}" HorizontalAlignment="Left" Margin="9,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="21" Width="25" FontSize="16"/>
+                                <Button Content="标定" HorizontalAlignment="Left" Margin="49,140,0,0" VerticalAlignment="Top" Width="75"/>
+                                <Button Content="设置" HorizontalAlignment="Left" Margin="48,35,0,0" VerticalAlignment="Top" Width="75"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem  Header="2档">
+                            <Grid Background="#FFE5E5E5">
+                                <Slider Orientation="Vertical"  Value="45" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True"  x:Name="slider_second" HorizontalAlignment="Left" Margin="12,27,0,0" VerticalAlignment="Top" Height="133" Width="24" Background="#FF448E85"/>
+                                <TextBlock Text="{Binding Value, ElementName=slider_second}" HorizontalAlignment="Left" Margin="18,2,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="21" Width="27" FontSize="16"/>
+                                <Button Content="标定" HorizontalAlignment="Left" Margin="56,133,0,0" VerticalAlignment="Top" Width="75"/>
+                                <Button Content="设置" HorizontalAlignment="Left" Margin="53,26,0,0" VerticalAlignment="Top" Width="75"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="3档">
+                            <Grid Background="#FFE5E5E5">
+                                <Slider Orientation="Vertical"  Value="90" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True" x:Name="slider_third" HorizontalAlignment="Left" Margin="11,31,0,0" VerticalAlignment="Top" Height="133" Width="24" Background="#FF448E85"/>
+                                <TextBlock Text="{Binding Value, ElementName=slider_third}"  HorizontalAlignment="Left" Margin="13,8,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="21" Width="33" FontSize="16"/>
+                                <Button Content="标定" HorizontalAlignment="Left" Margin="53,137,0,0" VerticalAlignment="Top" Width="75"/>
+                                <Button Content="设置" HorizontalAlignment="Left" Margin="48,28,0,0" VerticalAlignment="Top" Width="75"/>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
                 </Grid>
             </TabItem>
             <TabItem Header="设置" FontSize="18">
@@ -50,7 +78,7 @@
             </TabItem>
 
         </TabControl>
-        <Button Name="btn_connect" Content="连接" HorizontalAlignment="Left" Margin="697,5,0,0" VerticalAlignment="Top" Width="68" Height="20"/>
+        <Button Click="btn_serial_connect" Name="btn_connect" Content="连接" HorizontalAlignment="Left" Margin="697,5,0,0" VerticalAlignment="Top" Width="68" Height="20"/>
         <ComboBox Name="baud_Selcet" HorizontalAlignment="Left" Margin="124,4,0,0" VerticalAlignment="Top" Width="88" Height="20"/>
         <ComboBox x:Name="Com_Selcet" HorizontalAlignment="Left" Margin="518,5,0,0" VerticalAlignment="Top" Width="158" Height="20"/>
     </Grid>
