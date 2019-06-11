@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -28,7 +29,7 @@ namespace xoyplot_zjk
     public partial class MainWindow : Window,INotifyPropertyChanged 
     {
         public z_serial lk_serial;
-
+        
         private  Task task;
 
         private int refresh;
@@ -115,7 +116,7 @@ namespace xoyplot_zjk
         }
         public void zk_serial_init()
         {
-            lk_serial = new z_serial(btn_connect, baud_Selcet, "115200");
+            lk_serial = new z_serial(btn_connect, baud_Selcet, Com_Selcet, "115200");
             lk_serial.addComList(Com_Selcet);
         }
         double x = 0;
@@ -159,10 +160,8 @@ namespace xoyplot_zjk
         /// <param name="e"></param>
         private void btn_serial_connect(object sender, RoutedEventArgs e)
         {
-
-            //Com_Selcet.SelectedItem.ToString();
-
-            //lk_serial.Com_connect()
+           
+            lk_serial.Com_connect();
         }
     }
 

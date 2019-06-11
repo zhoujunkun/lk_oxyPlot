@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Management;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,6 +10,8 @@ namespace ZSeial
 {
     public class z_serial
     {
+        Regex reg_com = new Regex(@"COM[0-9]*");  //正则表达式提取COM
+        Regex reg_str = new Regex(@"[\((][^\))]+[\))]$");
         public SerialPort zSerPort;
         public object LockThis = new object();
         public Button btn_connnect { set; get; }
@@ -25,8 +28,9 @@ namespace ZSeial
         /// <param name="btn_cont">串口连接按键</param>
         /// <param name="cobox_baud">串口COM控件</param>
         /// <param name="defBaud">默认波特率</param>
-        public z_serial(Button btn_cont, ComboBox cobox_baud, string defBaud)
+        public z_serial(Button btn_cont, ComboBox cobox_baud, ComboBox port, string defBaud)
         {
+            com_port = port;
             btn_connnect = btn_cont;
             combox_baud = cobox_baud;
             ComboxInitBaudRate(defBaud);
@@ -168,9 +172,12 @@ namespace ZSeial
         /// 串口连接
         /// </summary>
         /// <param name="strPort">串口号</param>
-        public bool Com_connect(string strPort)
+        public bool Com_connect()
         {
-            if (strPort == string.Empty)
+            string text = com_port.SelectedItem.ToString();
+            string port = reg_com.Match(text).Value;  //提取COM
+            
+            if (port == string.Empty)
             {
                 MessageBox.Show("Please choose a Seial Port first!", "Error", MessageBoxButton.OK, MessageBoxImage.Hand);
                 return false;
@@ -180,11 +187,7 @@ namespace ZSeial
                 MessageBox.Show("Please choose BarudRate first!", "Error", MessageBoxButton.OK, MessageBoxImage.Hand);
                 return false;
             }
-            if (combox_port == string.Empty)
-            {
-                MessageBox.Show("Please choose a Seial Port first!", "Error", MessageBoxButton.OK, MessageBoxImage.Hand);
-                return false;
-            }
+
             if (check())
             {
                 btn_connnect.Content = "打开";
@@ -194,7 +197,7 @@ namespace ZSeial
             {
 
                 int barate = int.Parse((string)combox_baud.SelectedItem);
-                bool result = connect(strPort, barate);
+                bool result = connect(port, barate);
                 if (result == false)
                 {
                     return false;
@@ -386,6 +389,7 @@ namespace ZSeial
            
             //通过WMI获取COM端口
             string[] ss = GetSerialPortArray();
+            
             foreach (string Com in ss)
             {
                 if (Com.Contains("USB 串行设备") == true)
@@ -396,7 +400,8 @@ namespace ZSeial
                 }
                 else
                 {
-                     combox.Items.Add(Com);
+                    string txs = reg_str.Match(text).Value;
+                    combox.Items.Add(Com);
                 }
             }
             return ss;
