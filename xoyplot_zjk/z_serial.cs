@@ -88,6 +88,12 @@ namespace ZSeial
                 func_serial(buf);
             }
         }
+
+        public void add_data_handelRecieved(serialDataChangeHandle func)
+        {
+            zSerPort.DataReceived += SerialPortDataReceived;
+            SerialRecieveChangedHandle(func);
+        }
         /// <summary>
         /// 接收函数
         /// </summary>
@@ -400,8 +406,10 @@ namespace ZSeial
                 }
                 else
                 {
-                    string txs = reg_str.Match(text).Value;
-                    combox.Items.Add(Com);
+                    string txs = reg_str.Match(Com).Value;
+                    string com= reg_com.Match(txs).Value;
+                    string port = com +"->"+ Com.Replace(txs, "");
+                    combox.Items.Add(port);
                 }
             }
             return ss;

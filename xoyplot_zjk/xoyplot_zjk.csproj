@@ -61,6 +61,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="lk_talk\SensorDataItem.cs" />
+    <Compile Include="lk_talk\thinyFrame.cs" />
     <Compile Include="z_serial.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

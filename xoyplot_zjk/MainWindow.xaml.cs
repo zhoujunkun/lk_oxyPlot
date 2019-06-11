@@ -1,26 +1,15 @@
-﻿using System;
+﻿using OxyPlot;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
-using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
 using ZSeial;
+using zLkControl;
+using static zLkControl.StructHelper;
+
 namespace xoyplot_zjk
 {
     /// <summary>
@@ -29,7 +18,8 @@ namespace xoyplot_zjk
     public partial class MainWindow : Window,INotifyPropertyChanged 
     {
         public z_serial lk_serial;
-        
+        public thinyFrame lkFrame = new thinyFrame(1);
+        SensorDataItem lkSensor = new SensorDataItem();
         private  Task task;
 
         private int refresh;
@@ -114,11 +104,70 @@ namespace xoyplot_zjk
         {
 
         }
+        /// <summary>
+        ///串口初始化
+        /// </summary>
         public void zk_serial_init()
         {
             lk_serial = new z_serial(btn_connect, baud_Selcet, Com_Selcet, "115200");
             lk_serial.addComList(Com_Selcet);
+            lkFrame.addGenralListener(genralListen);
         }
+
+        /// <summary>
+        /// 通用监听协议解析完成函数
+        /// </summary>
+        /// <param name="lkSensor"></param>
+        private void genralListen(SensorDataItem sensor)
+        {
+            byte[] lkData = sensor.buf;
+            LKSensorCmd.FRAME_TYPE frame_type = (LKSensorCmd.FRAME_TYPE)(sensor.type);
+            switch (frame_type)
+            {
+                case LKSensorCmd.FRAME_TYPE.DataGet:
+                    {
+                        LKSensorCmd.FRAME_GetDataID distance_id=(LKSensorCmd.FRAME_GetDataID)(sensor.id);
+                        distanceId_func(distance_id, lkData);
+                    }
+                    break;
+                case LKSensorCmd.FRAME_TYPE.Upload:
+                    {
+
+                    }
+                    break;
+                case LKSensorCmd.FRAME_TYPE.ACK:
+                    {
+                        LKSensorCmd.FRAME_AckID ack_id = (LKSensorCmd.FRAME_AckID)(sensor.id);
+
+                    }
+                    break;
+                case LKSensorCmd.FRAME_TYPE.QC:
+                    {
+                        LKSensorCmd.FRAME_QCcmdID qc_id = (LKSensorCmd.FRAME_QCcmdID)(sensor.id);
+                    }
+                    break;
+                case LKSensorCmd.FRAME_TYPE.Erro:
+                    {
+
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        private void distanceId_func(LKSensorCmd.FRAME_GetDataID id, byte[] buff)
+        {
+            switch (id)
+            {
+                case LKSensorCmd.FRAME_GetDataID.DistContinue:
+                    {
+
+                    }break;
+            }
+        }
+
         double x = 0;
         private void btn_start(object sender, RoutedEventArgs e)
         {
@@ -160,8 +209,21 @@ namespace xoyplot_zjk
         /// <param name="e"></param>
         private void btn_serial_connect(object sender, RoutedEventArgs e)
         {
-           
-            lk_serial.Com_connect();
+           if( lk_serial.Com_connect())
+            {
+                lk_serial.add_data_handelRecieved(serial_recieve);
+            }
+        }
+        /// <summary>
+        /// 串口数据接收
+        /// </summary>
+        /// <param name="buf"></param>
+        private void serial_recieve(byte[]buf)
+        {
+            for (int i = 0; i < buf.Length; i++)  //协议解析
+            {
+                lkFrame.AcceptByte(buf[i], lkSensor);
+            }
         }
     }
 
