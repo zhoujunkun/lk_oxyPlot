@@ -21,8 +21,8 @@
                         <Grid>
                             <oxy:Plot InvalidateFlag="{Binding Refresh}" Margin="0,1,0,0" Background="White" Height="353" VerticalAlignment="Top" HorizontalAlignment="Left" Width="631">
                                 <oxy:Plot.Axes>
-                                    <oxy:LinearAxis Title="Distance" Unit="cm" Position="Left" MinimumRange="5"/>
-                                    <oxy:LinearAxis  MaximumRange="50"  Minimum="{Binding lk_Minimum}" x:Name="lk_yaxi"  Position="Bottom"  />
+                                    <oxy:LinearAxis Title="Distance" Unit="cm" MaximumPadding="0.1" MinimumPadding="0.1" MinorStep="5" Position="Left" MinimumRange="5"/>
+                                    <oxy:LinearAxis  MaximumRange="20"  Minimum="{Binding lk_Minimum}" x:Name="lk_yaxi"  Position="Bottom"  />
                                 </oxy:Plot.Axes>
                                 <oxy:LineSeries MarkerFill="Green" MarkerType="Circle" Title="距离" DataFieldX="Time"
                                       DataFieldY="Distance" LabelFormatString="{}{1:N0}"                  

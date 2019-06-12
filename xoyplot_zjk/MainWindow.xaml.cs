@@ -39,7 +39,7 @@ namespace xoyplot_zjk
             
         }
         int remve_index = 0;
-        int range = 50;
+        int range = 20;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -111,42 +111,48 @@ namespace xoyplot_zjk
         {
             lk_serial = new z_serial(btn_connect, baud_Selcet, Com_Selcet, "115200");
             lk_serial.addComList(Com_Selcet);
-            lkFrame.addGenralListener(genralListen);
+
         }
 
+        public enum FRAME_TYPE { DataGet = 1, ParmsSave, ParamGet, Upload, ACK, QC, Erro };
+        private UInt16 sighal { set; get; }
+        private UInt16 distance { set; get; }
+        private UInt16 agc { set; get; }
         /// <summary>
         /// 通用监听协议解析完成函数
         /// </summary>
         /// <param name="lkSensor"></param>
-        private void genralListen(SensorDataItem sensor)
+        private void genralListen(byte[]buf)
         {
-            byte[] lkData = sensor.buf;
-            LKSensorCmd.FRAME_TYPE frame_type = (LKSensorCmd.FRAME_TYPE)(sensor.type);
-            switch (frame_type)
+            byte frame_type = buf[0];
+            FRAME_TYPE type = (FRAME_TYPE)frame_type;
+            switch (type)
             {
-                case LKSensorCmd.FRAME_TYPE.DataGet:
+                case FRAME_TYPE.DataGet:
                     {
-                        LKSensorCmd.FRAME_GetDataID distance_id=(LKSensorCmd.FRAME_GetDataID)(sensor.id);
-                        distanceId_func(distance_id, lkData);
+                         sighal = (UInt16)((buf[1] << 8) | buf[2]);
+                         distance = (UInt16)((buf[3] << 8) | buf[4]);
+                         agc = (UInt16)((buf[5] << 8) | buf[6]);
+                        display();
+                        
                     }
                     break;
-                case LKSensorCmd.FRAME_TYPE.Upload:
+                case FRAME_TYPE.Upload:
                     {
 
                     }
                     break;
-                case LKSensorCmd.FRAME_TYPE.ACK:
+                case FRAME_TYPE.ACK:
                     {
-                        LKSensorCmd.FRAME_AckID ack_id = (LKSensorCmd.FRAME_AckID)(sensor.id);
-
+                      
                     }
                     break;
-                case LKSensorCmd.FRAME_TYPE.QC:
+                case FRAME_TYPE.QC:
                     {
-                        LKSensorCmd.FRAME_QCcmdID qc_id = (LKSensorCmd.FRAME_QCcmdID)(sensor.id);
+                  
                     }
                     break;
-                case LKSensorCmd.FRAME_TYPE.Erro:
+                case FRAME_TYPE.Erro:
                     {
 
                     }
@@ -202,6 +208,29 @@ namespace xoyplot_zjk
                               }
                           });
         }
+        private void display()
+        {
+ 
+            this.Measurements.Add(new Measurement
+            {
+                Time = x,
+                Distance = distance,
+                Sighal = sighal
+            });
+        // Change the refresh flag, this will trig InvalidatePlot() on the Plot control
+            this.Refresh++;
+            count++;
+            x += 1;
+            if (Measurements.Count > 100)
+            {
+                Measurements.RemoveAt(0);
+            }
+            if (count > range)
+            {
+                lk_Minimum = count - range;
+            }
+
+        }
         /// <summary>
         /// 串口连接
         /// </summary>
@@ -220,10 +249,25 @@ namespace xoyplot_zjk
         /// <param name="buf"></param>
         private void serial_recieve(byte[]buf)
         {
-            for (int i = 0; i < buf.Length; i++)  //协议解析
+           if(  rx_checkSum(buf))
             {
-                lkFrame.AcceptByte(buf[i], lkSensor);
+                genralListen(buf);
             }
+        }
+
+
+        private bool rx_checkSum(byte[]buf)
+        {
+            byte ret = 0;
+            for(int i=0;i<buf.Length;i++)
+            {
+                ret += buf[i];
+            }
+            if (ret == 0xff)
+            {
+                return true;
+            }
+            else return false;
         }
     }
 
