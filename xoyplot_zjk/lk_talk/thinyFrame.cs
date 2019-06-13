@@ -287,6 +287,63 @@ namespace zLkControl
             msg.type = 0;
             this.cksum = 0;
         }
+
+        byte next_id;
+        byte id;
+        byte sofbyte = 0x01;    
+        public Queue<byte> sendBuf = new Queue<byte>();
+        checksum sendChecksum = new checksum();
+
+        public byte[] sendFrame_compend(sendDataitem sendMsg)
+        {
+
+            id = sendMsg.isRsponse ? sendMsg.id : getNextID();
+            //add listener       
+            sendBuf.Enqueue(sofbyte);
+            sendBuf.Enqueue(id);
+            sendBuf.Enqueue((byte)(sendMsg.len >> 8));
+            sendBuf.Enqueue((byte)(sendMsg.len));
+            sendBuf.Enqueue(sendMsg.Type);
+            sendChecksum.crcReset();
+            UInt16 head_crc = sendChecksum.crc16(sendBuf.ToArray());
+            byte high_crc = (byte)(head_crc >> 8);
+            byte low_crc = (byte)head_crc;
+            sendBuf.Enqueue(high_crc);
+            sendBuf.Enqueue(low_crc);
+            if (!sendMsg.ifHeadOnly)
+            {
+                byte[] data = new byte[sendMsg.len];
+                for (int i = 0; i < sendMsg.len; i++)
+                {
+                    data[i] = sendMsg.sendbuf[i];
+                    sendBuf.Enqueue(sendMsg.sendbuf[i]);
+                }
+                sendChecksum.crcReset();
+                UInt16 data_crc = sendChecksum.crc16(data);
+                byte high_data_crc = (byte)(data_crc >> 8);
+                byte low_data_crc = (byte)data_crc;
+
+                sendBuf.Enqueue(high_data_crc);
+                sendBuf.Enqueue(low_data_crc);
+            }
+            else
+            {
+                sendMsg.len = 0;
+            }
+            byte[] re_buf = sendBuf.ToArray();
+            sendBuf.Clear();
+            return re_buf;
+        }
+
+        public byte getNextID()
+        {
+            if (next_id >= 125)
+            {
+                next_id = 0;
+            }
+            return ++next_id;
+        }
+
     }
    public class checksum
     {

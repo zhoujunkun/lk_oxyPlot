@@ -20,8 +20,10 @@ namespace xoyplot_zjk
         public z_serial lk_serial;
         public thinyFrame lkFrame = new thinyFrame(1);
         SensorDataItem lkSensor = new SensorDataItem();
+        public sendDataitem send_msg = new sendDataitem();
         private  Task task;
-
+        static readonly object locker = new object();
+        private Queue<byte> lk_serial_queue = new Queue<byte>();
         private int refresh;
 
         private string title;
@@ -124,15 +126,15 @@ namespace xoyplot_zjk
         /// <param name="lkSensor"></param>
         private void genralListen(byte[]buf)
         {
-            byte frame_type = buf[0];
+            byte frame_type = buf[1];
             FRAME_TYPE type = (FRAME_TYPE)frame_type;
             switch (type)
             {
                 case FRAME_TYPE.DataGet:
                     {
                          sighal = (UInt16)((buf[1] << 8) | buf[2]);
-                         distance = (UInt16)((buf[3] << 8) | buf[4]);
-                         agc = (UInt16)((buf[5] << 8) | buf[6]);
+                         distance = (UInt16)((buf[4] << 8) | buf[3]);
+                         agc = (UInt16)((buf[6] << 8) | buf[5]);
                         display();
                         
                     }
@@ -173,62 +175,57 @@ namespace xoyplot_zjk
                     }break;
             }
         }
-
+        /// <summary>
+        /// 发送帧数据
+        /// </summary>
+        /// <param name="sendMsg"></param>
+        private void send_frame(sendDataitem sendMsg)
+        {
+            sendMsg.sendFrame = lkFrame.sendFrame_compend(sendMsg);
+            int send_lens = sendMsg.sendFrame.Length;
+            lk_serial.zSerPort.Write(sendMsg.sendFrame, 0, send_lens);
+        }
         double x = 0;
+        /// <summary>
+        /// 开始连续测量
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_start(object sender, RoutedEventArgs e)
         {
-            task = Task.Factory.StartNew(
-                          () =>
-                          {
-                              
-                              while (!complete)
-                              {
-                                  this.Title = "Plot updated: " + DateTime.Now;
-                        //  this.Points.Add(new DataPoint(x, Math.Sin(x)));
-                        // this.Points.Add(new DataPoint(x, rnd.NextDouble() * 5));
-                        this.Measurements.Add(new Measurement
-                                  {
-                                      Time = x,
-                                      Distance = rnd.NextDouble() * 5,
-                                      Sighal = Math.Sin(x)
-                                  });
-                        // Change the refresh flag, this will trig InvalidatePlot() on the Plot control
-                        this.Refresh++;
-                                  count++;
-                                  x += 1;
-                                  if (Measurements.Count > 100)
-                                  {
-                                      Measurements.RemoveAt(0);
-                                  }
-                                  if (count > range)
-                                  {
-                                      lk_Minimum = count - range;
-                                  }
-                                  Thread.Sleep(50);
-                              }
-                          });
+            send_msg.Type = (byte)(LKSensorCmd.FRAME_TYPE.DataGet);
+            send_msg.id = (byte)(LKSensorCmd.FRAME_GetDataID.DistContinue);
+            send_msg.ifHeadOnly = true;
+            send_frame(send_msg);
         }
         private void display()
         {
- 
-            this.Measurements.Add(new Measurement
+            task= new Task(() =>
             {
-                Time = x,
-                Distance = distance,
-                Sighal = sighal
+                lock(locker)
+                {
+                    this.Measurements.Add(new Measurement
+                    {
+                        Time = x,
+                        Distance = distance,
+                        Sighal = sighal
+                    });
+                    // Change the refresh flag, this will trig InvalidatePlot() on the Plot control
+                    this.Refresh++;
+                    count++;
+                    x += 1;
+                    if (Measurements.Count > 100)
+                    {
+                        Measurements.RemoveAt(0);
+                    }
+                    if (count > range)
+                    {
+                        lk_Minimum = count - range;
+                    }
+                }
+               
             });
-        // Change the refresh flag, this will trig InvalidatePlot() on the Plot control
-            this.Refresh++;
-            count++;
-            x += 1;
-            if (Measurements.Count > 100)
-            {
-                Measurements.RemoveAt(0);
-            }
-            if (count > range)
-            {
-                lk_Minimum = count - range;
-            }
+            task.Start();
 
         }
         /// <summary>
@@ -249,17 +246,35 @@ namespace xoyplot_zjk
         /// <param name="buf"></param>
         private void serial_recieve(byte[]buf)
         {
-           if(  rx_checkSum(buf))
+            byte[] buffer2 = new byte[10];
+            for (int i=0;i<buf.Length;i++)
             {
-                genralListen(buf);
+                lk_serial_queue.Enqueue(buf[i]);
             }
+            if(lk_serial_queue.Count>=9)
+            {
+              byte[] buffer=   lk_serial_queue.ToArray();
+                if(buffer[0]==0xff)
+                {
+                    if (rx_checkSum(buffer, 9))
+                    {
+                        genralListen(buffer);
+                    }
+                }
+                for(int i=0;i<9;i++)
+                {
+                    
+                    buffer2[i] =  lk_serial_queue.Dequeue();
+                }
+            }
+           
         }
 
 
-        private bool rx_checkSum(byte[]buf)
+        private bool rx_checkSum(byte[]buf, byte lens)
         {
             byte ret = 0;
-            for(int i=0;i<buf.Length;i++)
+            for(int i=0;i< lens; i++)
             {
                 ret += buf[i];
             }
@@ -268,6 +283,18 @@ namespace xoyplot_zjk
                 return true;
             }
             else return false;
+        }
+        /// <summary>
+        /// 停止测量
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_stop(object sender, RoutedEventArgs e)
+        {
+            send_msg.Type = (byte)(LKSensorCmd.FRAME_TYPE.DataGet);
+            send_msg.id = (byte)(LKSensorCmd.FRAME_GetDataID.DistStop);
+            send_msg.ifHeadOnly = true;
+            send_frame(send_msg);
         }
     }
 

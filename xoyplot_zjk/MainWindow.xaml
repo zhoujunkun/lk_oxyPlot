@@ -6,20 +6,21 @@
         xmlns:local="clr-namespace:xoyplot_zjk"      
          xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"                                                                                                                                                                                                                    
-        Title="迈测激光" Height="450" Width="800">
+        Title="迈测激光" Height="450" Width="900
+        ">
 
-    <Grid>
-        <TabControl  HorizontalAlignment="Left" Height="419" VerticalAlignment="Top" Width="792">
+    <Grid Height="421" Margin="0" VerticalAlignment="Top">
+        <TabControl Margin="0,0,0,2">
             <TabItem Header="显示" FontSize="18">
-                <Grid Background="#FFF1F1F1">
+                <Grid Background="#FFF1F1F1" Height="384" VerticalAlignment="Top" Margin="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="24*"/>
-                        <ColumnDefinition Width="107*"/>
+                        <ColumnDefinition Width="144*"/>
+                        <ColumnDefinition Width="743*"/>
                     </Grid.ColumnDefinitions>
 
-                    <GroupBox Header="曲线" HorizontalAlignment="Left" Height="384" Margin="143,0,0,0" VerticalAlignment="Top" Width="643" BorderBrush="#FF5C7787" Grid.ColumnSpan="2">
-                        <Grid>
-                            <oxy:Plot InvalidateFlag="{Binding Refresh}" Margin="0,1,0,0" Background="White" Height="353" VerticalAlignment="Top" HorizontalAlignment="Left" Width="631">
+                    <GroupBox Header="曲线" Height="384" Margin="1,0,-5.667,0" VerticalAlignment="Top" BorderBrush="#FF5C7787" Grid.Column="1">
+                        <Grid Margin="0">
+                            <oxy:Plot InvalidateFlag="{Binding Refresh}" Margin="0,1,0,0" Background="White">
                                 <oxy:Plot.Axes>
                                     <oxy:LinearAxis Title="Distance" Unit="cm" MaximumPadding="0.1" MinimumPadding="0.1" MinorStep="5" Position="Left" MinimumRange="5"/>
                                     <oxy:LinearAxis  MaximumRange="20"  Minimum="{Binding lk_Minimum}" x:Name="lk_yaxi"  Position="Bottom"  />
@@ -34,9 +35,9 @@
                             </oxy:Plot>
                         </Grid>
                     </GroupBox>
-                    <RadioButton  HorizontalAlignment="Left" Margin="109,261,0,0" VerticalAlignment="Top"/>
+                    <RadioButton  HorizontalAlignment="Left" Margin="109,261,0,0" VerticalAlignment="Top" Height="14" Width="15"/>
                     <TextBlock HorizontalAlignment="Left" Margin="2,6,0,0" TextWrapping="Wrap" Text="提示：标定都使用黑板标定" VerticalAlignment="Top" Height="56" Width="136" FontSize="10" Foreground="#FFE08282"/>
-                    <Button Content="开始" Click="btn_start" HorizontalAlignment="Left" Margin="34,58,0,0" VerticalAlignment="Top" Width="75"/>
+                    <Button Content="开始" Click="btn_start" HorizontalAlignment="Left" Margin="34,58,0,0" VerticalAlignment="Top" Width="75" Height="27"/>
                     <TabControl   Margin="0,158,0,0">
                         <TabItem   Header="1档">
                             <TabItem.Background>
@@ -45,7 +46,7 @@
                                     <GradientStop Color="White" Offset="1"/>
                                 </LinearGradientBrush>
                             </TabItem.Background>
-                            <Grid Background="#FFE5E5E5">
+                            <Grid Background="#FFE5E5E5" HorizontalAlignment="Left" Margin="0,0,-0.333,0.333" Width="157">
                                 <Slider  Orientation="Vertical" Value="25" HorizontalAlignment="Left" ValueChanged="slider_value_change" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True" x:Name="slider_first" Margin="10,33,0,0" VerticalAlignment="Top" Height="133" Width="22" Background="#FF448E85" BorderBrush="White" Foreground="White" RenderTransformOrigin="-1.258,0.476"/>
                                 <TextBlock Text="{Binding Value, ElementName=slider_first}" HorizontalAlignment="Left" Margin="9,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="21" Width="25" FontSize="16"/>
                                 <Button Content="标定" HorizontalAlignment="Left" Margin="49,140,0,0" VerticalAlignment="Top" Width="75"/>
@@ -69,6 +70,7 @@
                             </Grid>
                         </TabItem>
                     </TabControl>
+                    <Button Content="停止" Click="btn_stop" HorizontalAlignment="Left" Margin="33,109,0,0" VerticalAlignment="Top" Width="75" Height="27"/>
                 </Grid>
             </TabItem>
             <TabItem Header="设置" FontSize="18">
