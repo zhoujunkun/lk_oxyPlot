@@ -98,17 +98,17 @@ namespace zLkControl
             |    1    |     4     |      2     |     1     |      1     | ...   |          | <- size (bytes)
             '---------+-----------+------------+-----------+------------+- - - -+-------------'         
             */
-            public enum FRAME_TYPE { DataGet = 1, ParmsSave, ParamGet, Upload, ACK, QC, Erro };
-            public enum FRAME_GetDataID { DistOnce = 1, DistContinue, DistStop };
-            public enum FRAME_AckID { downLoadBegin = 1, upload };
-            public enum FRAME_GetParamID { ParamAll = 1 };
-            public enum FRAME_SpeeCtlID { START = 1, STOP };
-            public enum FRAME_QCcmdID { stand_start = 1, StandParamFirst, StandParamSecond, StandParamThird, StandParamFirstReset, StandParamSecondReset, StandParamThirdReset, GetParam };  //标定开始
-            public enum FRAME_ParmSaveID { BarudSave = 1, RedLightSave, FrontOrBase, AutoMel };
+            public enum TYPE { DataGet = 1, ParmsSave, ParamGet, Upload, ACK, QC, Erro };
+            public enum GetDataID { DistOnce = 1, DistContinue, DistStop };
+            public enum AckID { downLoadBegin = 1, upload };
+            public enum GetParamID { ParamAll = 1 };
+            public enum SpeeCtlID { START = 1, STOP };
+            public enum QCcmdID { stand_start = 1, StandParamFirst, StandParamSecond, StandParamThird, StandParamFirstReset, StandParamSecondReset, StandParamThirdReset, GetParam };  //标定开始
+            public enum ParmSaveID { BarudSave = 1, RedLightSave, FrontOrBase, AutoMel };
 
-            public enum FRAME_FRONT_BASE { BASE = 0, FRONT };
-            public enum FRAME_RED_LIGHT { OFF = 0, ON };
-            public enum FRAME_AUTO_MEL { OFF = 0, ON };
+            public enum FRONT_BASE { BASE = 0, FRONT };
+            public enum RED_LIGHT { OFF = 0, ON };
+            public enum AUTO_MEL { OFF = 0, ON };
 
             public bool isbase;  //后基准标记
             public bool isRedLedOn; //红外激光是否打开

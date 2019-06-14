@@ -5,20 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:xoyplot_zjk"      
          xmlns:oxy="http://oxyplot.org/wpf"
-        mc:Ignorable="d"                                                                                                                                                                                                                    
+        mc:Ignorable="d"      
+        Closed="window_close_click"
         Title="迈测激光" Height="450" Width="900
         ">
 
     <Grid Height="421" Margin="0" VerticalAlignment="Top">
         <TabControl Margin="0,0,0,2">
             <TabItem Header="显示" FontSize="18">
-                <Grid Background="#FFF1F1F1" Height="384" VerticalAlignment="Top" Margin="0">
+                <Grid Background="#FFF1F1F1" Margin="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="144*"/>
-                        <ColumnDefinition Width="743*"/>
+                        <ColumnDefinition Width="132*"/>
+                        <ColumnDefinition Width="311*"/>
                     </Grid.ColumnDefinitions>
 
-                    <GroupBox Header="曲线" Height="384" Margin="1,0,-5.667,0" VerticalAlignment="Top" BorderBrush="#FF5C7787" Grid.Column="1">
+                    <GroupBox Header="曲线" Height="384" Margin="1,0,-6,0" VerticalAlignment="Top" BorderBrush="#FF5C7787" Grid.Column="1">
                         <Grid Margin="0">
                             <oxy:Plot InvalidateFlag="{Binding Refresh}" Margin="0,1,0,0" Background="White">
                                 <oxy:Plot.Axes>
@@ -35,42 +36,50 @@
                             </oxy:Plot>
                         </Grid>
                     </GroupBox>
-                    <RadioButton  HorizontalAlignment="Left" Margin="109,261,0,0" VerticalAlignment="Top" Height="14" Width="15"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="2,6,0,0" TextWrapping="Wrap" Text="提示：标定都使用黑板标定" VerticalAlignment="Top" Height="56" Width="136" FontSize="10" Foreground="#FFE08282"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="2,6,0,0" TextWrapping="Wrap" Text="提示：标定都使用黑板标定" VerticalAlignment="Top" Height="40" Width="136" FontSize="10" Foreground="#FFE08282"/>
                     <Button Content="开始" Click="btn_start" HorizontalAlignment="Left" Margin="34,58,0,0" VerticalAlignment="Top" Width="75" Height="27"/>
-                    <TabControl   Margin="0,158,0,0">
-                        <TabItem   Header="1档">
-                            <TabItem.Background>
-                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                    <GradientStop Color="#FFF0F0F0" Offset="0"/>
-                                    <GradientStop Color="White" Offset="1"/>
-                                </LinearGradientBrush>
-                            </TabItem.Background>
-                            <Grid Background="#FFE5E5E5" HorizontalAlignment="Left" Margin="0,0,-0.333,0.333" Width="157">
-                                <Slider  Orientation="Vertical" Value="25" HorizontalAlignment="Left" ValueChanged="slider_value_change" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True" x:Name="slider_first" Margin="10,33,0,0" VerticalAlignment="Top" Height="133" Width="22" Background="#FF448E85" BorderBrush="White" Foreground="White" RenderTransformOrigin="-1.258,0.476"/>
-                                <TextBlock Text="{Binding Value, ElementName=slider_first}" HorizontalAlignment="Left" Margin="9,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="21" Width="25" FontSize="16"/>
-                                <Button Content="标定" HorizontalAlignment="Left" Margin="49,140,0,0" VerticalAlignment="Top" Width="75"/>
-                                <Button Content="设置" HorizontalAlignment="Left" Margin="48,35,0,0" VerticalAlignment="Top" Width="75"/>
+                    <Button Content="停止" Click="btn_stop" HorizontalAlignment="Left" Margin="163,58,0,0" VerticalAlignment="Top" Width="75" Height="27"/>
+                    <Button Content="开始标定" x:Name="btn_stand" Click="Btn_Clicked_Stand" HorizontalAlignment="Left" Margin="16,226,0,0" VerticalAlignment="Top" Width="75" Height="27"/>
+                    <Label Content="黑板标定距离(m)：" HorizontalAlignment="Left" Margin="13,124,0,0" VerticalAlignment="Top" FontSize="18" Height="33" Width="158"/>
+                    <Slider  HorizontalAlignment="Left" ValueChanged="slider_value_change" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True" x:Name="stand_slider" Margin="18,164,0,0" VerticalAlignment="Top" Height="16" Width="220"/>
+                    <TextBlock HorizontalAlignment="Left" Text="{Binding Value, ElementName=stand_slider}" Margin="196,129,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" Width="26" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25"/>
+                    <Button Content="获取标定参数" Click="Btn_Clicked_getStandParam" HorizontalAlignment="Left" Margin="95,189,0,0" VerticalAlignment="Top" Width="75"/>
+                    <TabControl TabStripPlacement="Left" Margin="0,274,0,0" Height="110" VerticalAlignment="Top">
+                        <TabItem Header="1档">
+                            <Grid Background="#FFE5E5E5">
+                                <Label Content="校准值:" HorizontalAlignment="Left" Margin="60,5,0,0" VerticalAlignment="Top" Height="26" Width="51" RenderTransformOrigin="0.843,0.385" FontSize="12"/>
+                                <TextBox Height="26" x:Name="textBox_calibration" Margin="115,3,5,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16"/>
+                                <TextBox Height="26" x:Name="textBox_average" Margin="115,39,5,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="16" />
+                                <Label Content="平均值:" HorizontalAlignment="Left" Margin="60,41,0,0" VerticalAlignment="Top" Height="25" Width="49" RenderTransformOrigin="0.347,-4.8" FontSize="12"/>
+                                <TextBox Height="26" x:Name="textBox_gain" Margin="115,72,5,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="16" />
+                                <Label Content="增益值:" HorizontalAlignment="Left" Margin="60,72,0,0" VerticalAlignment="Top" Height="24" Width="49" FontSize="12" RenderTransformOrigin="1.224,0.25"/>
+                                <Button Content="切换" Name="btn_first_switch" Click="Btn_first_click" HorizontalAlignment="Left" Margin="7,37,0,0" VerticalAlignment="Top" Width="47"/>
                             </Grid>
                         </TabItem>
-                        <TabItem  Header="2档">
+                        <TabItem Header="2档">
                             <Grid Background="#FFE5E5E5">
-                                <Slider Orientation="Vertical"  Value="45" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True"  x:Name="slider_second" HorizontalAlignment="Left" Margin="12,27,0,0" VerticalAlignment="Top" Height="133" Width="24" Background="#FF448E85"/>
-                                <TextBlock Text="{Binding Value, ElementName=slider_second}" HorizontalAlignment="Left" Margin="18,2,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="21" Width="27" FontSize="16"/>
-                                <Button Content="标定" HorizontalAlignment="Left" Margin="56,133,0,0" VerticalAlignment="Top" Width="75"/>
-                                <Button Content="设置" HorizontalAlignment="Left" Margin="53,26,0,0" VerticalAlignment="Top" Width="75"/>
+                                <Label Content="校准值:" HorizontalAlignment="Left" Margin="60,5,0,0" VerticalAlignment="Top" Height="26" Width="51" RenderTransformOrigin="0.843,0.385" FontSize="12"/>
+                                <TextBox Height="26" x:Name="textBox_calibration_Copy" Margin="115,3,5,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16"/>
+                                <TextBox Height="26" x:Name="textBox_average_Copy" Margin="115,39,5,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="16" />
+                                <Label Content="平均值:" HorizontalAlignment="Left" Margin="60,41,0,0" VerticalAlignment="Top" Height="25" Width="49" RenderTransformOrigin="0.347,-4.8" FontSize="12"/>
+                                <TextBox Height="26" x:Name="textBox_gain_Copy" Margin="115,72,5,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="16" />
+                                <Label Content="增益值:" HorizontalAlignment="Left" Margin="60,72,0,0" VerticalAlignment="Top" Height="24" Width="49" FontSize="12" RenderTransformOrigin="1.224,0.25"/>
+                                <Button Content="切换" Name="btn_second_switch" Click="Btn_second_click" HorizontalAlignment="Left" Margin="7,37,0,0" VerticalAlignment="Top" Width="47"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="3档">
                             <Grid Background="#FFE5E5E5">
-                                <Slider Orientation="Vertical"  Value="90" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True" x:Name="slider_third" HorizontalAlignment="Left" Margin="11,31,0,0" VerticalAlignment="Top" Height="133" Width="24" Background="#FF448E85"/>
-                                <TextBlock Text="{Binding Value, ElementName=slider_third}"  HorizontalAlignment="Left" Margin="13,8,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="21" Width="33" FontSize="16"/>
-                                <Button Content="标定" HorizontalAlignment="Left" Margin="53,137,0,0" VerticalAlignment="Top" Width="75"/>
-                                <Button Content="设置" HorizontalAlignment="Left" Margin="48,28,0,0" VerticalAlignment="Top" Width="75"/>
+                                <Label Content="校准值:" HorizontalAlignment="Left" Margin="60,5,0,0" VerticalAlignment="Top" Height="26" Width="51" RenderTransformOrigin="0.843,0.385" FontSize="12"/>
+                                <TextBox Height="26" x:Name="textBox_calibration_Copy1" Margin="115,3,5,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16"/>
+                                <TextBox Height="26" x:Name="textBox_average_Copy1" Margin="115,39,5,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="16" />
+                                <Label Content="平均值:" HorizontalAlignment="Left" Margin="60,41,0,0" VerticalAlignment="Top" Height="25" Width="49" RenderTransformOrigin="0.347,-4.8" FontSize="12"/>
+                                <TextBox Height="26" x:Name="textBox_gain_Copy1" Margin="115,72,5,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="16" />
+                                <Label Content="增益值:" HorizontalAlignment="Left" Margin="60,72,0,0" VerticalAlignment="Top" Height="24" Width="49" FontSize="12" RenderTransformOrigin="1.224,0.25"/>
+                                <Button Content="切换" Name="btn_third_switch" Click="Btn_third_click" HorizontalAlignment="Left" Margin="7,37,0,0" VerticalAlignment="Top" Width="47"/>
                             </Grid>
                         </TabItem>
                     </TabControl>
-                    <Button Content="停止" Click="btn_stop" HorizontalAlignment="Left" Margin="33,109,0,0" VerticalAlignment="Top" Width="75" Height="27"/>
+                    <Button Content="保存标定参数" Click="Btn_Clicked_saveParam" HorizontalAlignment="Left" Margin="176,227,0,0" VerticalAlignment="Top" Width="75" Height="27"/>
                 </Grid>
             </TabItem>
             <TabItem Header="设置" FontSize="18">
