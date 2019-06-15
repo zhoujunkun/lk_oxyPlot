@@ -20,7 +20,6 @@ namespace xoyplot_zjk
         public z_serial lk_serial;
         public thinyFrame lkFrame = new thinyFrame(1);
         SensorDataItem lkSensor = new SensorDataItem();
-        public sendDataitem send_msg = new sendDataitem();
         //QC
         LK03QC lk03_qc = new LK03QC();
         private UInt16[] lk_distCalibration = new UInt16[3]; //标定完校准
@@ -212,41 +211,40 @@ namespace xoyplot_zjk
                     } break;
                 case LKSensorCmd.QCcmdID.StandParamFirst:
                     {
+                        MessageBox.Show("档位1标定保存成功！");
                     }
                     break;
                 case LKSensorCmd.QCcmdID.StandParamSecond:
                     {
+                        MessageBox.Show("档位2标定保存成功！");
                     }
                     break;
                 case LKSensorCmd.QCcmdID.StandParamThird:
                     {
+                        MessageBox.Show("档位3标定保存成功！");
                     }
                     break;
                 case LKSensorCmd.QCcmdID.StandParamFirstReset:
-                    {
-                        lk03_qc.ifFirstStandResetAck = true;
-                        lk03_qc.ifFirstStand = true;
+                    {             
+                        lk03_qc.ifFirstStand = true;  //可以进行标定
+                        base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+                        {
+                            label_first.Content = "1档标定距离(m)：";
+                            stand_slider.Value = 45;
+                        }), new object[0]);
                         MessageBox.Show("档位1切换成功！");
                     }
                     break;
                 case LKSensorCmd.QCcmdID.StandParamSecondReset:
                     {
-                        lk03_qc.ifSecondStandResetAck = true;
                         lk03_qc.ifSecondStand = true;
-                        base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
-                        {
-                            btn_second_switch.Content = "已切换";
-                        }), new object[0]);
+                        MessageBox.Show("档位2切换成功！");
                     }
                     break;
                 case LKSensorCmd.QCcmdID.StandParamThirdReset:
                     {
-                        lk03_qc.ifThirdStandResetAck = true;
                         lk03_qc.ifThirdStand = true;
-                        base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
-                        {
-                            btn_third_switch.Content = "已切换";
-                        }), new object[0]);
+                        MessageBox.Show("档位3切换成功！");
                     }
                     break;
                 case LKSensorCmd.QCcmdID.GetParam:
@@ -279,6 +277,7 @@ namespace xoyplot_zjk
         /// <param name="e"></param>
         private void btn_start(object sender, RoutedEventArgs e)
         {
+            sendDataitem send_msg = new sendDataitem();
             send_msg.Type = (byte)(LKSensorCmd.TYPE.DataGet);
             send_msg.id = (byte)(LKSensorCmd.GetDataID.DistContinue);
             send_msg.ifHeadOnly = true;
@@ -380,6 +379,7 @@ namespace xoyplot_zjk
         /// <param name="e"></param>
         private void btn_stop(object sender, RoutedEventArgs e)
         {
+            sendDataitem send_msg = new sendDataitem();
             send_msg.Type = (byte)(LKSensorCmd.TYPE.DataGet);
             send_msg.id = (byte)(LKSensorCmd.GetDataID.DistStop);
             send_msg.ifHeadOnly = true;
@@ -402,6 +402,7 @@ namespace xoyplot_zjk
         {
             //发送保存参数
             //发送消息 前基准
+            sendDataitem send_msg = new sendDataitem();
             send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
             send_msg.ifHeadOnly = false;  //含有数据帧
             byte[] setByte = new byte[4];
@@ -436,11 +437,16 @@ namespace xoyplot_zjk
 
         private void Btn_Clicked_getStandParam(object sender, RoutedEventArgs e)
         {
-
+            sendDataitem send_msg = new sendDataitem();
+            send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
+            send_msg.id = (byte)(LKSensorCmd.QCcmdID.GetParam);
+            send_msg.ifHeadOnly = true;
+            send_frame(send_msg);
         }
 
         private void Btn_first_click(object sender, RoutedEventArgs e)
         {
+            sendDataitem send_msg = new sendDataitem();
             send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
             send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamFirstReset);
             send_msg.ifHeadOnly = true;
@@ -449,6 +455,7 @@ namespace xoyplot_zjk
 
         private void Btn_third_click(object sender, RoutedEventArgs e)
         {
+            sendDataitem send_msg = new sendDataitem();
             send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
             send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamThirdReset);
             send_msg.ifHeadOnly = true;
@@ -457,6 +464,7 @@ namespace xoyplot_zjk
 
         private void Btn_second_click(object sender, RoutedEventArgs e)
         {
+            sendDataitem send_msg = new sendDataitem();
             send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
             send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamSecondReset);
             send_msg.ifHeadOnly = true;
