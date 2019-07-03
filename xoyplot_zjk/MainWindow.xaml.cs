@@ -45,7 +45,9 @@ namespace xoyplot_zjk
             Measurements = new Collection<Measurement>();
             this.Points = new List<DataPoint>();
             DataContext = this;
-            
+            Thread log_t = new Thread(lk_log);
+            log_t.Start("还未标定，请标定。。。");
+            log_t.IsBackground = true;
         }
         int remve_index = 0;
     
@@ -302,8 +304,8 @@ namespace xoyplot_zjk
         int dist_ave { set; get; }
         int singhal_ave { set; get; }
         int agc_ave { set; get; }
-        bool ifCalculate = false;
-        int cureent_stand_device = 0;
+        int cureent_stand_device = 0;    //当前标定设备
+        bool ifCalculate;  //是否开始计算
         private void display()
         {
             task= new Task(() =>
@@ -329,7 +331,7 @@ namespace xoyplot_zjk
                     {
                         lk_Minimum = count - set_range_display;
                     }
-                    if((ifStandDistStart)&&(ifCalculate))  //标定开始
+                    if(ifCalculate)  //标定开始
                     {
                         ifCalculate = false;   //点击标定后计算一次
                         double[] dist_average = new double[20];
@@ -358,8 +360,7 @@ namespace xoyplot_zjk
                                 lk_distCalibration[1] = (UInt16)(dist_ave - stand_slider.Value * 100);
                                 textBox_calibration_2.Text = (lk_distCalibration[1]).ToString();
                                 textBox_average_2.Text = dist_ave.ToString();
-                                textBox_gain_2.Text = agc_ave.ToString();
-                                lk03_qc.ifSecondStand = false;
+                                textBox_gain_2.Text = agc_ave.ToString(); 
                             }
                             else if (cureent_stand_device==3)
                             {
@@ -367,7 +368,6 @@ namespace xoyplot_zjk
                                 textBox_calibration_3.Text = (lk_distCalibration[2]).ToString();
                                 textBox_average_3.Text = dist_ave.ToString();
                                 textBox_gain_3.Text = agc_ave.ToString();
-                                lk03_qc.ifThirdStand = false;
                             }
                         }), new object[0]);
                       
@@ -378,6 +378,18 @@ namespace xoyplot_zjk
             task.Start();
 
         }
+        private void lk_log(object log)
+        {
+                base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+                {
+                    string log_d = log + "\r\n";
+                    text_Log.Text += log_d;
+                    
+                }), new object[0]);
+                Thread.Sleep(1000);
+
+        }
+
         /// <summary>
         /// 串口连接
         /// </summary>
@@ -446,13 +458,13 @@ namespace xoyplot_zjk
             send_msg.ifHeadOnly = true;
             send_frame(send_msg);
         }
-        bool ifStandDistStart = false;  //开始标定标记,true 开始标定
+       
         private void Btn_Clicked_Stand(object sender, RoutedEventArgs e)
         {
-            if ((lk03_qc.ifFirstStand) | (lk03_qc.ifSecondStand) | (lk03_qc.ifThirdStand))
+            if (lk03_qc.ifFirstStand)
             {
-                ifStandDistStart = true;
                 ifCalculate = true;
+                cureent_stand_device = 1;
             }
             else
             {
@@ -476,28 +488,11 @@ namespace xoyplot_zjk
                 setByte[1] = (byte)(lk_distCalibration[0] & 0xff);
                 setByte[2] = (byte)(lk_gain[0] >> 8);
                 setByte[3] = (byte)(lk_gain[0] & 0xff);
+                send_msg.sendbuf = setByte;    //数据帧缓存
+                send_msg.len = (UInt16)setByte.Length; //数据帧字节长度
+                send_frame(send_msg);
             }
-            else if (lk03_qc.ifSecondStand)
-            {
-                lk03_qc.ifSecondStand = false;
-                send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamSecond);  //校准参数
-                setByte[0] = (byte)(lk_distCalibration[1] >> 8);
-                setByte[1] = (byte)(lk_distCalibration[1] & 0xff);
-                setByte[2] = (byte)(lk_gain[1] >> 8);
-                setByte[3] = (byte)(lk_gain[1] & 0xff);
-            }
-            else if (lk03_qc.ifThirdStand)
-            {
-                lk03_qc.ifThirdStand = false;
-                send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamThird);  //校准参数
-                setByte[0] = (byte)(lk_distCalibration[2] >> 8);
-                setByte[1] = (byte)(lk_distCalibration[2] & 0xff);
-                setByte[2] = (byte)(lk_gain[2] >> 8);
-                setByte[3] = (byte)(lk_gain[2] & 0xff);
-            }
-            send_msg.sendbuf = setByte;    //数据帧缓存
-            send_msg.len = (UInt16)setByte.Length; //数据帧字节长度
-            send_frame(send_msg);
+
         }
 
         private void Btn_Clicked_getStandParam(object sender, RoutedEventArgs e)
@@ -539,6 +534,78 @@ namespace xoyplot_zjk
         private void window_close_click(object sender, EventArgs e)
         {
             lk_serial.Close();
+        }
+
+        private void Btn_Clicked_saveParam_2(object sender, RoutedEventArgs e)
+        {
+            //发送保存参数
+            //发送消息 前基准
+            sendDataitem send_msg = new sendDataitem();
+            send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
+            send_msg.ifHeadOnly = false;  //含有数据帧
+            byte[] setByte = new byte[4];
+             if (lk03_qc.ifSecondStand)
+            {
+                lk03_qc.ifSecondStand = false;
+                send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamSecond);  //校准参数
+                setByte[0] = (byte)(lk_distCalibration[1] >> 8);
+                setByte[1] = (byte)(lk_distCalibration[1] & 0xff);
+                setByte[2] = (byte)(lk_gain[1] >> 8);
+                setByte[3] = (byte)(lk_gain[1] & 0xff);
+                send_msg.sendbuf = setByte;    //数据帧缓存
+                send_msg.len = (UInt16)setByte.Length; //数据帧字节长度
+                send_frame(send_msg);
+            }
+
+        }
+
+        private void Btn_Clicked_Stand_2(object sender, RoutedEventArgs e)
+        {
+            if (lk03_qc.ifSecondStand)
+            {
+                ifCalculate = true;
+                cureent_stand_device = 2;
+            }
+            else
+            {
+                MessageBox.Show("请先选择档位!");
+            }
+        }
+
+        private void Btn_Clicked_saveParam_3(object sender, RoutedEventArgs e)
+        {
+            //发送保存参数
+            //发送消息 前基准
+            sendDataitem send_msg = new sendDataitem();
+            send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
+            send_msg.ifHeadOnly = false;  //含有数据帧
+            byte[] setByte = new byte[4];
+             if (lk03_qc.ifThirdStand)
+            {
+                lk03_qc.ifThirdStand = false;
+                send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamThird);  //校准参数
+                setByte[0] = (byte)(lk_distCalibration[2] >> 8);
+                setByte[1] = (byte)(lk_distCalibration[2] & 0xff);
+                setByte[2] = (byte)(lk_gain[2] >> 8);
+                setByte[3] = (byte)(lk_gain[2] & 0xff);
+                send_msg.sendbuf = setByte;    //数据帧缓存
+                send_msg.len = (UInt16)setByte.Length; //数据帧字节长度
+                send_frame(send_msg);
+            }
+
+        }
+
+        private void Btn_Clicked_Stand_3(object sender, RoutedEventArgs e)
+        {
+            if (lk03_qc.ifThirdStand)
+            {
+                ifCalculate = true;
+                cureent_stand_device = 3;
+            }
+            else
+            {
+                MessageBox.Show("请先选择档位!");
+            }
         }
     }
     public class LK03QC 
