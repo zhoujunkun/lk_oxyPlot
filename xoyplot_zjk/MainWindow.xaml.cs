@@ -9,6 +9,7 @@ using System.Windows;
 using ZSeial;
 using zLkControl;
 using static zLkControl.StructHelper;
+using System.Linq;
 
 namespace xoyplot_zjk
 {
@@ -47,7 +48,7 @@ namespace xoyplot_zjk
             
         }
         int remve_index = 0;
-        int range = 20;
+    
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -139,9 +140,9 @@ namespace xoyplot_zjk
             {
                 case lk_frameRv_type.dist_cmd:
                     {
-                         sighal = (UInt16)((buf[1] << 8) | buf[2]);
-                         distance = (UInt16)((buf[4] << 8) | buf[3]);
-                         agc = (UInt16)((buf[6] << 8) | buf[5]);
+                         sighal = (UInt16)((buf[2] << 8) | buf[3]);
+                         distance = (UInt16)((buf[4] << 8) | buf[5]);
+                         agc = (UInt16)((buf[6] << 8) | buf[7]);
                         display();                        
                     }
                     break;
@@ -230,20 +231,33 @@ namespace xoyplot_zjk
                         base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
                         {
                             label_first.Content = "1档标定距离(m)：";
-                            stand_slider.Value = 45;
+                            stand_slider.Value = 10;
                         }), new object[0]);
+                        cureent_stand_device = 1;
                         MessageBox.Show("档位1切换成功！");
                     }
                     break;
                 case LKSensorCmd.QCcmdID.StandParamSecondReset:
                     {
                         lk03_qc.ifSecondStand = true;
+                        base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+                        {
+                            label_first.Content = "2档标定距离(m)：";
+                            stand_slider.Value = 45;
+                        }), new object[0]);
+                        cureent_stand_device = 2;
                         MessageBox.Show("档位2切换成功！");
                     }
                     break;
                 case LKSensorCmd.QCcmdID.StandParamThirdReset:
                     {
                         lk03_qc.ifThirdStand = true;
+                        base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+                        {
+                            label_first.Content = "3档标定距离(m)：";
+                            stand_slider.Value = 90;
+                        }), new object[0]);
+                        cureent_stand_device = 3;
                         MessageBox.Show("档位3切换成功！");
                     }
                     break;
@@ -283,6 +297,13 @@ namespace xoyplot_zjk
             send_msg.ifHeadOnly = true;
             send_frame(send_msg);
         }
+
+        int set_range_display = 20;
+        int dist_ave { set; get; }
+        int singhal_ave { set; get; }
+        int agc_ave { set; get; }
+        bool ifCalculate = false;
+        int cureent_stand_device = 0;
         private void display()
         {
             task= new Task(() =>
@@ -293,23 +314,63 @@ namespace xoyplot_zjk
                     {
                         Time = x,
                         Distance = distance,
-                        Sighal = sighal
+                        Sighal = sighal,
+                        Agc= agc
                     });
                     // Change the refresh flag, this will trig InvalidatePlot() on the Plot control
                     this.Refresh++;
                     count++;
                     x += 1;
-                    if (Measurements.Count > 100)
+                    if (Measurements.Count > set_range_display)
                     {
                         Measurements.RemoveAt(0);
                     }
-                    if (count > range)
+                    if (count > set_range_display)
                     {
-                        lk_Minimum = count - range;
+                        lk_Minimum = count - set_range_display;
                     }
-                    if(ifStandDistStart)   //标定开始
+                    if((ifStandDistStart)&&(ifCalculate))  //标定开始
                     {
-
+                        ifCalculate = false;   //点击标定后计算一次
+                        double[] dist_average = new double[20];
+                        double[] singhal_average = new double[20];
+                        double[] agc_average = new double[20];
+                        for (int i=0;i<set_range_display;i++)
+                        {
+                            dist_average[i] = Measurements[i].Distance;
+                           // singhal_average[i] = Measurements[i].Sighal;
+                            agc_average[i] = Measurements[i].Agc;
+                        }
+                        dist_ave = (int)dist_average.Average();
+                        singhal_ave = (int)singhal_average.Average();
+                        agc_ave = (int)agc_average.Average();
+                        base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+                        {
+                            if (cureent_stand_device==1)
+                            {
+                                lk_distCalibration[0] = (UInt16)(dist_ave - stand_slider.Value * 100);
+                                textBox_calibration_1.Text = (lk_distCalibration[0]).ToString();
+                                textBox_average_1.Text = dist_ave.ToString();
+                                textBox_gain_1.Text = agc_ave.ToString();
+                            }
+                            else if (cureent_stand_device==2)
+                            {
+                                lk_distCalibration[1] = (UInt16)(dist_ave - stand_slider.Value * 100);
+                                textBox_calibration_2.Text = (lk_distCalibration[1]).ToString();
+                                textBox_average_2.Text = dist_ave.ToString();
+                                textBox_gain_2.Text = agc_ave.ToString();
+                                lk03_qc.ifSecondStand = false;
+                            }
+                            else if (cureent_stand_device==3)
+                            {
+                                lk_distCalibration[2] = (UInt16)(dist_ave - stand_slider.Value * 100);
+                                textBox_calibration_3.Text = (lk_distCalibration[2]).ToString();
+                                textBox_average_3.Text = dist_ave.ToString();
+                                textBox_gain_3.Text = agc_ave.ToString();
+                                lk03_qc.ifThirdStand = false;
+                            }
+                        }), new object[0]);
+                      
                     }
                 }
                
@@ -391,6 +452,7 @@ namespace xoyplot_zjk
             if ((lk03_qc.ifFirstStand) | (lk03_qc.ifSecondStand) | (lk03_qc.ifThirdStand))
             {
                 ifStandDistStart = true;
+                ifCalculate = true;
             }
             else
             {
@@ -408,6 +470,7 @@ namespace xoyplot_zjk
             byte[] setByte = new byte[4];
             if (lk03_qc.ifFirstStand)
             {
+                lk03_qc.ifFirstStand = false;
                 send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamFirst);  //校准参数
                 setByte[0] = (byte)(lk_distCalibration[0] >> 8);
                 setByte[1] = (byte)(lk_distCalibration[0] & 0xff);
@@ -416,6 +479,7 @@ namespace xoyplot_zjk
             }
             else if (lk03_qc.ifSecondStand)
             {
+                lk03_qc.ifSecondStand = false;
                 send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamSecond);  //校准参数
                 setByte[0] = (byte)(lk_distCalibration[1] >> 8);
                 setByte[1] = (byte)(lk_distCalibration[1] & 0xff);
@@ -424,6 +488,7 @@ namespace xoyplot_zjk
             }
             else if (lk03_qc.ifThirdStand)
             {
+                lk03_qc.ifThirdStand = false;
                 send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamThird);  //校准参数
                 setByte[0] = (byte)(lk_distCalibration[2] >> 8);
                 setByte[1] = (byte)(lk_distCalibration[2] & 0xff);
@@ -491,5 +556,6 @@ namespace xoyplot_zjk
         public double Time { get; set; }
         public double Sighal { get; set; }
         public double Distance { get; set; }
+        public double Agc { get; set; }
     }
 }
