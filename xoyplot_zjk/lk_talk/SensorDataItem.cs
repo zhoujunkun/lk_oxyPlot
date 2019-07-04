@@ -103,7 +103,7 @@ namespace zLkControl
             public enum AckID { downLoadBegin = 1, upload };
             public enum GetParamID { ParamAll = 1 };
             public enum SpeeCtlID { START = 1, STOP };
-            public enum QCcmdID { stand_start = 1, StandParamFirst, StandParamSecond, StandParamThird, StandParamFirstReset, StandParamSecondReset, StandParamThirdReset, GetParam };  //标定开始
+            public enum QCcmdID { stand_start = 1, StandParamFirst, StandParamSecond, StandParamThird, StandParamFirstReset, StandParamSecondReset, StandParamThirdReset, StandFirstSwitch, StandSecondSwitch, StandThirdSwitch ,GetParam };  //标定开始
             public enum ParmSaveID { BarudSave = 1, RedLightSave, FrontOrBase, AutoMel };
 
             public enum FRONT_BASE { BASE = 0, FRONT };
