@@ -406,7 +406,6 @@ namespace xoyplot_zjk
                 {
                     string log_d = "提示：==>"+log + "\r\n";
                     text_Log.Text = log_d;
-                    text_Log.ScrollToEnd();
                     
                 }), new object[0]);
                       
