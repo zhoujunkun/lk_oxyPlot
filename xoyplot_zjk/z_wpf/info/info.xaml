@@ -1,0 +1,46 @@
+﻿<controls:MetroWindow x:Class="zLkControl.info"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:zLkControl"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"        
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+	    ResizeMode="NoResize"
+        Title="Info" Height="300" Width="600">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition
+				Width="*" />
+            <ColumnDefinition
+				Width="*" />
+        </Grid.ColumnDefinitions>
+        <Border
+			Margin="1"
+			Style="{StaticResource MainBorderStyle}">
+            <StackPanel>
+                <Grid Height="166" Margin="55,41,70,-15" VerticalAlignment="Top">
+                    <Panel.Background>
+                        <ImageBrush
+					          ImageSource="/Maice.png" />
+                    </Panel.Background>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+
+
+        <Border
+			Margin="1"
+			Grid.Column="1"
+			Style="{StaticResource MainBorderStyle}" >
+            <StackPanel>
+                <TextBlock Height="34" TextAlignment="Center"  Margin="0,19,0,0" TextWrapping="Wrap" Text="迈测激光测距" FontSize="20" Foreground="#FF3B3EEA" VerticalAlignment="Center" HorizontalAlignment="Center" Width="293"/>
+                <TextBlock Height="37.333" TextAlignment="Center"  Margin="0,30,0,0" TextWrapping="Wrap" HorizontalAlignment="Center" Width="293" VerticalAlignment="Center"><Run Text="公司网站：http://www.mileseey.com "/><LineBreak/><Run Text=" http://www.mileseey.net"/></TextBlock>
+                <TextBlock Height="17.333" TextAlignment="Center"  Margin="0,10,0,0" TextWrapping="Wrap" HorizontalAlignment="Center" Width="293" VerticalAlignment="Center"><Run Text="全国免费客服电话：4000-801-9055 "/></TextBlock>
+                <TextBlock Height="32" TextAlignment="Center"  Margin="0,10,0,0" TextWrapping="Wrap" HorizontalAlignment="Center" Width="293" VerticalAlignment="Center" Text="公司总部地址：深圳市南山区留仙大道塘朗城广场西区5号楼36F"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</controls:MetroWindow>

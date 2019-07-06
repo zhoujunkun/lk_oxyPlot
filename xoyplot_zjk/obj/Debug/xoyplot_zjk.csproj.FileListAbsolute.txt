@@ -86,3 +86,14 @@ E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\obj\Debug\xoyplot_zjk.csproj.CoreCompile
 E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\obj\Debug\xoyplot_zjk.csproj.CopyComplete
 E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\obj\Debug\xoyplot_zjk.exe
 E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\obj\Debug\xoyplot_zjk.pdb
+E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\bin\Debug\ControlzEx.dll
+E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\bin\Debug\MahApps.Metro.dll
+E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\bin\Debug\System.Windows.Interactivity.dll
+E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\bin\Debug\ControlzEx.pdb
+E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\bin\Debug\MahApps.Metro.pdb
+E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\bin\Debug\MahApps.Metro.xml
+E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\obj\Debug\App.baml
+E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\obj\Debug\resource.baml
+E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\obj\Debug\z_wpf\info\info.g.cs
+E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\obj\Debug\z_wpf\info\info.baml
+E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\obj\Debug\z_wpf\resource\resource.baml

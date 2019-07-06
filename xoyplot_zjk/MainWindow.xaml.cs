@@ -10,34 +10,31 @@ using ZSeial;
 using zLkControl;
 using static zLkControl.StructHelper;
 using System.Linq;
+using MahApps.Metro.Controls;
+
+using LK_PROTECL;
 
 namespace xoyplot_zjk
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window,INotifyPropertyChanged 
+    public partial class MainWindow : MetroWindow, INotifyPropertyChanged 
     {
         public z_serial lk_serial;
         public thinyFrame lkFrame = new thinyFrame(1);
         SensorDataItem lkSensor = new SensorDataItem();
         //QC
         LK03QC lk03_qc = new LK03QC();
-        private UInt16[] lk_distCalibration = new UInt16[3]; //标定完校准
-        private UInt16[] lk_gain = new UInt16[3];  //标定完当前距离的增益
-        private UInt16[] lk_average = new UInt16[3];  //平均值
-        private bool[] lk_ifLkHavedStand = new bool[3];   //是否已经标定过
+        //protecl
+        LK_CHECKSUM_PROTEL checkSumProtecl = new LK_CHECKSUM_PROTEL();
 
-//
         private  Task task;
         static readonly object locker = new object();
         private Queue<byte> lk_serial_queue = new Queue<byte>();
         private int refresh;
-
-        private string title;
         private double minimum;
         int count;
-        private bool complete;
         Random rnd = new Random();
         public MainWindow() 
         {
@@ -47,17 +44,12 @@ namespace xoyplot_zjk
             this.Points = new List<DataPoint>();
             DataContext = this;
             Thread log_t = new Thread(lk_log);
+            checkSumProtecl.addGeneralFun(genralListen);
             //log_t.Start("还未标定，请标定。。。");
             //log_t.IsBackground = true;
         }
-        int remve_index = 0;
-    
-
         public event PropertyChangedEventHandler PropertyChanged;
-
         public IList<DataPoint> Points { get; set; }
-
-     
         public double lk_Minimum
         {
             get
@@ -113,9 +105,8 @@ namespace xoyplot_zjk
             lk_serial.addComList(Com_Selcet);
 
         }
+   
 
-        
-        public enum lk_frameRv_type { dist_cmd = 1, ack_cmd,param_cmd };
         private UInt16 sighal { set; get; }
         private UInt16 distance { set; get; }
         private UInt16 agc { set; get; }
@@ -123,11 +114,11 @@ namespace xoyplot_zjk
         /// 通用监听协议解析完成函数
         /// </summary>
         /// <param name="lkSensor"></param>
-        private void genralListen(byte[]buf, lk_frameRv_type type)
+        private void genralListen(byte[]buf, LK_CHECKSUM_PROTEL.lk_frameRv_type type)
         {
             switch (type)
             {
-                case lk_frameRv_type.dist_cmd:
+                case LK_CHECKSUM_PROTEL.lk_frameRv_type.dist_cmd:
                     {
                          sighal = (UInt16)((buf[0] << 8) | buf[1]);
                          distance = (UInt16)((buf[2] << 8) | buf[3]);
@@ -135,13 +126,13 @@ namespace xoyplot_zjk
                         display();                        
                     }
                     break;
-                case lk_frameRv_type.ack_cmd:
+                case LK_CHECKSUM_PROTEL.lk_frameRv_type.ack_cmd:
                     {
                         LKSensorCmd.TYPE frme_type= (LKSensorCmd.TYPE) buf[0];
                         ackId_func(frme_type, buf[1]);
                     }
                     break;
-                case lk_frameRv_type.param_cmd:
+                case LK_CHECKSUM_PROTEL.lk_frameRv_type.param_cmd:
                     {
                         byte[] qc_param = new byte[15];
                         for(int i=0;i< 15; i++)
@@ -216,19 +207,19 @@ namespace xoyplot_zjk
                         {
                             btn_stand.Content = "已经标定";
                         }), new object[0]);
-                        lk_ifLkHavedStand[0] = true;    //档位1已经标定标记
+                        lk03_qc.ifLkHavedStand[0] = true;    //档位1已经标定标记
                     }
                     break;
                 case LKSensorCmd.QCcmdID.StandParamSecond:
                     {
                         lk_log("档位2标定保存成功！");
-                        lk_ifLkHavedStand[1] = true;    //档位2已经标定标记
+                        lk03_qc.ifLkHavedStand[1] = true;    //档位2已经标定标记
                     }
                     break;
                 case LKSensorCmd.QCcmdID.StandParamThird:
                     {
                         lk_log("档位3标定保存成功！");
-                        lk_ifLkHavedStand[2] = true;    //档位3已经标定标记
+                        lk03_qc.ifLkHavedStand[2] = true;    //档位3已经标定标记
                     }
                     break;
                 case LKSensorCmd.QCcmdID.StandParamFirstReset:
@@ -372,21 +363,21 @@ namespace xoyplot_zjk
                         {
                             if (cureent_stand_device==1)
                             {
-                                int dis = lk_distCalibration[0] = (UInt16)(dist_ave - stand_slider.Value * 100);
+                                int dis = lk03_qc.distCalibration_arry[0] = (UInt16)(dist_ave - stand_slider.Value * 100);
                                 textBox_calibration_1.Text = dis.ToString();
                                 textBox_average_1.Text = dist_ave.ToString();
                                 textBox_gain_1.Text = agc_ave.ToString();
                             }
                             else if (cureent_stand_device==2)
                             {
-                                int dis= lk_distCalibration[1] = (UInt16)(dist_ave - stand_slider.Value * 100);
+                                int dis= lk03_qc.distCalibration_arry[1] = (UInt16)(dist_ave - stand_slider.Value * 100);
                                 textBox_calibration_2.Text = dis.ToString();
                                 textBox_average_2.Text = dist_ave.ToString();
                                 textBox_gain_2.Text = agc_ave.ToString(); 
                             }
                             else if (cureent_stand_device==3)
                             {
-                                int dis = lk_distCalibration[2] = (UInt16)(dist_ave - stand_slider.Value * 100);
+                                int dis = lk03_qc.distCalibration_arry[2] = (UInt16)(dist_ave - stand_slider.Value * 100);
                                 textBox_calibration_3.Text = dis.ToString();
                                 textBox_average_3.Text = dist_ave.ToString();
                                 textBox_gain_3.Text = agc_ave.ToString();
@@ -429,149 +420,15 @@ namespace xoyplot_zjk
         /// <param name="buf"></param>
         private void serial_recieve(byte[]buf)
         {
-
-            for(int i=0;i< buf.Length; i++)
-            {
-               protecl_ansys(buf[i]);
-            }
-            //if(lk_serial_queue.Count>=9)
-            //{
-            //    byte[] buffer=   lk_serial_queue.ToArray();
-            //    if(buffer[0]==0xff)
-            //    {
-            //        if (rx_checkSum(buffer, 9))
-            //        {
-            //            genralListen(buffer);
-            //        }
-            //    }
-            //    for(int i=0;i<9;i++)
-            //    {   
-            //        buffer2[i] =  lk_serial_queue.Dequeue();
-            //    }
-            //}
            
+            for (int i=0;i< buf.Length; i++)
+            {
+                checkSumProtecl.protecl_ansys(buf[i]);
+            }         
         }
-        int data_buf_size = 0;
-        int dist_size = 6;
-        int param_size = 15;
-        int ack_size = 6;
-        enum FRAME_PROTECL { head=0,cmd,data,checksum};
-        byte[] buf_receive = new byte[20];
-        byte[] protecl_recieve = new byte[100];
-        int data_count = 0;    //实际数据
-        int recieve_count = 0;  //接收字节计数
-        FRAME_PROTECL protecl = FRAME_PROTECL.head;
-        lk_frameRv_type cmd;
-        /// <summary>
-        /// 协议解析
-        /// </summary>
-        /// <param name="buf"></param>
-        private void protecl_ansys(byte buf)
-        {
-            protecl_recieve[recieve_count++] = buf;
-            switch (protecl)
-                {
-                    case FRAME_PROTECL.head:
-                        {
-                          if(buf==0xff)
-                            {
-                                 protecl = FRAME_PROTECL.cmd;
-                            }
-                          else
-                        {
-                            recieve_count = 0;
-                        }
-                        } break;
-                    case FRAME_PROTECL.cmd:
-                        {
-                           cmd= (lk_frameRv_type) buf;
-                        if (cmd == lk_frameRv_type.dist_cmd)
-                        {
-                            data_buf_size = dist_size;
-                            protecl = FRAME_PROTECL.data;
-                        }
-                        else if (cmd == lk_frameRv_type.ack_cmd)
-                        {
-                            data_buf_size = ack_size;
-                            protecl = FRAME_PROTECL.data;
-                        }
-                        else if (cmd == lk_frameRv_type.param_cmd)
-                        {
-                            data_buf_size = param_size;
-                            protecl = FRAME_PROTECL.data;
-                        }
-                        else
-                        {
-                            protecl = FRAME_PROTECL.head;
-                            recieve_count = 0;
-                        }
-                        }break;
-                    case FRAME_PROTECL.data:
-                        {
-                         buf_receive[data_count++] = buf;
-                            switch (cmd)
-                            {
-                            case lk_frameRv_type.dist_cmd:
-                                {
-                                    if(data_count== dist_size)
-                                    {
-                                        protecl = FRAME_PROTECL.checksum;
-                                    }
-                                }
-                                break;
-                            case lk_frameRv_type.ack_cmd:
-                                {
-                                    if (data_count == ack_size)
-                                    {
-                                        protecl = FRAME_PROTECL.checksum;
-                                    }
-                                }
-                                break;
-                            case lk_frameRv_type.param_cmd:
-                                {
-                                    if (data_count == param_size)
-                                    {
-                                        protecl = FRAME_PROTECL.checksum;
-                                    }
-                                }
-                                break;
-                        }
 
      
-                        }
-                        break;
-                    case FRAME_PROTECL.checksum:
-                        {
-                            if (rx_checkSum(protecl_recieve, recieve_count))
-                            {
-                                genralListen(buf_receive,cmd);
-                              
-                            }
-                        Array.Clear(buf_receive, 0, buf_receive.Length);
-                        Array.Clear(protecl_recieve, 0, protecl_recieve.Length);
-                        protecl = FRAME_PROTECL.head;
-                        recieve_count = 0;
-                         data_count = 0;
-                    }
-                        break;
-                 }
-            
-            
 
-        }
-        private bool rx_checkSum(byte[]buf, int lens)
-        {
-            byte ret = 0;
-            for(int i=0;i< lens; i++)
-            {
-                ret += buf[i];
-            }
-            if (ret == 0xff)
-            {
-                return true;
-            }
-            else return false;
-        }
         /// <summary>
         /// 停止测量
         /// </summary>
@@ -610,10 +467,10 @@ namespace xoyplot_zjk
             send_msg.ifHeadOnly = false;  //含有数据帧
             byte[] setByte = new byte[4];
             send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamFirst);  //校准参数
-            setByte[0] = (byte)(lk_distCalibration[0] >> 8);
-            setByte[1] = (byte)(lk_distCalibration[0] & 0xff);
-            setByte[2] = (byte)(lk_gain[0] >> 8);
-            setByte[3] = (byte)(lk_gain[0] & 0xff);
+            setByte[0] = (byte)(lk03_qc.distCalibration_arry[0] >> 8);
+            setByte[1] = (byte)(lk03_qc.distCalibration_arry[0] & 0xff);
+            setByte[2] = (byte)(lk03_qc.gain_arry[0] >> 8);
+            setByte[3] = (byte)(lk03_qc.gain_arry[0] & 0xff);
             send_msg.sendbuf = setByte;    //数据帧缓存
             send_msg.len = (UInt16)setByte.Length; //数据帧字节长度
             send_frame(send_msg);
@@ -671,10 +528,10 @@ namespace xoyplot_zjk
             byte[] setByte = new byte[4];
 
                 send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamSecond);  //校准参数
-                setByte[0] = (byte)(lk_distCalibration[1] >> 8);
-                setByte[1] = (byte)(lk_distCalibration[1] & 0xff);
-                setByte[2] = (byte)(lk_gain[1] >> 8);
-                setByte[3] = (byte)(lk_gain[1] & 0xff);
+                setByte[0] = (byte)(lk03_qc.distCalibration_arry[1] >> 8);
+                setByte[1] = (byte)(lk03_qc.distCalibration_arry[1] & 0xff);
+                setByte[2] = (byte)(lk03_qc.gain_arry[1] >> 8);
+                setByte[3] = (byte)(lk03_qc.gain_arry[1] & 0xff);
                 send_msg.sendbuf = setByte;    //数据帧缓存
                 send_msg.len = (UInt16)setByte.Length; //数据帧字节长度
                 send_frame(send_msg);
@@ -704,10 +561,10 @@ namespace xoyplot_zjk
             send_msg.ifHeadOnly = false;  //含有数据帧
             byte[] setByte = new byte[4];
                 send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamThird);  //校准参数
-                setByte[0] = (byte)(lk_distCalibration[2] >> 8);
-                setByte[1] = (byte)(lk_distCalibration[2] & 0xff);
-                setByte[2] = (byte)(lk_gain[2] >> 8);
-                setByte[3] = (byte)(lk_gain[2] & 0xff);
+                setByte[0] = (byte)(lk03_qc.distCalibration_arry[2] >> 8);
+                setByte[1] = (byte)(lk03_qc.distCalibration_arry[2] & 0xff);
+                setByte[2] = (byte)(lk03_qc.gain_arry[2] >> 8);
+                setByte[3] = (byte)(lk03_qc.gain_arry[2] & 0xff);
                 send_msg.sendbuf = setByte;    //数据帧缓存
                 send_msg.len = (UInt16)setByte.Length; //数据帧字节长度
                 send_frame(send_msg);
@@ -790,16 +647,24 @@ namespace xoyplot_zjk
             send_msg.ifHeadOnly = true;
             send_frame(send_msg);
         }
+        private info infoWin;
+        private void Btn_Clicked_About(object sender, RoutedEventArgs e)
+        {
+            //infoWin = new info(this);
+            //infoWin.Owner = this;
+            //infoWin.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            //infoWin.ShowDialog();
+        }
     }
     public class LK03QC 
     {
         public bool ifFirstStand { set; get; }
         public bool ifSecondStand { set; get; }
         public bool ifThirdStand { set; get; }
-        public bool ifFirstStandResetAck { set; get; }
-        public bool ifSecondStandResetAck { set; get; }
-        public bool ifThirdStandResetAck { set; get; }
-
+        public UInt16[] distCalibration_arry = new UInt16[3]; //标定完校准
+        public UInt16[] gain_arry = new UInt16[3];  //标定完当前距离的增益
+        public UInt16[] average_arry = new UInt16[3];  //平均值
+        public bool[] ifLkHavedStand = new bool[3];   //是否已经标定过
     }
     public class Measurement
     {

@@ -67,7 +67,7 @@ namespace ZSeial
             }
             else
             {
-               // zSerPort.DataReceived += SerialPortDataReceived;
+                // zSerPort.DataReceived += SerialPortDataReceived;
 
             }
             return true;
@@ -145,7 +145,7 @@ namespace ZSeial
             int[] bauds = new int[] { 9600, 14400, 19200, 38400, 57600, 115200 };
             for (int i = 0; i < bauds.Length; i++)
             {
-              
+
                 combox_baud.Items.Add(bauds[i].ToString());
             }
             combox_baud.Text = defBaud;
@@ -182,7 +182,7 @@ namespace ZSeial
         {
             string text = com_port.SelectedItem.ToString();
             string port = reg_com.Match(text).Value;  //提取COM
-            
+
             if (port == string.Empty)
             {
                 MessageBox.Show("Please choose a Seial Port first!", "Error", MessageBoxButton.OK, MessageBoxImage.Hand);
@@ -392,23 +392,23 @@ namespace ZSeial
         /*获取串口端口号*/
         public string[] addComList(ComboBox combox)
         {
-           
+
             //通过WMI获取COM端口
             string[] ss = GetSerialPortArray();
-            
+
             foreach (string Com in ss)
             {
                 if (Com.Contains("USB 串行设备") == true)
                 {
-                    
+
                     string text = Com.Replace("USB 串行设备", "迈测激光");
                     combox.Items.Add(text);
                 }
                 else
                 {
                     string txs = reg_str.Match(Com).Value;
-                    string com= reg_com.Match(txs).Value;
-                    string port = com +"->"+ Com.Replace(txs, "");
+                    string com = reg_com.Match(txs).Value;
+                    string port = com + "->" + Com.Replace(txs, "");
                     combox.Items.Add(port);
                 }
             }
