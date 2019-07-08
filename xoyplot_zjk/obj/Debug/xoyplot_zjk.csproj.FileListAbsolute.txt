@@ -97,3 +97,16 @@ E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\obj\Debug\resource.baml
 E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\obj\Debug\z_wpf\info\info.g.cs
 E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\obj\Debug\z_wpf\info\info.baml
 E:\zjk_lk\github\lk_oxyPlot\xoyplot_zjk\obj\Debug\z_wpf\resource\resource.baml
+C:\Users\90336\Desktop\learning\lk_oxyPlot\xoyplot_zjk\obj\Debug\z_wpf\info\info.g.cs
+C:\Users\90336\Desktop\learning\lk_oxyPlot\xoyplot_zjk\obj\Debug\z_wpf\windows\download.g.cs
+C:\Users\90336\Desktop\learning\lk_oxyPlot\xoyplot_zjk\bin\Debug\ControlzEx.dll
+C:\Users\90336\Desktop\learning\lk_oxyPlot\xoyplot_zjk\bin\Debug\MahApps.Metro.dll
+C:\Users\90336\Desktop\learning\lk_oxyPlot\xoyplot_zjk\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\90336\Desktop\learning\lk_oxyPlot\xoyplot_zjk\bin\Debug\ControlzEx.pdb
+C:\Users\90336\Desktop\learning\lk_oxyPlot\xoyplot_zjk\bin\Debug\MahApps.Metro.pdb
+C:\Users\90336\Desktop\learning\lk_oxyPlot\xoyplot_zjk\bin\Debug\MahApps.Metro.xml
+C:\Users\90336\Desktop\learning\lk_oxyPlot\xoyplot_zjk\obj\Debug\App.baml
+C:\Users\90336\Desktop\learning\lk_oxyPlot\xoyplot_zjk\obj\Debug\resource.baml
+C:\Users\90336\Desktop\learning\lk_oxyPlot\xoyplot_zjk\obj\Debug\z_wpf\info\info.baml
+C:\Users\90336\Desktop\learning\lk_oxyPlot\xoyplot_zjk\obj\Debug\z_wpf\resource\resource.baml
+C:\Users\90336\Desktop\learning\lk_oxyPlot\xoyplot_zjk\obj\Debug\z_wpf\windows\download.baml

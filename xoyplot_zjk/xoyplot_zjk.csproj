@@ -72,11 +72,15 @@
     </ApplicationDefinition>
     <Compile Include="lk_talk\SensorDataItem.cs" />
     <Compile Include="lk_talk\thinyFrame.cs" />
+    <Compile Include="z_wpf\dowload\lk_dowload.cs" />
     <Compile Include="z_wpf\info\info.xaml.cs">
       <DependentUpon>info.xaml</DependentUpon>
     </Compile>
     <Compile Include="z_wpf\protocol\other\checkSumProtel.cs" />
     <Compile Include="z_wpf\serial\z_serial.cs" />
+    <Compile Include="z_wpf\windows\download.xaml.cs">
+      <DependentUpon>download.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -100,6 +104,10 @@
     <Page Include="z_wpf\resource\resource.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="z_wpf\windows\download.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

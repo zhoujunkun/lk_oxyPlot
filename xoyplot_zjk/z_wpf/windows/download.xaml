@@ -1,0 +1,20 @@
+﻿<controls:MetroWindow x:Class="lk_windows.lk_download_win"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:lk_windows"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"              
+        mc:Ignorable="d"
+        Title="download" Height="294.728" Width="503.834">
+    <Grid>
+        <Label Content="文件名称:" HorizontalAlignment="Left" Margin="7,6,0,0" VerticalAlignment="Top"/>
+        <Button Content="选择文件" HorizontalAlignment="Left" Height="9.333" Margin="7,75,0,0" VerticalAlignment="Top" Click="openFileUpdataClick" Width="63"/>
+        <TextBlock x:Name="texbockFileName" HorizontalAlignment="Left" Margin="75,14,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" RenderTransformOrigin="-0.39,-2.045"/>
+        <Label Content="文件大小："  HorizontalAlignment="Left" Margin="7,26,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.076,-0.002"/>
+        <Label Content="版本：" HorizontalAlignment="Left" Margin="8,50,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.076,-0.002"/>
+        <TextBlock x:Name="textBlockFileSize" HorizontalAlignment="Left" Margin="72,31,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"/>
+        <Button Content="升级" Click="btn_uploadClick" HorizontalAlignment="Left" Margin="112,74,0,0" VerticalAlignment="Top" Width="44"/>
+        <ProgressBar x:Name="progressUpload" HorizontalAlignment="Left" Height="35" Margin="13,122,0,0" VerticalAlignment="Top" Width="437"/>
+    </Grid>
+</controls:MetroWindow>

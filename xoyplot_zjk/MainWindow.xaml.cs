@@ -11,7 +11,7 @@ using zLkControl;
 using static zLkControl.StructHelper;
 using System.Linq;
 using MahApps.Metro.Controls;
-
+using lk_windows;
 using LK_PROTECL;
 
 namespace xoyplot_zjk
@@ -28,7 +28,8 @@ namespace xoyplot_zjk
         LK03QC lk03_qc = new LK03QC();
         //protecl
         LK_CHECKSUM_PROTEL checkSumProtecl = new LK_CHECKSUM_PROTEL();
-
+        //dowload bin window
+        lk_download_win dowload_win;
         private  Task task;
         static readonly object locker = new object();
         private Queue<byte> lk_serial_queue = new Queue<byte>();
@@ -47,6 +48,7 @@ namespace xoyplot_zjk
             checkSumProtecl.addGeneralFun(genralListen);
             //log_t.Start("还未标定，请标定。。。");
             //log_t.IsBackground = true;
+
         }
         public event PropertyChangedEventHandler PropertyChanged;
         public IList<DataPoint> Points { get; set; }
@@ -654,6 +656,19 @@ namespace xoyplot_zjk
             //infoWin.Owner = this;
             //infoWin.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             //infoWin.ShowDialog();
+        }
+
+
+        private void Btn_Clicked_upload(object sender, RoutedEventArgs e)
+        {
+            dowload_win.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            dowload_win.ShowDialog();
+        }
+
+        private void window_load_init(object sender, RoutedEventArgs e)
+        {
+            dowload_win = new lk_download_win(this);
+            dowload_win.Owner = this;
         }
     }
     public class LK03QC 
