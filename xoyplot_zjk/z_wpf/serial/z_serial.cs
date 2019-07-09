@@ -140,6 +140,19 @@ namespace ZSeial
             }
 
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        public void sendBuf(byte[] data)
+        {
+            object lockThis = LockThis;
+            lock (lockThis)
+            {
+                zSerPort.Write(data,0,data.Length);
+            }
+        }
+
         public void ComboxInitBaudRate(string defBaud)
         {
             int[] bauds = new int[] { 9600, 14400, 19200, 38400, 57600, 115200 };

@@ -13,6 +13,8 @@ using System.Linq;
 using MahApps.Metro.Controls;
 using lk_windows;
 using LK_PROTECL;
+using lk_protecl;
+using lk_verify;
 
 namespace xoyplot_zjk
 {
@@ -22,7 +24,7 @@ namespace xoyplot_zjk
     public partial class MainWindow : MetroWindow, INotifyPropertyChanged 
     {
         public z_serial lk_serial;
-        public thinyFrame lkFrame = new thinyFrame(1);
+        public tinyFrame lkFrame = new tinyFrame();
         SensorDataItem lkSensor = new SensorDataItem();
         //QC
         LK03QC lk03_qc = new LK03QC();
@@ -290,16 +292,16 @@ namespace xoyplot_zjk
 
 
 
-        /// <summary>
-        /// 发送帧数据
-        /// </summary>
-        /// <param name="sendMsg"></param>
-        private void send_frame(sendDataitem sendMsg)
-        {
-            sendMsg.sendFrame = lkFrame.sendFrame_compend(sendMsg);
-            int send_lens = sendMsg.sendFrame.Length;
-            lk_serial.zSerPort.Write(sendMsg.sendFrame, 0, send_lens);
-        }
+        ///// <summary>
+        ///// 发送帧数据
+        ///// </summary>
+        ///// <param name="sendMsg"></param>
+        //private void send_frame(sendDataitem sendMsg)
+        //{
+        //    sendMsg.sendFrame = lkFrame.sendFrame_compend(sendMsg);
+        //    int send_lens = sendMsg.sendFrame.Length;
+        //    lk_serial.zSerPort.Write(sendMsg.sendFrame, 0, send_lens);
+        //}
         double x = 0;
         /// <summary>
         /// 开始连续测量
@@ -308,11 +310,11 @@ namespace xoyplot_zjk
         /// <param name="e"></param>
         private void btn_start(object sender, RoutedEventArgs e)
         {
-            sendDataitem send_msg = new sendDataitem();
-            send_msg.Type = (byte)(LKSensorCmd.TYPE.DataGet);
-            send_msg.id = (byte)(LKSensorCmd.GetDataID.DistContinue);
-            send_msg.ifHeadOnly = true;
-            send_frame(send_msg);
+            tinyFrame frame = new tinyFrame();
+            frame.Type = (byte)(Protecl_typical_cmd.type.lk_getData);
+            frame.id = (byte)(Protecl_typical_cmd.getData_id.continueDist);
+            frame.ifHeadOnly = true;
+            frame.sendFrame(lk_serial, frame);
         }
 
         int set_range_display = 20;
@@ -429,8 +431,7 @@ namespace xoyplot_zjk
             }         
         }
 
-     
-
+    
         /// <summary>
         /// 停止测量
         /// </summary>
@@ -438,11 +439,7 @@ namespace xoyplot_zjk
         /// <param name="e"></param>
         private void btn_stop(object sender, RoutedEventArgs e)
         {
-            sendDataitem send_msg = new sendDataitem();
-            send_msg.Type = (byte)(LKSensorCmd.TYPE.DataGet);
-            send_msg.id = (byte)(LKSensorCmd.GetDataID.DistStop);
-            send_msg.ifHeadOnly = true;
-            send_frame(send_msg);
+
         }
        
         private void Btn_Clicked_Stand(object sender, RoutedEventArgs e)
@@ -462,57 +459,32 @@ namespace xoyplot_zjk
 
         private void Btn_Clicked_saveParam(object sender, RoutedEventArgs e)
         {
-            //发送保存参数
-            //发送消息 前基准
-            sendDataitem send_msg = new sendDataitem();
-            send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
-            send_msg.ifHeadOnly = false;  //含有数据帧
             byte[] setByte = new byte[4];
-            send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamFirst);  //校准参数
             setByte[0] = (byte)(lk03_qc.distCalibration_arry[0] >> 8);
             setByte[1] = (byte)(lk03_qc.distCalibration_arry[0] & 0xff);
             setByte[2] = (byte)(lk03_qc.gain_arry[0] >> 8);
             setByte[3] = (byte)(lk03_qc.gain_arry[0] & 0xff);
-            send_msg.sendbuf = setByte;    //数据帧缓存
-            send_msg.len = (UInt16)setByte.Length; //数据帧字节长度
-            send_frame(send_msg);
         }
 
         private void Btn_Clicked_getStandParam(object sender, RoutedEventArgs e)
         {
-            sendDataitem send_msg = new sendDataitem();
-            send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
-            send_msg.id = (byte)(LKSensorCmd.QCcmdID.GetParam);
-            send_msg.ifHeadOnly = true;
-            send_frame(send_msg);
+
         }
 
         private void Btn_first_click(object sender, RoutedEventArgs e)
         {
-            sendDataitem send_msg = new sendDataitem();
-            send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
-            send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandFirstSwitch);
-            send_msg.ifHeadOnly = true;
-            send_frame(send_msg);
-            
+
+
         }
 
         private void Btn_third_click(object sender, RoutedEventArgs e)
         {
-            sendDataitem send_msg = new sendDataitem();
-            send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
-            send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandThirdSwitch);
-            send_msg.ifHeadOnly = true;
-            send_frame(send_msg);
+
         }
 
         private void Btn_second_click(object sender, RoutedEventArgs e)
         {
-            sendDataitem send_msg = new sendDataitem();
-            send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
-            send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandSecondSwitch);
-            send_msg.ifHeadOnly = true;
-            send_frame(send_msg);
+
         }
 
         private void window_close_click(object sender, EventArgs e)
@@ -522,23 +494,11 @@ namespace xoyplot_zjk
 
         private void Btn_Clicked_saveParam_2(object sender, RoutedEventArgs e)
         {
-            //发送保存参数
-            //发送消息 前基准
-            sendDataitem send_msg = new sendDataitem();
-            send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
-            send_msg.ifHeadOnly = false;  //含有数据帧
             byte[] setByte = new byte[4];
-
-                send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamSecond);  //校准参数
-                setByte[0] = (byte)(lk03_qc.distCalibration_arry[1] >> 8);
-                setByte[1] = (byte)(lk03_qc.distCalibration_arry[1] & 0xff);
-                setByte[2] = (byte)(lk03_qc.gain_arry[1] >> 8);
-                setByte[3] = (byte)(lk03_qc.gain_arry[1] & 0xff);
-                send_msg.sendbuf = setByte;    //数据帧缓存
-                send_msg.len = (UInt16)setByte.Length; //数据帧字节长度
-                send_frame(send_msg);
-
-
+            setByte[0] = (byte)(lk03_qc.distCalibration_arry[1] >> 8);
+            setByte[1] = (byte)(lk03_qc.distCalibration_arry[1] & 0xff);
+            setByte[2] = (byte)(lk03_qc.gain_arry[1] >> 8);
+            setByte[3] = (byte)(lk03_qc.gain_arry[1] & 0xff);
         }
 
         private void Btn_Clicked_Stand_2(object sender, RoutedEventArgs e)
@@ -556,44 +516,22 @@ namespace xoyplot_zjk
 
         private void Btn_Clicked_saveParam_3(object sender, RoutedEventArgs e)
         {
-            //发送保存参数
-            //发送消息 前基准
-            sendDataitem send_msg = new sendDataitem();
-            send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
-            send_msg.ifHeadOnly = false;  //含有数据帧
-            byte[] setByte = new byte[4];
-                send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamThird);  //校准参数
-                setByte[0] = (byte)(lk03_qc.distCalibration_arry[2] >> 8);
-                setByte[1] = (byte)(lk03_qc.distCalibration_arry[2] & 0xff);
-                setByte[2] = (byte)(lk03_qc.gain_arry[2] >> 8);
-                setByte[3] = (byte)(lk03_qc.gain_arry[2] & 0xff);
-                send_msg.sendbuf = setByte;    //数据帧缓存
-                send_msg.len = (UInt16)setByte.Length; //数据帧字节长度
-                send_frame(send_msg);
 
-
+            byte[] setByte = new byte[4];        
+            setByte[0] = (byte)(lk03_qc.distCalibration_arry[2] >> 8);
+            setByte[1] = (byte)(lk03_qc.distCalibration_arry[2] & 0xff);
+            setByte[2] = (byte)(lk03_qc.gain_arry[2] >> 8);
+            setByte[3] = (byte)(lk03_qc.gain_arry[2] & 0xff);
         }
 
         private void Btn_Clicked_Stand_3(object sender, RoutedEventArgs e)
         {
-            if (lk03_qc.ifThirdStand)
-            {
-                ifCalculate = true;
-                cureent_stand_device = 3;
-            }
-            else
-            {
-                MessageBox.Show("请先选择档位!");
-            }
+
         }
         enum enum_index_stand { first=0,second,third};
         private void btn_reset_stand_click(object sender, RoutedEventArgs e)
         {
-            sendDataitem send_msg = new sendDataitem();
-            send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
-            send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamFirstReset);
-            send_msg.ifHeadOnly = true;
-            send_frame(send_msg);
+
         }
         private void clear_texbox_standMsg(enum_index_stand index)
         {
@@ -634,20 +572,12 @@ namespace xoyplot_zjk
 
         private void btn_reset_stand2_click(object sender, RoutedEventArgs e)
         {
-            sendDataitem send_msg = new sendDataitem();
-            send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
-            send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamSecondReset);
-            send_msg.ifHeadOnly = true;
-            send_frame(send_msg);
+
         }
 
         private void btn_reset_stand3_click(object sender, RoutedEventArgs e)
         {
-            sendDataitem send_msg = new sendDataitem();
-            send_msg.Type = (byte)(LKSensorCmd.TYPE.QC);
-            send_msg.id = (byte)(LKSensorCmd.QCcmdID.StandParamThirdReset);
-            send_msg.ifHeadOnly = true;
-            send_frame(send_msg);
+
         }
         private info infoWin;
         private void Btn_Clicked_About(object sender, RoutedEventArgs e)

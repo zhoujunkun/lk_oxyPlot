@@ -40,6 +40,9 @@
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\net45\OxyPlot.dll</HintPath>
     </Reference>
@@ -70,13 +73,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CmdFuncLists.cs" />
     <Compile Include="lk_talk\SensorDataItem.cs" />
-    <Compile Include="lk_talk\thinyFrame.cs" />
+    <Compile Include="z_wpf\console\console.cs" />
+    <Compile Include="z_wpf\CRC\lk_crc.cs" />
     <Compile Include="z_wpf\dowload\lk_dowload.cs" />
     <Compile Include="z_wpf\info\info.xaml.cs">
       <DependentUpon>info.xaml</DependentUpon>
     </Compile>
     <Compile Include="z_wpf\protocol\other\checkSumProtel.cs" />
+    <Compile Include="z_wpf\protocol\protecl_cmd\protecl_cmd.cs" />
+    <Compile Include="z_wpf\protocol\thinyFrame\tinyFrame.cs" />
     <Compile Include="z_wpf\serial\z_serial.cs" />
     <Compile Include="z_wpf\windows\download.xaml.cs">
       <DependentUpon>download.xaml</DependentUpon>
@@ -149,8 +156,6 @@
     <Resource Include="z_wpf\logo\Maice.png" />
     <Resource Include="z_wpf\logo\title.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="z_wpf\protocol\thinyFrame\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
