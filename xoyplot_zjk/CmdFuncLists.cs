@@ -17,13 +17,49 @@ namespace xoyplot_zjk
             lk_serial = serial;
         }
 
-       
+        #region  测量
+        /// <summary>
+        /// 停止测量
+        /// </summary>
+        public void dist_stop()
+        {
+            tinyFrame frame = new tinyFrame();
+            frame.Type = (byte)(Protecl_typical_cmd.type.lk_getData);
+            frame.id = (byte)(Protecl_typical_cmd.getData_id.stopDist);
+            frame.ifHeadOnly = true;
+            frame.sendFrame(lk_serial, frame);
+        }
+
+        /// <summary>
+        /// 连续测量
+        /// </summary>
+        public void dist_continue()
+        {
+            tinyFrame frame = new tinyFrame();
+            frame.Type = (byte)(Protecl_typical_cmd.type.lk_getData);
+            frame.id = (byte)(Protecl_typical_cmd.getData_id.continueDist);
+            frame.ifHeadOnly = true;
+            frame.sendFrame(lk_serial, frame);
+        }
+        /// <summary>
+        /// 单次测量
+        /// </summary>
+        public void dist_once()
+        {
+            tinyFrame frame = new tinyFrame();
+            frame.Type = (byte)(Protecl_typical_cmd.type.lk_getData);
+            frame.id = (byte)(Protecl_typical_cmd.getData_id.onceDist);
+            frame.ifHeadOnly = true;
+            frame.sendFrame(lk_serial, frame);
+        }
+        #endregion
+
         #region  QC 标定
         /// <summary>
         /// 第一档切换
         /// </summary>
         /// <param name="buf"></param>
-        private void qc_first_switch(byte[] buf)
+        public void qc_first_switch()
         {
             tinyFrame frame = new tinyFrame();
             frame.Type = (byte)(Protecl_typical_cmd.type.lk_QC);
@@ -36,7 +72,7 @@ namespace xoyplot_zjk
         /// 第2档切换
         /// </summary>
         /// <param name="buf"></param>
-        private void qc_second_switch(byte[] buf)
+        public void qc_second_switch()
         {
             tinyFrame frame = new tinyFrame();
             frame.Type = (byte)(Protecl_typical_cmd.type.lk_QC);
@@ -49,7 +85,7 @@ namespace xoyplot_zjk
         /// 第三档切换
         /// </summary>
         /// <param name="buf"></param>
-        private void qc_third_switch(byte[] buf)
+        public void qc_third_switch()
         {
             tinyFrame frame = new tinyFrame();
             frame.Type = (byte)(Protecl_typical_cmd.type.lk_QC);
@@ -61,7 +97,7 @@ namespace xoyplot_zjk
         /// <summary>
         /// 获取标定参数
         /// </summary>
-        private void qc_get_param()
+        public void qc_get_param()
         {
             tinyFrame frame = new tinyFrame();
             frame.Type = (byte)(Protecl_typical_cmd.type.lk_QC);
@@ -122,7 +158,7 @@ namespace xoyplot_zjk
         /// <summary>
         /// 复位第一档
         /// </summary>
-        public void qc_reset_first_parm(byte[] buf)
+        public void qc_reset_first_parm()
         {
             tinyFrame frame = new tinyFrame();
             frame.Type = (byte)(Protecl_typical_cmd.type.lk_QC);
@@ -133,7 +169,7 @@ namespace xoyplot_zjk
         /// <summary>
         /// 复位第2档
         /// </summary>
-        public void qc_reset_second_parm(byte[] buf)
+        public void qc_reset_second_parm()
         {
             tinyFrame frame = new tinyFrame();
             frame.Type = (byte)(Protecl_typical_cmd.type.lk_QC);
@@ -144,7 +180,7 @@ namespace xoyplot_zjk
         /// <summary>
         /// 复位第3档
         /// </summary>
-        public void qc_reset_third_parm(byte[] buf)
+        public void qc_reset_third_parm()
         {
             tinyFrame frame = new tinyFrame();
             frame.Type = (byte)(Protecl_typical_cmd.type.lk_QC);

@@ -81,7 +81,9 @@
     <Compile Include="z_wpf\info\info.xaml.cs">
       <DependentUpon>info.xaml</DependentUpon>
     </Compile>
+    <Compile Include="z_wpf\log\lk_Log.cs" />
     <Compile Include="z_wpf\protocol\other\checkSumProtel.cs" />
+    <Compile Include="z_wpf\protocol\protecl_cmd\protecl_ack.cs" />
     <Compile Include="z_wpf\protocol\protecl_cmd\protecl_cmd.cs" />
     <Compile Include="z_wpf\protocol\thinyFrame\tinyFrame.cs" />
     <Compile Include="z_wpf\serial\z_serial.cs" />
