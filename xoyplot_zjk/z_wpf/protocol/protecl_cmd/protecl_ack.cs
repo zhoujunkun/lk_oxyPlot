@@ -206,5 +206,91 @@ namespace lk_verify
         }
 
         #endregion
+
+
+        #region tinyfrme 协议应答
+        void genralFunc(byte[] buf, Protecl_typical_cmd.type type)
+        {
+            switch (type)
+            {
+                case Protecl_typical_cmd.type.lk_getData:
+                    {
+
+                    }
+                    break;
+                case Protecl_typical_cmd.type.lk_getParm:
+                    {
+
+                    }
+                    break;
+                case Protecl_typical_cmd.type.lk_QC:
+                    {
+
+                    }
+                    break;
+                case Protecl_typical_cmd.type.lk_debug:
+                    {
+
+                    }
+                    break;
+                    case Protecl_typical_cmd.type.lk_ack:
+                    {
+                        //Protecl_typical_cmd.ack_id ack_id = (Protecl_typical_cmd.ack_id)(sensor.id);
+                        //settingWin.ackCallback(ack_id);
+                    }
+                    break;
+                case Protecl_typical_cmd.type.lk_saveParm:
+                    {
+
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        public void tinyFram_ack(Protecl_typical_cmd.ack_id ackID)
+        {
+            Protecl_typical_cmd.ack_id _ack = ackID;
+            switch (_ack)
+            {
+                case Protecl_typical_cmd.ack_id.lk_download_ack:
+                    {
+                        //ifBeginUpdata = true;
+                        //timerTOA.Stop();
+                        //switch (package_statu)
+                        //{
+                        //    case Package_enum_.firstPackage:
+                        //        {
+                        //            packageCntTrans = 0;
+                        //            packageBegin();
+                        //            package_statu = Package_enum_.dataPackaged;
+                        //        }
+                        //        break;
+                        //    case Package_enum_.dataPackaged:
+                        //        {
+                        //            if (packageSend() == true)
+                        //            {
+
+                        //                timerTOA.Start();
+                        //            }
+                        //            else
+                        //            {
+                        //                MessageBox.Show("send succeed");
+                        //            }
+                        //        }
+                        //        break;
+                        //}
+                    }
+                    break;
+                case Protecl_typical_cmd.ack_id.lk_debug_ack:
+                    {
+
+                    }
+                    break;
+            }
+        }
+        #endregion
     }
 }

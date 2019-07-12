@@ -68,8 +68,9 @@ namespace xoyplot_zjk
             lk_Other_Protecl.sensor_ack.set_consol_ack(lk_log);
             lk_Other_Protecl.sensor_ack.add_other_display(display); //添加数据显示
             lk_Other_Protecl.sensor_ack.add_other_reset_paramAck(clear_texbox_standMsg);//添加回调清除
-            //console
-
+            //sensor
+            sensor_set_powerOnMode_init(sensor_autoRun_mode_combox);
+            sensor_set_baudRate_init(sensor_baudRate_combox);
 
             mangeta_thread.Start();
             lk_log("开始，，，，");
@@ -83,6 +84,34 @@ namespace xoyplot_zjk
 
             Thread.Sleep(1000);
         }
+        /// <summary>
+        /// 传感器波特率设置初始化
+        /// </summary>
+        /// <param name="defBaud"></param>
+        private void sensor_set_baudRate_init(ComboBox cbx)
+        {
+            int[] bauds = new int[] { 9600, 14400, 19200, 38400, 57600, 115200 };
+            for (int i = 0; i < bauds.Length; i++)
+            {
+
+                cbx.Items.Add(bauds[i].ToString());
+            }
+        }
+
+        /// <summary>
+        /// 传感器上电自动运行模式
+        /// </summary>
+        /// <param name="cbx"></param>
+        private void sensor_set_powerOnMode_init(ComboBox cbx)
+        {
+            string[] bauds = new string[] { "自动测量", "关闭自动测量"};
+            for (int i = 0; i < bauds.Length; i++)
+            {
+
+                cbx.Items.Add(bauds[i]);
+            }
+        }
+
 
         private void lk_log(object log)
         {
@@ -91,7 +120,6 @@ namespace xoyplot_zjk
                 //string log_d = "提示：==>" + log + "\r\n";
                 //text_Log.Text = log_d;
                 text_string.Text+= log + "\r\n";
-
             }), new object[0]);
 
         }
@@ -162,11 +190,7 @@ namespace xoyplot_zjk
         /// <param name="e"></param>
         private void btn_start(object sender, RoutedEventArgs e)
         {
-            tinyFrame frame = new tinyFrame();
-            frame.Type = (byte)(Protecl_typical_cmd.type.lk_getData);
-            frame.id = (byte)(Protecl_typical_cmd.getData_id.continueDist);
-            frame.ifHeadOnly = true;
-            frame.sendFrame(lk_serial, frame);
+            cmdFuncLists.dist_continue();
         }
         int set_range_display = 20;
         int dist_ave { set; get; }
@@ -452,6 +476,92 @@ namespace xoyplot_zjk
         {
             dowload_win = new lk_download_win(this);
             dowload_win.Owner = this;
+        }
+
+        private void radioBtn_front_click(object sender, RoutedEventArgs e)
+        {
+            cmdFuncLists.sensor_front_base(set_high);
+        }
+
+        private void radioBtn_base_click(object sender, RoutedEventArgs e)
+        {
+            cmdFuncLists.sensor_front_base(set_low);
+        }
+
+
+        private void Btn_Click_getParam(object sender, RoutedEventArgs e)
+        {
+            cmdFuncLists.sensor_get_param();
+        }
+        byte[] set_high = new byte[] { 1 };
+        byte[] set_low = new byte[] { 0 };
+        private void checkBox_Atuo_click(object sender, RoutedEventArgs e)
+        {
+            
+            cmdFuncLists.sensor_autoMel(set_high);
+        }
+
+        private void reset_button_click(object sender, RoutedEventArgs e)
+        {
+            cmdFuncLists.sensor_reset();
+        }
+
+        private void btn_click_powerOn_mode(object sender, RoutedEventArgs e)
+        {
+            string text = sensor_autoRun_mode_combox.SelectedItem.ToString();
+            if (text == "自动测量")
+            {
+                cmdFuncLists.sensor_autoMel(set_high);
+            }
+            else if(text == "关闭自动测量")
+            {
+                cmdFuncLists.sensor_autoMel(set_low);
+            }
+            else
+            {
+                MessageBox.Show("请选择模式");
+            }
+        }
+
+
+        private void btn_click_setBaudRate(object sender, RoutedEventArgs e)
+        {
+            int baudRate_index = sensor_baudRate_combox.SelectedIndex;
+            byte[] set = new byte[] { (byte)baudRate_index };
+            if(baudRate_index == -1)
+            {
+                MessageBox.Show("请选择对应的波特率");
+            }
+            cmdFuncLists.sensor_baudRate(set);
+           
+            
+        }
+
+        private void btn_click_ouput_data_freq(object sender, RoutedEventArgs e)
+        {
+            UInt16 ouput_data_freq = (UInt16)sensor_ouput_data_freq_slider.Value;
+            byte[] data = new byte[2];
+            data[0]=(byte) (ouput_data_freq >> 8);
+            data[1] = (byte)(ouput_data_freq & 0xff);
+            cmdFuncLists.sensor_outdata_freq(data);
+        }
+
+        private void btn_click_front_switch(object sender, RoutedEventArgs e)
+        {
+            UInt16 ouput_data_freq = (UInt16)sensor_front_switch_slider.Value;
+            byte[] data = new byte[2];
+            data[0] = (byte)(ouput_data_freq >> 8);
+            data[1] = (byte)(ouput_data_freq & 0xff);
+            cmdFuncLists.sensor_set_switch_front(data);
+        }
+
+        private void btn_click_base_switch(object sender, RoutedEventArgs e)
+        {
+            UInt16 ouput_data_freq = (UInt16)sensor_base_switch_slider.Value;
+            byte[] data = new byte[2];
+            data[0] = (byte)(ouput_data_freq >> 8);
+            data[1] = (byte)(ouput_data_freq & 0xff);
+            cmdFuncLists.sensor_set_switch_base(data);
         }
     }
 

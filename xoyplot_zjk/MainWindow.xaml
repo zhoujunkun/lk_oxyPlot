@@ -118,13 +118,23 @@
             </TabItem>
             <TabItem Header="配置" FontSize="18">
                 <Grid Margin="0,0,0,-3">
-                    <RadioButton IsEnabled="False" Click="radioBtn_front_click" x:Name="RadioBtn_Front" Content="前基准测量" HorizontalAlignment="Left" Margin="14,0,0,17" Width="90" RenderTransformOrigin="0.422,1.667" Foreground="#FFA46161" Height="18" VerticalAlignment="Bottom"/>
-                    <RadioButton IsEnabled="False" Click="radioBtn_base_click"  x:Name="RadioBtn_Base"  Content="后基准测量" HorizontalAlignment="Left" Margin="122,0,0,16" RenderTransformOrigin="0.393,1.111" Foreground="#FFA46161" Height="18" VerticalAlignment="Bottom"/>
-                    <Button Content="固件升级"   HorizontalAlignment="Left" Height="24.5" Margin="235,133,0,0" VerticalAlignment="Top" Width="58"/>
-                    <Controls:ToggleSwitch Header="辅助红外激光" IsEnabled="False" x:Name="checkBox_red"  Click="checkBox_red_click"  RenderTransformOrigin="0.413,0.508" Margin="7,0,225,58" Foreground="#FFA46161" ThumbIndicatorBrush="#FF4F9B9B" Height="63" VerticalAlignment="Bottom"/>
-                    <Controls:ToggleSwitch Header="通电自动测量" IsEnabled="False" x:Name="checkBox_Atuo_Che"  Click="checkBox_Atuo_click"  RenderTransformOrigin="0.413,0.508" Margin="6,64,227,138" Foreground="#FFA46161" ThumbIndicatorBrush="#FF4F9B9B"/>
-                    <Button IsEnabled="False" Content="恢复出厂设置" Margin="241,0,0,14" BorderBrush="#FF975252" FontFamily="Microsoft YaHei UI" HorizontalAlignment="Left" Width="86" Click="reset_button_click" Height="27" RenderTransformOrigin="0.533,0.815" VerticalAlignment="Bottom"/>
-                    <Button Content="获取传感器参数" IsEnabled="False" Click="Btn_Click_getParam" x:Name="Btn_Get_Parm" HorizontalAlignment="Left" Margin="20,0,0,223" Width="86" FontWeight="Normal" FontSize="10" Height="27" VerticalAlignment="Bottom"/>
+                    <RadioButton  Click="radioBtn_front_click" x:Name="RadioBtn_Front" Content="前基准测量" HorizontalAlignment="Left" Margin="10,0,0,42.663" Width="90" RenderTransformOrigin="0.422,1.667" Foreground="#FFA46161" Height="18" VerticalAlignment="Bottom"/>
+                    <RadioButton  Click="radioBtn_base_click"  x:Name="RadioBtn_Base"  Content="后基准测量" HorizontalAlignment="Left" Margin="10,0,0,19.663" RenderTransformOrigin="0.393,1.111" Foreground="#FFA46161" Height="18" VerticalAlignment="Bottom"/>
+                    <Button  Content="恢复出厂设置" Margin="239,0,0,8" BorderBrush="#FF975252" FontFamily="Microsoft YaHei UI" HorizontalAlignment="Left" Width="86" Click="reset_button_click" Height="27" RenderTransformOrigin="0.533,0.815" VerticalAlignment="Bottom"/>
+                    <Button Content="获取传感器参数"  Click="Btn_Click_getParam" x:Name="Btn_Get_Parm" HorizontalAlignment="Left" Margin="229,0,0,205" Width="86" FontWeight="Normal" FontSize="10" Height="27" VerticalAlignment="Bottom" RenderTransformOrigin="2.547,1.63"/>
+                    <Button Content="设置波特率" Click="btn_click_setBaudRate" HorizontalAlignment="Left" Height="26" Margin="10,10,0,0" VerticalAlignment="Top" Width="63"/>
+                    <ComboBox Name="sensor_baudRate_combox" Margin="78,10,167.78,224.193"/>
+                    <Button Content="上电模式" Click="btn_click_powerOn_mode" HorizontalAlignment="Left" Height="26" Margin="10,48.25,0,0" VerticalAlignment="Top" Width="63"/>
+                    <ComboBox Name="sensor_autoRun_mode_combox" Margin="78,48.25,167.78,185.943"/>
+                    <Slider Name="sensor_ouput_data_freq_slider" IsSnapToTickEnabled="True" TickFrequency="1"  Maximum="100"  HorizontalAlignment="Left" Margin="87,87.5,0,0" VerticalAlignment="Top" Width="124.5"/>
+                    <TextBlock HorizontalAlignment="Left" Text="{Binding Value, ElementName=sensor_ouput_data_freq_slider}" Margin="216,82,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" Width="45" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25"/>
+                    <Button Content="输出频率" Click="btn_click_ouput_data_freq" HorizontalAlignment="Left" Height="26" Margin="10,82.5,0,0" VerticalAlignment="Top" Width="63" />
+                    <Slider HorizontalAlignment="Left" IsSnapToTickEnabled="True" TickFrequency="1"  Maximum="100" Name="sensor_front_switch_slider" Margin="87,126,0,0" VerticalAlignment="Top" Width="124.5"/>
+                    <TextBlock HorizontalAlignment="Left" Text="{Binding Value, ElementName=sensor_front_switch_slider}" Margin="215,120,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" Width="47" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25"/>
+                    <Button Content="前开关量" Click="btn_click_front_switch"  HorizontalAlignment="Left" Height="26" Margin="10,121,0,0" VerticalAlignment="Top" Width="63" />
+                    <Slider HorizontalAlignment="Left" IsSnapToTickEnabled="True" TickFrequency="1"  Maximum="100" Name="sensor_base_switch_slider" Margin="87,163.5,0,0" VerticalAlignment="Top" Width="124.5"/>
+                    <TextBlock HorizontalAlignment="Left" Text="{Binding Value, ElementName=sensor_base_switch_slider}" Margin="215,158,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" Width="49" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25"/>
+                    <Button Content="后开关量" Click="btn_click_base_switch" HorizontalAlignment="Left" Height="26" Margin="10,158.5,0,0" VerticalAlignment="Top" Width="63" />
                 </Grid>
 
             </TabItem>
