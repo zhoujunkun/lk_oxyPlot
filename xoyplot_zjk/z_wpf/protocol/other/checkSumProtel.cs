@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static lk_protecl.tinyFrame;
 
 namespace lk_protecl
 {
@@ -28,13 +29,16 @@ namespace lk_protecl
         Lk_other_protecl_cmd.statu protecl = Lk_other_protecl_cmd.statu.head;
         Lk_other_protecl_cmd.type cmd;
          addGeneralFuncDeglete funcComplete;
-         public  delegate void addGeneralFuncDeglete(byte[] buf, Lk_other_protecl_cmd.type cmd);
+        
+         public  delegate void addGeneralFuncDeglete(byte[] buf, _message msg);
         public protecl_ack sensor_ack = new protecl_ack();
 
         public void  other_protecl_init()
         {
             funcComplete = sensor_ack.genralListen;
         }
+
+
         /// <summary>
         /// 协议解析
         /// </summary>
@@ -119,7 +123,7 @@ namespace lk_protecl
                     {
                         if (rx_checkSum(protecl_recieve, recieve_count))
                         {
-                            funcComplete(buf_receive, cmd);
+                           // funcComplete(buf_receive, cmd);
                         }
                         Array.Clear(buf_receive, 0, buf_receive.Length);
                         Array.Clear(protecl_recieve, 0, protecl_recieve.Length);
@@ -154,6 +158,19 @@ namespace lk_protecl
         }
 
       
+
+
+    }
+
+    class TinyProtecl
+    {
+        addGeneralFuncDeglete user_ansys_complete;
+        public delegate void addGeneralFuncDeglete(byte[] buf, _message msg);
+        public protecl_ack sensor_ack = new protecl_ack();
+        public void tiny_protecl_init()
+        {
+            user_ansys_complete = sensor_ack.genralListen;
+        }
 
 
     }

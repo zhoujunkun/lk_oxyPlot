@@ -191,40 +191,40 @@ namespace lk_tool
         /// 
         /// </summary>
         /// <param name="ackID"></param>
-        public void ackCallback(Protecl_typical_cmd.ack_id ackID)
+        public void ackCallback(Protecl_typical_cmd.firmware_ctl_id ackID)
         {
-            Protecl_typical_cmd.ack_id _ack = ackID;
-            switch (_ack)
-            {
-                case Protecl_typical_cmd.ack_id.lk_download_ack:
-                    {
-                        ifBeginUpdata = true;
-                        timerTOA.Stop();
-                        switch (package_statu)
-                        {
-                            case Package_enum_.firstPackage:
-                                {
-                                    packetNumber = 0;
-                                    packageBegin();
-                                    package_statu = Package_enum_.dataPackaged;
-                                }
-                                break;
-                            case Package_enum_.dataPackaged:
-                                {
-                                    if (packageSend() == true)
-                                    {
-                                        timerTOA.Start();
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show("send succeed");
-                                    }
-                                }
-                                break;
-                        }
-                    }
-                    break;
-            }
+            //Protecl_typical_cmd.ack_id _ack = ackID;
+            //switch (_ack)
+            //{
+            //    case Protecl_typical_cmd.ack_id.lk_download_ack:
+            //        {
+            //            ifBeginUpdata = true;
+            //            timerTOA.Stop();
+            //            switch (package_statu)
+            //            {
+            //                case Package_enum_.firstPackage:
+            //                    {
+            //                        packetNumber = 0;
+            //                        packageBegin();
+            //                        package_statu = Package_enum_.dataPackaged;
+            //                    }
+            //                    break;
+            //                case Package_enum_.dataPackaged:
+            //                    {
+            //                        if (packageSend() == true)
+            //                        {
+            //                            timerTOA.Start();
+            //                        }
+            //                        else
+            //                        {
+            //                            MessageBox.Show("send succeed");
+            //                        }
+            //                    }
+            //                    break;
+            //            }
+            //        }
+            //        break;
+            //}
 
         }
 

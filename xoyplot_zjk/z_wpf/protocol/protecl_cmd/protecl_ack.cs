@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using xoyplot_zjk;
+using static lk_protecl.tinyFrame;
+
 namespace lk_verify
 {
     public class protecl_ack: System.Windows.Threading.DispatcherObject
@@ -58,32 +60,20 @@ namespace lk_verify
         /// 通用监听协议解析完成函数
         /// </summary>
         /// <param name="lkSensor"></param>
-        public void genralListen(byte[] buf, Lk_other_protecl_cmd.type type)
+        public void genralListen(byte[] buf, _message msg)
         {
-            switch (type)
+            Protecl_typical_cmd.ctl_type type_sel = (Protecl_typical_cmd.ctl_type)msg.type;
+            switch (type_sel)
             {
-                case Lk_other_protecl_cmd.type.dist_cmd:
+                case Protecl_typical_cmd.ctl_type.usr_ack:
                     {
-                        other_sighal = (UInt16)((buf[0] << 8) | buf[1]);
-                        other_distance = (UInt16)((buf[2] << 8) | buf[3]);
-                        other_agc = (UInt16)((buf[4] << 8) | buf[5]);
-                        otherDatedisplay();
+                        Protecl_typical_cmd.user_ack_id ack_id = (Protecl_typical_cmd.user_ack_id)msg.frame_id;
+                        user_ack_id(ack_id);
                     }
                     break;
-                case Lk_other_protecl_cmd.type.ack_cmd:
+                case Protecl_typical_cmd.ctl_type.programer_ack:
                     {
-                        Protecl_typical_cmd.type frme_type = (Protecl_typical_cmd.type)buf[0];
-                        ackId_func(frme_type, buf[1]);
-                    }
-                    break;
-                case Lk_other_protecl_cmd.type.param_cmd:
-                    {
-                        byte[] qc_param = new byte[15];
-                        for (int i = 0; i < 15; i++)
-                        {
-                            qc_param[i] = buf[i];
-                        }
-                        // ackId_func(frme_type, buf[3]);
+
                     }
                     break;
                 default:
@@ -92,110 +82,100 @@ namespace lk_verify
 
         }
 
-        private void ackId_func(Protecl_typical_cmd.type type, byte id)
-        {
-            switch (type)
-            {
-                case Protecl_typical_cmd.type.lk_getData:
-                    {
-
-                    }
-                    break;
-                case Protecl_typical_cmd.type.lk_saveParm:
-                    {
-
-                    }
-                    break;
-                case Protecl_typical_cmd.type.lk_getParm:
-                    {
-
-                    }
-                    break;
-                case Protecl_typical_cmd.type.lk_debug:
-                    {
-
-                    }
-                    break;
-                case Protecl_typical_cmd.type.lk_download:
-                    {
-
-                    }
-                    break;
-                case Protecl_typical_cmd.type.lk_QC:
-                    {
-                        Protecl_typical_cmd.qc_id qc_id = (Protecl_typical_cmd.qc_id)id;
-                        qc_ack(qc_id);
-                    }
-                    break;
-            }
-        }
         /// <summary>
-        /// qc ack id
+        /// usr_ack 通用应答
         /// </summary>
-        /// <param name="id"></param>
-        private void qc_ack(Protecl_typical_cmd.qc_id id)
+        /// <param name="id"> </param>
+        private void user_ack_id(Protecl_typical_cmd.user_ack_id id)
         {
             switch (id)
             {
-                case Protecl_typical_cmd.qc_id.stand_start:
+                case Protecl_typical_cmd.user_ack_id.dist_base://
                     {
                     }
                     break;
-                case Protecl_typical_cmd.qc_id.standParamFirst:
+                case Protecl_typical_cmd.user_ack_id.dist_continue_ack:
                     {
-                         lk_log("档位1标定保存成功！");
-                        lk03_other.ifLkHavedStand[0] = true;    //档位1已经标定标记
+                
                     }
                     break;
-                case Protecl_typical_cmd.qc_id.standParamSecond:
+                case Protecl_typical_cmd.user_ack_id.dist_once_ack:
                     {
-                        lk_log("档位2标定保存成功！");
-                        lk03_other.ifLkHavedStand[1] = true;    //档位2已经标定标记
+                  
                     }
                     break;
-                case Protecl_typical_cmd.qc_id.standParamThird:
+                case Protecl_typical_cmd.user_ack_id.dist_stop_ack:
                     {
-                        lk_log("档位3标定保存成功！");
-                        lk03_other.ifLkHavedStand[2] = true;    //档位3已经标定标记
+                     
                     }
                     break;
-                case Protecl_typical_cmd.qc_id.standParamFirstReset:
+                case Protecl_typical_cmd.user_ack_id.get_paramAll_base: //
                     {
-                        qc_ack_rest((byte)enum_qc_index_stand.first);
-                        lk_log("档位1复位成功！");
+
                     }
                     break;
-                case Protecl_typical_cmd.qc_id.standParamSecondReset:
+                case Protecl_typical_cmd.user_ack_id.getParam_baudRate_ack:
                     {
-                        qc_ack_rest((byte)enum_qc_index_stand.second);
-                        lk_log("档位2复位成功！");
+      
                     }
                     break;
-                case Protecl_typical_cmd.qc_id.standParamThirdReset:
+                case Protecl_typical_cmd.user_ack_id.getParam_frontSwich_ack:
                     {
-                        qc_ack_rest((byte)enum_qc_index_stand.third);
-                         lk_log("档位3复位成功！");
+             
                     }
                     break;
-                case Protecl_typical_cmd.qc_id.standFirstSwitch:
+                case Protecl_typical_cmd.user_ack_id.getParam_backSwich_ack:
                     {
-                        lk03_other.curret_stand_statu = 1;
-                        lk_log("档位1切换成功！");
+   
                     }
                     break;
-                case Protecl_typical_cmd.qc_id.standSecondSwitch:
+                case Protecl_typical_cmd.user_ack_id.getParam_disBase_ack:
                     {
-                        lk03_other.curret_stand_statu = 2;
-                        lk_log("档位2切换成功！");
+
                     }
                     break;
-                case Protecl_typical_cmd.qc_id.sStandThirdSwitch:
+                case Protecl_typical_cmd.user_ack_id.getParam_powerOn_mode_ack:
                     {
-                        lk03_other.curret_stand_statu = 3;
-                        lk_log("档位3切换成功！");
+
                     }
                     break;
-                case Protecl_typical_cmd.qc_id.getParam:
+                case Protecl_typical_cmd.user_ack_id.cfgParam_all:
+                    {
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.cfgParam_baudRate_ack:
+                    {
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.cfgParam_frontSwich_ack:
+                    {
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.cfgParam_backSwich_ack:
+                    {
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.cfgParam_distBase_ack:
+                    {
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.cfgParam_powerOn_mode_ack:
+                    {
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.cfgParam_outData_freq_ack:
+                    {
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.system_boot_param_ack:
+                    {
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.system_boot_firmware_ctl_ack:
+                    {
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.system_boot_firmware_pakage_ack:
                     {
                     }
                     break;
@@ -209,88 +189,8 @@ namespace lk_verify
 
 
         #region tinyfrme 协议应答
-        void genralFunc(byte[] buf, Protecl_typical_cmd.type type)
-        {
-            switch (type)
-            {
-                case Protecl_typical_cmd.type.lk_getData:
-                    {
-
-                    }
-                    break;
-                case Protecl_typical_cmd.type.lk_getParm:
-                    {
-
-                    }
-                    break;
-                case Protecl_typical_cmd.type.lk_QC:
-                    {
-
-                    }
-                    break;
-                case Protecl_typical_cmd.type.lk_debug:
-                    {
-
-                    }
-                    break;
-                    case Protecl_typical_cmd.type.lk_ack:
-                    {
-                        //Protecl_typical_cmd.ack_id ack_id = (Protecl_typical_cmd.ack_id)(sensor.id);
-                        //settingWin.ackCallback(ack_id);
-                    }
-                    break;
-                case Protecl_typical_cmd.type.lk_saveParm:
-                    {
-
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-        }
-
-        public void tinyFram_ack(Protecl_typical_cmd.ack_id ackID)
-        {
-            Protecl_typical_cmd.ack_id _ack = ackID;
-            switch (_ack)
-            {
-                case Protecl_typical_cmd.ack_id.lk_download_ack:
-                    {
-                        //ifBeginUpdata = true;
-                        //timerTOA.Stop();
-                        //switch (package_statu)
-                        //{
-                        //    case Package_enum_.firstPackage:
-                        //        {
-                        //            packageCntTrans = 0;
-                        //            packageBegin();
-                        //            package_statu = Package_enum_.dataPackaged;
-                        //        }
-                        //        break;
-                        //    case Package_enum_.dataPackaged:
-                        //        {
-                        //            if (packageSend() == true)
-                        //            {
-
-                        //                timerTOA.Start();
-                        //            }
-                        //            else
-                        //            {
-                        //                MessageBox.Show("send succeed");
-                        //            }
-                        //        }
-                        //        break;
-                        //}
-                    }
-                    break;
-                case Protecl_typical_cmd.ack_id.lk_debug_ack:
-                    {
-
-                    }
-                    break;
-            }
-        }
+        
+        
         #endregion
     }
 }

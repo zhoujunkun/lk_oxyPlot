@@ -293,7 +293,7 @@ namespace xoyplot_zjk
            
             for (int i=0;i< buf.Length; i++)
             {
-                lk_Other_Protecl.protecl_ansys(buf[i]);
+              //  lk_Other_Protecl.protecl_ansys(buf[i]);
             }         
         }
 
@@ -492,11 +492,11 @@ namespace xoyplot_zjk
         private void Btn_Click_getParam(object sender, RoutedEventArgs e)
         {
             cmdFuncLists.sensor_get_param();
-        }
+        }               
         byte[] set_high = new byte[] { 1 };
         byte[] set_low = new byte[] { 0 };
         private void checkBox_Atuo_click(object sender, RoutedEventArgs e)
-        {
+        {        
             
             cmdFuncLists.sensor_autoMel(set_high);
         }
