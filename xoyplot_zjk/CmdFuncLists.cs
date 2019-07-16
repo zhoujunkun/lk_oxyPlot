@@ -11,11 +11,6 @@ namespace xoyplot_zjk
 {
     class CmdFuncLists
     {
-        z_serial lk_serial;
-        public void set_serial_control(z_serial serial)
-        {
-            lk_serial = serial;
-        }
 
         #region  测量
         /// <summary>
@@ -27,7 +22,7 @@ namespace xoyplot_zjk
             frame.Type = (byte)(Protecl_typical_cmd.ctl_type.user_dist_ctl);
             frame.id = (byte)(Protecl_typical_cmd.dist_ctl_id.dist_stop);
             frame.ifHeadOnly = true;
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame( frame);
         }
 
         /// <summary>
@@ -39,7 +34,7 @@ namespace xoyplot_zjk
             frame.Type = (byte)(Protecl_typical_cmd.ctl_type.user_dist_ctl);
             frame.id = (byte)(Protecl_typical_cmd.dist_ctl_id.dist_continue);
             frame.ifHeadOnly = true;
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }    
         /// <summary>
         /// 单次测量
@@ -50,7 +45,7 @@ namespace xoyplot_zjk
             frame.Type = (byte)(Protecl_typical_cmd.ctl_type.user_dist_ctl);
             frame.id = (byte)(Protecl_typical_cmd.dist_ctl_id.dist_once);
             frame.ifHeadOnly = true;
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame( frame);
         }
         #endregion
 
@@ -81,8 +76,9 @@ namespace xoyplot_zjk
             frame.id = (byte)(Protecl_typical_cmd.paramCfg_set_id.powerOn_mode);  
             frame.dataBuf = buf;    //数据帧缓存
             frame.len = (UInt16)buf.Length; //数据帧字节长度
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
+       
         /// <summary>
         /// 波特率设置
         /// </summary>
@@ -90,13 +86,14 @@ namespace xoyplot_zjk
         ///
         public void sensor_baudRate(byte[] buf)
         {
-            tinyFrame frame = new tinyFrame();
+             tinyFrame frame = new tinyFrame();
+           int text= frame.get_test();
             frame.Type = (byte)(Protecl_typical_cmd.ctl_type.user_paramCfg_set);
             frame.ifHeadOnly = false;  //含有数据帧
             frame.id = (byte)(Protecl_typical_cmd.paramCfg_set_id.baudRate);
             frame.dataBuf = buf;    //数据帧缓存
             frame.len = (UInt16)buf.Length; //数据帧字节长度
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
 
         /// <summary>
@@ -111,7 +108,7 @@ namespace xoyplot_zjk
             frame.id = (byte)(Protecl_typical_cmd.paramCfg_set_id.outData_freq);
             frame.dataBuf = buf;    //数据帧缓存
             frame.len = (UInt16)buf.Length; //数据帧字节长度
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
         /// <summary>
         /// 前后基准配置
@@ -125,7 +122,7 @@ namespace xoyplot_zjk
             frame.id = (byte)(Protecl_typical_cmd.paramCfg_set_id.disBase);
             frame.dataBuf = buf;    //数据帧缓存
             frame.len = (UInt16)buf.Length; //数据帧字节长度
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
         /// <summary>
         /// 复位，恢复出厂设置
@@ -136,7 +133,7 @@ namespace xoyplot_zjk
             frame.Type = (byte)(Protecl_typical_cmd.ctl_type.system_boot_param);
             frame.id = (byte)(Protecl_typical_cmd.usr_boot_ctl_id.usr_reset);
             frame.ifHeadOnly = true;
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
 
         /// <summary>
@@ -148,7 +145,7 @@ namespace xoyplot_zjk
             frame.Type = (byte)(Protecl_typical_cmd.ctl_type.usr_paramCfg_get);
             frame.id = (byte)(Protecl_typical_cmd.paramCfg_get_id.lk_all);
             frame.ifHeadOnly = true;
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
 
         /// <summary>
@@ -163,7 +160,7 @@ namespace xoyplot_zjk
             frame.id = (byte)(Protecl_typical_cmd.paramCfg_set_id.frontSwich);
             frame.dataBuf = buf;    //数据帧缓存
             frame.len = (UInt16)buf.Length; //数据帧字节长度
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
 
         /// <summary>
@@ -178,7 +175,7 @@ namespace xoyplot_zjk
             frame.id = (byte)(Protecl_typical_cmd.paramCfg_set_id.backSwich);
             frame.dataBuf = buf;    //数据帧缓存
             frame.len = (UInt16)buf.Length; //数据帧字节长度
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
         /// <summary>
         /// 恢复出厂设置
@@ -201,7 +198,7 @@ namespace xoyplot_zjk
             frame.Type = (byte)(Protecl_typical_cmd.ctl_type.programer_ctl);
             frame.id = (byte)(Protecl_typical_cmd.programer_id.qc_standFirst_switch);
             frame.ifHeadOnly = true;
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
 
         }
         /// <summary>
@@ -214,7 +211,7 @@ namespace xoyplot_zjk
             frame.Type = (byte)(Protecl_typical_cmd.ctl_type.programer_ctl);
             frame.id = (byte)(Protecl_typical_cmd.programer_id.qc_standSecond_switch);
             frame.ifHeadOnly = true;
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
 
         }
         /// <summary>
@@ -227,7 +224,7 @@ namespace xoyplot_zjk
             frame.Type = (byte)(Protecl_typical_cmd.ctl_type.programer_ctl);
             frame.id = (byte)(Protecl_typical_cmd.programer_id.qc_standthird_switch);
             frame.ifHeadOnly = true;
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
 
         }
         /// <summary>
@@ -239,7 +236,7 @@ namespace xoyplot_zjk
             frame.Type = (byte)(Protecl_typical_cmd.ctl_type.programer_ctl);
             frame.id = (byte)(Protecl_typical_cmd.programer_id.qc_get_param);
             frame.ifHeadOnly = true;
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
 
         /// <summary>
@@ -254,7 +251,7 @@ namespace xoyplot_zjk
             frame.id = (byte)(Protecl_typical_cmd.programer_id.qc_standFirst_save);  //校准参数
             frame.dataBuf = buf;    //数据帧缓存
             frame.len = (UInt16)buf.Length; //数据帧字节长度
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
         /// <summary>
         /// 保存第2档标定参数
@@ -270,7 +267,7 @@ namespace xoyplot_zjk
             frame.id = (byte)(Protecl_typical_cmd.programer_id.qc_standSecond_save);  //校准参数
             frame.dataBuf = buf;    //数据帧缓存
             frame.len = (UInt16)buf.Length; //数据帧字节长度
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
         /// <summary>
         /// 保存第3档标定参数
@@ -286,7 +283,7 @@ namespace xoyplot_zjk
             frame.id = (byte)(Protecl_typical_cmd.programer_id.qc_standthird_save);  //校准参数
             frame.dataBuf = buf;    //数据帧缓存
             frame.len = (UInt16)buf.Length; //数据帧字节长度
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
 
         /// <summary>
@@ -298,7 +295,7 @@ namespace xoyplot_zjk
             frame.Type = (byte)(Protecl_typical_cmd.ctl_type.programer_ctl);
             frame.id = (byte)(Protecl_typical_cmd.programer_id.qc_standFirst_reset);
             frame.ifHeadOnly = true;
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
         /// <summary>
         /// 复位第2档
@@ -309,7 +306,7 @@ namespace xoyplot_zjk
             frame.Type = (byte)(Protecl_typical_cmd.ctl_type.programer_ctl);
             frame.id = (byte)(Protecl_typical_cmd.programer_id.qc_standSecond_reset);
             frame.ifHeadOnly = true;
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
         /// <summary>
         /// 复位第3档
@@ -320,7 +317,7 @@ namespace xoyplot_zjk
             frame.Type = (byte)(Protecl_typical_cmd.ctl_type.programer_ctl);
             frame.id = (byte)(Protecl_typical_cmd.programer_id.qc_standthird_reset);
             frame.ifHeadOnly = true;
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
         #endregion
 
@@ -335,7 +332,7 @@ namespace xoyplot_zjk
             frame.Type = (byte)(Protecl_typical_cmd.ctl_type.system_boot_firmware_ctl);
             frame.id = (byte)(Protecl_typical_cmd.firmware_ctl_id.firmware_begin);
             frame.ifHeadOnly = true;  //含有数据帧
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
         /// <summary>
         /// 应答
@@ -361,7 +358,7 @@ namespace xoyplot_zjk
             frame.ifHeadOnly = false;  //含有数据帧
             frame.dataBuf = buf;
             frame.len = (UInt16)buf.Length; //数据帧字节长度
-            frame.sendFrame(lk_serial, frame);
+            frame.sendFrame(frame);
         }
         enum Package_enum_ { firstPackage = 1, dataPackaged };
         Package_enum_ package_statu = Package_enum_.firstPackage;

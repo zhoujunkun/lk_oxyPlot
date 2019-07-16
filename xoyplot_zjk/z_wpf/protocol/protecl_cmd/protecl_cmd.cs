@@ -32,16 +32,19 @@ namespace lk_verify
         };
         public enum dist_ctl_id { dist_continue = 0x01, dist_once=0x02, dist_stop=0x03};
         public enum user_ack_id { dist_base=0,          dist_continue_ack, dist_once_ack, dist_stop_ack,
-                                  get_paramAll_base= 0x10, getParam_baudRate_ack, getParam_frontSwich_ack, getParam_backSwich_ack, getParam_disBase_ack, getParam_powerOn_mode_ack,
-                                  cfgParam_all= 0x40, cfgParam_baudRate_ack, cfgParam_frontSwich_ack, cfgParam_backSwich_ack, cfgParam_distBase_ack, cfgParam_powerOn_mode_ack, cfgParam_outData_freq_ack,
-                                  system_boot_param_ack = 0xf0, system_boot_firmware_ctl_ack, system_boot_firmware_pakage_ack,
+                                  get_paramAll_base= 0x10, getParam_baudRate_ack, getParam_frontSwich_ack, getParam_backSwich_ack, getParam_disBase_ack, getParam_powerOn_mode_ack, getParam_outData_freq_ack,
+                                  cfgParam_all = 0x40, cfgParam_baudRate_ack, cfgParam_frontSwich_ack, cfgParam_backSwich_ack, cfgParam_distBase_ack, cfgParam_powerOn_mode_ack, cfgParam_outData_freq_ack,
+                                  system_boot_paramReset_ack = 0xf0, system_boot_firmware_ctl_ack, system_boot_firmware_pakage_ack,
         };
         public enum paramCfg_get_id { lk_all = 0x00, baudRate, frontSwich, backSwich, disBase, powerOn_mode, outData_freq };
         public enum paramCfg_set_id { lk_all = 0x00, baudRate, frontSwich, backSwich, disBase, powerOn_mode, outData_freq };
         public enum usr_boot_ctl_id { usr_reset=0x01,usr_download };
+        public enum firmware_ctl_id { firmware_begin = 1 };
 
-        public enum programer_id { qc_get_param = 0x00, qc_standFirst_switch, qc_standSecond_switch, qc_standthird_switch, qc_standFirst_reset, qc_standSecond_reset, qc_standthird_reset, qc_standFirst_save, qc_standSecond_save, qc_standthird_save };  
-        public enum firmware_ctl_id { firmware_begin = 1 };      
+        //programer
+        public enum programer_id { qc_get_param = 0x00, qc_standFirst_switch, qc_standSecond_switch, qc_standthird_switch, qc_standFirst_reset, qc_standSecond_reset, qc_standthird_reset, qc_standFirst_save, qc_standSecond_save, qc_standthird_save };
+        public enum programer_ack_id { qc_get_param_ack = 0x00, qc_standFirst_switch_ack, qc_standSecond_switch_ack, qc_standthird_switch_ack, qc_standFirst_reset_ack, qc_standSecond_reset_ack, qc_standthird_reset_ack, qc_standFirst_save_ack, qc_standSecond_save_ack, qc_standthird_save_ack };
+
 
 
     }

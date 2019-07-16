@@ -154,10 +154,10 @@
                                       DataFieldY="Distance" LabelFormatString="{}{1:N0}"                  
                                       ItemsSource="{Binding Measurements}"
                                       StrokeThickness="2" Color="SkyBlue" />
-                    <oxy:LineSeries Title="信号" MarkerFill="Green" MarkerType="Circle" DataFieldY="Sighal" Color="Red"  DataFieldX="Time"
+                    <!--<oxy:LineSeries Title="信号" MarkerFill="Green" MarkerType="Circle" DataFieldY="Sighal" Color="Red"  DataFieldX="Time"
                                 LabelFormatString="{}{1:N0}" ItemsSource="{Binding Measurements}" />
                     <oxy:LineSeries Title="增益" MarkerFill="Green" MarkerType="Circle" DataFieldY="Agc" Color="Black"  DataFieldX="Time"
-                                LabelFormatString="{}{1:N0}" ItemsSource="{Binding Measurements}" />
+                                LabelFormatString="{}{1:N0}" ItemsSource="{Binding Measurements}" />-->
                 </oxy:Plot>
             </Grid>
         </GroupBox>

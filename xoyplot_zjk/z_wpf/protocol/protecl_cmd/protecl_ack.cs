@@ -13,19 +13,6 @@ namespace lk_verify
 {
     public class protecl_ack: System.Windows.Threading.DispatcherObject
     {
-        //consol ack
-        private addLogConsle console_showLog;
-
-        public void set_consol_ack(addLogConsle cns)
-        { 
-            console_showLog = cns;
-        }
-
-        private void lk_log(string log)
-        {
-            console_showLog(log);
-        }
-
         //QC
         public LK03QC lk03_other = new LK03QC();
         public class LK03QC
@@ -37,20 +24,29 @@ namespace lk_verify
             public bool[] ifStandSwitchComplete = new bool[3];    //档位切换完成应答
             public bool[] ifLkHavedStand = new bool[3];   //是否已经标定过
         }
+
+        public double sensor_distance { set; get; }
+
+
+        #region other protecl
         enum enum_qc_index_stand { first = 0, second, third };
         public delegate void otherDelegateQcAckrest(byte indes);
-        public delegate void otherDelegate();
         public delegate void addLogConsle(string log);
-        #region other protecl
+        public delegate void addUsrDisplayMydelege();
         public UInt16 other_sighal { set; get; }
         public UInt16 other_distance { set; get; }
         public UInt16 other_agc { set; get; }
-        otherDelegate otherDatedisplay;
+        private static addLogConsle user_console;  //显示字符
         otherDelegateQcAckrest qc_ack_rest;
-
-        public void  add_other_display(otherDelegate dis)
+        addUsrDisplayMydelege usr_display;
+        public void  add_usr_console(addLogConsle dis)
         {
-            otherDatedisplay = dis;
+            user_console = dis;
+        }
+
+        public void add_usr_display(addUsrDisplayMydelege ds)
+        {
+            usr_display = ds;
         }
         public void add_other_reset_paramAck(otherDelegateQcAckrest restAck)
         {
@@ -68,7 +64,7 @@ namespace lk_verify
                 case Protecl_typical_cmd.ctl_type.usr_ack:
                     {
                         Protecl_typical_cmd.user_ack_id ack_id = (Protecl_typical_cmd.user_ack_id)msg.frame_id;
-                        user_ack_id(ack_id);
+                        user_ack_id(ack_id, buf);
                     }
                     break;
                 case Protecl_typical_cmd.ctl_type.programer_ack:
@@ -86,17 +82,20 @@ namespace lk_verify
         /// usr_ack 通用应答
         /// </summary>
         /// <param name="id"> </param>
-        private void user_ack_id(Protecl_typical_cmd.user_ack_id id)
+        private void user_ack_id(Protecl_typical_cmd.user_ack_id id,byte[] buf  )
         {
             switch (id)
             {
                 case Protecl_typical_cmd.user_ack_id.dist_base://
                     {
+
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.dist_continue_ack:
                     {
-                
+                        sensor_distance = (UInt16)(buf[0] << 8 | buf[1]);
+                        //user_console(sensor_distance.ToString());
+                        usr_display();
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.dist_once_ack:
@@ -167,7 +166,7 @@ namespace lk_verify
                     {
                     }
                     break;
-                case Protecl_typical_cmd.user_ack_id.system_boot_param_ack:
+                case Protecl_typical_cmd.user_ack_id.system_boot_paramReset_ack:
                     {
                     }
                     break;

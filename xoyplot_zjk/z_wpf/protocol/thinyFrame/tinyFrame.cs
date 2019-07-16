@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using lk_verify;
+using ZSeial;
+
 namespace lk_protecl
 {
         /*
@@ -48,11 +50,30 @@ namespace lk_protecl
         private Queue<byte> sendBuf = new Queue<byte>();
         CRC crc_checksum = new CRC();
         byte sofbyte = 0x01;   //起始
+        private static z_serial lk_serial;  //共用串口
+
+        private int texst;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serial"></param>
+        public void set_consol(z_serial serial)
+        {
+            lk_serial = serial; 
+        }
+        public void test_int(int s)
+        {
+            texst = s;
+        }
+        public int get_test()
+        {
+            return texst;
+        }
         /// <summary>
         /// 发送数据帧
         /// </summary>
         /// <param name="z_Serial"></param>
-        public void sendFrame(ZSeial.z_serial z_Serial,tinyFrame frame)
+        public void sendFrame(tinyFrame frame)
         {
 
             frame.id = frame.isRsponse ? frame.id : getNextID();
@@ -90,7 +111,7 @@ namespace lk_protecl
             }
             byte[] re_buf = sendBuf.ToArray();
             frame.sendBuf.Clear();
-            z_Serial.sendBuf(re_buf);
+            lk_serial.sendBuf(re_buf);
         }
         public byte getNextID()
         {
@@ -138,7 +159,23 @@ namespace lk_protecl
             public byte type; //message type (used to run Type Listeners, pick any values you like)
 
         }
+        /// <summary>
+        /// 添加通用回调函数
+        /// </summary>
+        /// <param name="listener"></param>
+        public void addGenralListener(myDelegate listener)
+        {
+            for (int i = 0; i < MAX_GENERAL_SIZE; i++)
+            {
+                if (generalListenr[i].Func == null)
+                {
+                    generalListenr[i].Func = listener;
+                    return;
+                }
 
+            }
+
+        }
         //添加id listen
         struct _idListenr
         {
@@ -150,6 +187,7 @@ namespace lk_protecl
         {
             public myDelegate Func;
         };
+
         struct _typeListenr
         {
             public int type;
@@ -160,7 +198,7 @@ namespace lk_protecl
         /// 数据解析
         /// </summary>
         /// <param name="data"></param>
-        public void AcceptByte(byte data)
+        public void anysys_frame(byte data)
         {
             frameBuf.Enqueue(data);
             switch (state)
@@ -226,11 +264,12 @@ namespace lk_protecl
                                     resetParser();
                                     //lkSensor.Frame = lkSensor.fromHexToString(headBuf.ToArray());
                                     //lkSensor.buf = dataBuf.ToArray();
-                                    //handleReceived(lkSensor);
+                                    handleReceived(buf, msg);
                                 }
                                 else
                                 {
                                     state = "data";
+                                    partlen = 0;
                                 }
                             }
                             else
@@ -258,7 +297,7 @@ namespace lk_protecl
                         cksum = (cksum << 8) | data;
                         if (++partlen == crc_checksum.size)
                         {
-                            byte[] buf = dataBuf.ToArray();
+                            byte[] buf = rxDataBuf.ToArray();
                             UInt16 crc = 0;
                             crc_checksum.crcReset();
                             crc = crc_checksum.crc16(buf);
@@ -267,7 +306,7 @@ namespace lk_protecl
                                 //lkSensor.isReceveSucceed = true;
                                 //lkSensor.Frame = lkSensor.fromHexToString(frameBuf.ToArray());
                                 //lkSensor.buf = dataBuf.ToArray();
-                                //handleReceived(lkSensor);
+                                handleReceived(buf,msg);
                             }
                             else
                             {
@@ -282,6 +321,9 @@ namespace lk_protecl
                     break;
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public void beginFrame()
         {
             this.state = "id";
@@ -294,10 +336,14 @@ namespace lk_protecl
         //添加回调函数
         public void handleReceived(byte[]rxbuf, _message msg)
         {
+            if(idListenr.Func !=null)
+            {
                 if (msg.frame_id == idListenr.id)
                 {
-                    idListenr.Func.Invoke(rxbuf,msg);     //回调函数运行
+                    idListenr.Func.Invoke(rxbuf, msg);     //回调函数运行
                 }
+            }
+
                 for (int i = 0; i < MAX_TYPE_SIZE; i++)
                 {
                     if (msg.type == typeListener[i].type)
@@ -307,20 +353,18 @@ namespace lk_protecl
                 }
                 for (int i = 0; i < MAX_GENERAL_SIZE; i++)
                 {
-                    if (generalListenr[i].Func == null)
-                    {
-                        return;
-                    }
-                    else
+                    if (generalListenr[i].Func != null)
                     {
                         generalListenr[i].Func.Invoke(rxbuf, msg);
                     }
                 }
+
+          }
             
 
 
         }
 
 
-    }
+    
 }

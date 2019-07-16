@@ -37,14 +37,15 @@ namespace xoyplot_zjk
         public tinyFrame lkFrame = new tinyFrame();
         SensorDataItem lkSensor = new SensorDataItem();
         //qc
-         enum enum_qc_index_stand { first = 0, second, third };
+        enum enum_qc_index_stand { first = 0, second, third };
         Lk_sensor_data lk_Sensor_Data = new Lk_sensor_data();
         //cmd func list
         CmdFuncLists cmdFuncLists = new CmdFuncLists();
          //dowload bin window
-         lk_download_win dowload_win;
+        lk_download_win dowload_win;
         //ack
         Lk_other_protecl lk_Other_Protecl = new Lk_other_protecl();
+        protecl_ack genral_ack = new protecl_ack();
         //
         private  Task task;
         static readonly object locker = new object();
@@ -63,11 +64,15 @@ namespace xoyplot_zjk
             this.Points = new List<DataPoint>();
             DataContext = this;
             Thread mangeta_thread = new Thread(thread_func_mangage);
+            //tinyFrame
+            lkFrame.addGenralListener(genral_ack.genralListen);
+            genral_ack.add_usr_console(lk_log);
+            genral_ack.add_usr_display(display);
             //other
-            lk_Other_Protecl.other_protecl_init();
-            lk_Other_Protecl.sensor_ack.set_consol_ack(lk_log);
-            lk_Other_Protecl.sensor_ack.add_other_display(display); //添加数据显示
-            lk_Other_Protecl.sensor_ack.add_other_reset_paramAck(clear_texbox_standMsg);//添加回调清除
+            //lk_Other_Protecl.other_protecl_init();
+            //lk_Other_Protecl.sensor_ack.set_consol_ack(lk_log);
+            //lk_Other_Protecl.sensor_ack.add_other_display(display); //添加数据显示
+            //lk_Other_Protecl.sensor_ack.add_other_reset_paramAck(clear_texbox_standMsg);//添加回调清除
             //sensor
             sensor_set_powerOnMode_init(sensor_autoRun_mode_combox);
             sensor_set_baudRate_init(sensor_baudRate_combox);
@@ -112,14 +117,14 @@ namespace xoyplot_zjk
             }
         }
 
-
-        private void lk_log(object log)
+        
+        private void lk_log(string logg)
         {
             base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
             {
                 //string log_d = "提示：==>" + log + "\r\n";
                 //text_Log.Text = log_d;
-                text_string.Text+= log + "\r\n";
+                text_string.Text+= logg + "\r\n";
             }), new object[0]);
 
         }
@@ -180,7 +185,8 @@ namespace xoyplot_zjk
         {
             lk_serial = new z_serial(btn_connect, baud_Selcet, Com_Selcet, "115200");
             lk_serial.addComList(Com_Selcet);
-            cmdFuncLists.set_serial_control(lk_serial);
+            lkFrame.set_consol(lk_serial);
+            lkFrame.test_int(38);
         }
         double x = 0;
         /// <summary>
@@ -209,9 +215,9 @@ namespace xoyplot_zjk
                     this.Measurements.Add(new Measurement
                     {
                         Time = x,
-                        Distance = lk_Other_Protecl.sensor_ack.other_distance,
-                        Sighal = lk_Other_Protecl.sensor_ack.other_sighal,
-                        Agc= lk_Other_Protecl.sensor_ack.other_agc
+                        Distance = genral_ack.sensor_distance,
+                        //Sighal = lk_Other_Protecl.sensor_ack.other_sighal,
+                        //Agc= lk_Other_Protecl.sensor_ack.other_agc
                     });
                     // Change the refresh flag, this will trig InvalidatePlot() on the Plot control
                     this.Refresh++;
@@ -293,6 +299,7 @@ namespace xoyplot_zjk
            
             for (int i=0;i< buf.Length; i++)
             {
+                lkFrame.anysys_frame(buf[i]);
               //  lk_Other_Protecl.protecl_ansys(buf[i]);
             }         
         }
