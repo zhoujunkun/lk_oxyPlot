@@ -44,7 +44,7 @@ namespace xoyplot_zjk
          //dowload bin window
         lk_download_win dowload_win;
         //ack
-        Lk_other_protecl lk_Other_Protecl = new Lk_other_protecl();
+       // Lk_other_protecl lk_Other_Protecl = new Lk_other_protecl();
         protecl_ack genral_ack = new protecl_ack();
         //
         private  Task task;
@@ -68,6 +68,7 @@ namespace xoyplot_zjk
             lkFrame.addGenralListener(genral_ack.genralListen);
             genral_ack.add_usr_console(lk_log);
             genral_ack.add_usr_display(display);
+            genral_ack.add_usr_param_refresh(sensor_param_refresh);
             //other
             //lk_Other_Protecl.other_protecl_init();
             //lk_Other_Protecl.sensor_ack.set_consol_ack(lk_log);
@@ -80,6 +81,43 @@ namespace xoyplot_zjk
             mangeta_thread.Start();
             lk_log("开始，，，，");
         }
+          enum buad_enum_ { baudRate_9600 = 0, baudRate_14400, baudRate_19200, baudRate_38400, baudRate_57600, baudRate_115200 };
+        /// <summary>
+        /// 传感器参数更新,
+        /// </summary>
+        /// <param name="buf"></param>
+        public void sensor_param_refresh(byte[] buf)
+        {
+          
+            byte baudRate = buf[0];
+            UInt16 frontSwitch = (UInt16)(buf[1] << 8 | buf[2]);
+            UInt16 baseSwitch = (UInt16)(buf[3] << 8 | buf[4]);
+            byte dist_base = buf[5];
+            byte senor_auto_run = buf[6];
+            UInt16 sensor_oupute_freq = (UInt16)(buf[7] << 8 | buf[8]);
+           
+            base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+            {
+                sensor_baudRate_combox.SelectedIndex = baudRate;
+                if(senor_auto_run == 1) //上电自动运行
+                {
+                    sensor_autoRun_mode_combox.SelectedIndex = 0;
+                }else sensor_autoRun_mode_combox.SelectedIndex =1;
+                sensor_ouput_data_freq_slider.Value = sensor_oupute_freq;
+                sensor_front_switch_slider.Value = frontSwitch;
+                sensor_base_switch_slider.Value = baseSwitch;
+                if(dist_base==1)
+                {
+                    RadioBtn_Front.IsChecked = true;
+                }
+                else
+                {
+                    RadioBtn_Base.IsChecked = true;
+                }
+               
+            }), new object[0]);
+        }
+
 
         /// <summary>
         /// 反馈处理任务
@@ -318,9 +356,10 @@ namespace xoyplot_zjk
         private void Btn_Clicked_Stand(object sender, RoutedEventArgs e)
         {
 
-            if (lk_Other_Protecl.sensor_ack.lk03_other.curret_stand_statu==1)
+            if (genral_ack.lk03_qc.curret_stand_statu==1)
                 {
-                    ifCalculate = true;
+                  stand_slider.Value = 10;
+                 ifCalculate = true;
                    lk_Sensor_Data.qc_current_stand = 1;
                 }
                 else
@@ -381,8 +420,9 @@ namespace xoyplot_zjk
 
         private void Btn_Clicked_Stand_2(object sender, RoutedEventArgs e)
         {
-            if (lk_Other_Protecl.sensor_ack.lk03_other.ifStandSwitchComplete[1])
+            if (genral_ack.lk03_qc.curret_stand_statu==2)
             {
+                stand_slider.Value = 45;
                 ifCalculate = true;
                 lk_Sensor_Data.qc_current_stand = 2;
             }
@@ -405,7 +445,16 @@ namespace xoyplot_zjk
 
         private void Btn_Clicked_Stand_3(object sender, RoutedEventArgs e)
         {
-            cmdFuncLists.qc_third_switch();
+            if (genral_ack.lk03_qc.curret_stand_statu == 3)
+            {
+                stand_slider.Value = 90;
+                ifCalculate = true;
+                lk_Sensor_Data.qc_current_stand = 3;
+            }
+            else
+            {
+                MessageBox.Show("请先选择档位!");
+            }
         }
        
         private void btn_reset_stand_click(object sender, RoutedEventArgs e)

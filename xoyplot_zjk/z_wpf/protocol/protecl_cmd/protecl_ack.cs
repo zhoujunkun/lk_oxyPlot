@@ -14,7 +14,7 @@ namespace lk_verify
     public class protecl_ack: System.Windows.Threading.DispatcherObject
     {
         //QC
-        public LK03QC lk03_other = new LK03QC();
+        public LK03QC lk03_qc = new LK03QC();
         public class LK03QC
         {
             public byte first_index=0;
@@ -32,19 +32,24 @@ namespace lk_verify
         enum enum_qc_index_stand { first = 0, second, third };
         public delegate void otherDelegateQcAckrest(byte indes);
         public delegate void addLogConsle(string log);
-        public delegate void addUsrDisplayMydelege();
+        public delegate void addUsrMydelege();
+        public delegate void addUsrDataMydelege(byte[]buf);
         public UInt16 other_sighal { set; get; }
         public UInt16 other_distance { set; get; }
         public UInt16 other_agc { set; get; }
         private static addLogConsle user_console;  //显示字符
         otherDelegateQcAckrest qc_ack_rest;
-        addUsrDisplayMydelege usr_display;
+        addUsrMydelege usr_display;
+        addUsrDataMydelege sensor_parma_refresh;
         public void  add_usr_console(addLogConsle dis)
         {
             user_console = dis;
         }
-
-        public void add_usr_display(addUsrDisplayMydelege ds)
+        public void add_usr_param_refresh(addUsrDataMydelege dis)
+        {
+            sensor_parma_refresh = dis;
+        }
+        public void add_usr_display(addUsrMydelege ds)
         {
             usr_display = ds;
         }
@@ -69,7 +74,8 @@ namespace lk_verify
                     break;
                 case Protecl_typical_cmd.ctl_type.programer_ack:
                     {
-
+                        Protecl_typical_cmd.programer_ack_id p_ackid=(Protecl_typical_cmd.programer_ack_id)msg.frame_id;
+                        proramer_ack_id(p_ackid,buf);
                     }
                     break;
                 default:
@@ -100,22 +106,23 @@ namespace lk_verify
                     break;
                 case Protecl_typical_cmd.user_ack_id.dist_once_ack:
                     {
-                  
+                        UInt16 distance = (UInt16)(buf[0] << 8 | buf[1]);
+                        user_console(distance.ToString());
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.dist_stop_ack:
                     {
-                     
+                        user_console("停止测量成功！");
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.get_paramAll_base: //
                     {
-
+                        sensor_parma_refresh(buf);
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.getParam_baudRate_ack:
                     {
-      
+                        
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.getParam_frontSwich_ack:
@@ -125,7 +132,7 @@ namespace lk_verify
                     break;
                 case Protecl_typical_cmd.user_ack_id.getParam_backSwich_ack:
                     {
-   
+                             
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.getParam_disBase_ack:
@@ -144,26 +151,32 @@ namespace lk_verify
                     break;
                 case Protecl_typical_cmd.user_ack_id.cfgParam_baudRate_ack:
                     {
+                        user_console("波特率设置成功！");
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.cfgParam_frontSwich_ack:
                     {
+                        user_console("设置前开关量成功！");
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.cfgParam_backSwich_ack:
                     {
+                        user_console("设置后开关量成功！");
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.cfgParam_distBase_ack:
                     {
+                        user_console("设置基准成功！");
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.cfgParam_powerOn_mode_ack:
                     {
+                        user_console("开机自动运行成功！");
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.cfgParam_outData_freq_ack:
                     {
+                        user_console("输出频率设置成功");
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.system_boot_paramReset_ack:
@@ -180,6 +193,71 @@ namespace lk_verify
                     break;
 
 
+            }
+
+        }
+
+        /// <summary>
+        /// 开发人员应答
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="buf"></param>
+        public void proramer_ack_id(Protecl_typical_cmd.programer_ack_id id, byte[] buf)
+        {
+            switch(id)
+            {
+                case Protecl_typical_cmd.programer_ack_id.qc_get_param_ack:
+                    {
+
+                    }break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standFirst_switch_ack:
+                    {
+                        lk03_qc.curret_stand_statu = 1;
+                        user_console("档位1切换成功");
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standSecond_switch_ack:
+                    {
+                        lk03_qc.curret_stand_statu = 2;
+                        user_console("档位2切换成功");
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standthird_switch_ack:
+                    {
+                        lk03_qc.curret_stand_statu = 3;
+                        user_console("档位3切换成功");
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standFirst_reset_ack:
+                    {
+                        user_console("档位1复位成功");
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standSecond_reset_ack:
+                    {
+                        user_console("档位2复位成功");
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standthird_reset_ack:
+                    {
+                        user_console("档位3复位成功");
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standFirst_save_ack:
+                    {
+                        user_console("档位1保存成功");
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standSecond_save_ack:
+                    {
+                        user_console("档位2保存成功");
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standthird_save_ack:
+                    {
+                        user_console("档位3保存成功");
+                    }
+                    break;
             }
 
         }
