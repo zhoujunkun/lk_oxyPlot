@@ -26,7 +26,11 @@ namespace xoyplot_zjk
         public UInt16[] qc_gain_arry = new UInt16[3];  //标定完当前距离的增益
         public UInt16[] qc_average_arry = new UInt16[3];  //平均值
         public byte qc_current_stand;         //当前标定的档位
-       
+
+        public UInt16 baud_rate { set; get; }
+        public UInt16 distance { set; get; }
+
+
     }
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
@@ -66,9 +70,8 @@ namespace xoyplot_zjk
             Thread mangeta_thread = new Thread(thread_func_mangage);
             //tinyFrame
             lkFrame.addGenralListener(genral_ack.genralListen);
-            genral_ack.add_usr_console(lk_log);
-            genral_ack.add_usr_display(display);
-            genral_ack.add_usr_param_refresh(sensor_param_refresh);
+            genral_ack.add_usr_ackId(user_ack_id);   //用户应答id
+            genral_ack.add_programer_ackId(proramer_ack_id); //非用户应答id
             //other
             //lk_Other_Protecl.other_protecl_init();
             //lk_Other_Protecl.sensor_ack.set_consol_ack(lk_log);
@@ -79,9 +82,47 @@ namespace xoyplot_zjk
             sensor_set_baudRate_init(sensor_baudRate_combox);
 
             mangeta_thread.Start();
-            lk_log("开始，，，，");
+            lk_log("点击对应串口连接 ->获取传感器参数信息按钮");
         }
           enum buad_enum_ { baudRate_9600 = 0, baudRate_14400, baudRate_19200, baudRate_38400, baudRate_57600, baudRate_115200 };
+        UInt16[] qc_standDist = new UInt16[3];
+        UInt16[] qc_standAgc = new UInt16[3];
+        byte[] qc_ifStand = new byte[3];
+       public void sensor_programer_qc_refresh(byte[]buf)
+        {
+             for(int i=0;i<3;i++)
+            {
+                qc_standDist[i] = (UInt16)(buf[i * 5] << 8 | (buf[i * 5 + 1] & 0xff));
+                qc_standAgc[i] = (UInt16)(buf[i * 5+2] << 8 | (buf[i * 5 + 3] & 0xff));
+                qc_ifStand[i] =  buf[i * 5 + 4];
+            }
+            base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+            {
+                textBox_calibration_1.Text = qc_standDist[0].ToString();
+                textBox_gain_1.Text = qc_standAgc[0].ToString();
+                if (qc_ifStand[0] == 0)
+                {
+                    texblock_standFirstLog.Text = "未标定";
+                }
+                else texblock_standFirstLog.Text = "已标定";
+                textBox_calibration_2.Text = qc_standDist[1].ToString();
+                textBox_gain_2.Text = qc_standAgc[1].ToString();
+                if (qc_ifStand[1] == 0)
+                {
+                    texblock_standSecondLog.Text = "未标定";
+                }
+                else texblock_standSecondLog.Text = "已标定";
+                textBox_calibration_3.Text = qc_standDist[2].ToString();
+                textBox_gain_3.Text = qc_standAgc[2].ToString();
+                if (qc_ifStand[2] == 0)
+                {
+                    texblock_standThirdLog.Text = "未标定";
+                }
+                else texblock_standThirdLog.Text = "已标定";
+
+            }), new object[0]);
+        }
+        
         /// <summary>
         /// 传感器参数更新,
         /// </summary>
@@ -156,7 +197,7 @@ namespace xoyplot_zjk
         }
 
         
-        private void lk_log(string logg)
+        private void lk_texboclog(string logg)
         {
             base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
             {
@@ -166,7 +207,14 @@ namespace xoyplot_zjk
             }), new object[0]);
 
         }
+        private void lk_log(string logg)
+        {
+            base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+            {
+                text_Log.Text = logg;
+            }), new object[0]);
 
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public IList<DataPoint> Points { get; set; }
@@ -253,7 +301,7 @@ namespace xoyplot_zjk
                     this.Measurements.Add(new Measurement
                     {
                         Time = x,
-                        Distance = genral_ack.sensor_distance,
+                        Distance = lk_Sensor_Data.distance,
                         //Sighal = lk_Other_Protecl.sensor_ack.other_sighal,
                         //Agc= lk_Other_Protecl.sensor_ack.other_agc
                     });
@@ -356,11 +404,10 @@ namespace xoyplot_zjk
         private void Btn_Clicked_Stand(object sender, RoutedEventArgs e)
         {
 
-            if (genral_ack.lk03_qc.curret_stand_statu==1)
+            if (lk_Sensor_Data.qc_current_stand == 1)
                 {
                   stand_slider.Value = 10;
-                 ifCalculate = true;
-                   lk_Sensor_Data.qc_current_stand = 1;
+                  ifCalculate = true;
                 }
                 else
                 {
@@ -420,11 +467,9 @@ namespace xoyplot_zjk
 
         private void Btn_Clicked_Stand_2(object sender, RoutedEventArgs e)
         {
-            if (genral_ack.lk03_qc.curret_stand_statu==2)
-            {
-                stand_slider.Value = 45;
+            if (lk_Sensor_Data.qc_current_stand == 2)
+            {                        
                 ifCalculate = true;
-                lk_Sensor_Data.qc_current_stand = 2;
             }
             else
             {
@@ -445,11 +490,9 @@ namespace xoyplot_zjk
 
         private void Btn_Clicked_Stand_3(object sender, RoutedEventArgs e)
         {
-            if (genral_ack.lk03_qc.curret_stand_statu == 3)
+            if (lk_Sensor_Data.qc_current_stand == 3)
             {
-                stand_slider.Value = 90;
                 ifCalculate = true;
-                lk_Sensor_Data.qc_current_stand = 3;
             }
             else
             {
@@ -506,11 +549,13 @@ namespace xoyplot_zjk
         private void btn_reset_stand2_click(object sender, RoutedEventArgs e)
         {
             cmdFuncLists.qc_reset_second_parm();
+            texblock_standSecondLog.Text = "未标定";
         }
 
         private void btn_reset_stand3_click(object sender, RoutedEventArgs e)
         {
             cmdFuncLists.qc_reset_third_parm();
+            texblock_standThirdLog.Text = "未标定";
         }
         private info infoWin;
         private void Btn_Clicked_About(object sender, RoutedEventArgs e)
@@ -618,6 +663,218 @@ namespace xoyplot_zjk
             data[0] = (byte)(ouput_data_freq >> 8);
             data[1] = (byte)(ouput_data_freq & 0xff);
             cmdFuncLists.sensor_set_switch_base(data);
+        }
+        /// <summary>
+        /// 开发人员应答
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="buf"></param>
+        public void proramer_ack_id(Protecl_typical_cmd.programer_ack_id id, byte[] buf)
+        {
+            switch (id)
+            {
+                case Protecl_typical_cmd.programer_ack_id.qc_get_param_ack:
+                    {
+                        sensor_programer_qc_refresh(buf);
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standFirst_switch_ack:
+                    {
+                        lk_Sensor_Data.qc_current_stand = 1;
+                        lk_log("档位1切换成功");
+                        base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+                        {
+                            stand_slider.Value = 10;
+                        }), new object[0]);
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standSecond_switch_ack:
+                    {
+                        lk_Sensor_Data.qc_current_stand = 2;
+                        lk_log("档位2切换成功");
+                        base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+                        {
+                            stand_slider.Value = 45;
+                        }), new object[0]);
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standthird_switch_ack:
+                    {
+                        lk_Sensor_Data.qc_current_stand = 3;
+                        lk_log("档位3切换成功");
+                        base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+                        {
+                            stand_slider.Value = 90;
+                        }), new object[0]);
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standFirst_reset_ack:
+                    {
+                        lk_log("档位1复位成功");
+                        base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+                        {
+                            texblock_standFirstLog.Text = "未标定";
+                        }), new object[0]);
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standSecond_reset_ack:
+                    {
+                        lk_log("档位2复位成功");
+                        base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+                        {
+                            texblock_standSecondLog.Text = "未标定";
+                        }), new object[0]);
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standthird_reset_ack:
+                    {
+                        lk_log("档位3复位成功");
+                        base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+                        {
+                            texblock_standThirdLog.Text = "未标定";
+                        }), new object[0]);
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standFirst_save_ack:
+                    {
+                        lk_log("档位1保存成功");
+                        base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+                        {
+                            texblock_standFirstLog.Text = "标定成功";
+                        }), new object[0]);
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standSecond_save_ack:
+                    {
+                        lk_log("档位2保存成功");
+                        base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+                        {
+                            texblock_standSecondLog.Text = "标定成功";
+                        }), new object[0]);
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.qc_standthird_save_ack:
+                    {
+                        lk_log("档位3保存成功");
+                        base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+                        {
+                            texblock_standThirdLog.Text = "标定成功";
+                        }), new object[0]);
+                    }
+                    break;
+            }
+
+        }
+        /// <summary>
+        /// usr_ack 通用应答
+        /// </summary>
+        /// <param name="id"> </param>
+        private void user_ack_id(Protecl_typical_cmd.user_ack_id id, byte[] buf)
+        {
+            switch (id)
+            {
+                case Protecl_typical_cmd.user_ack_id.dist_base://
+                    {
+
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.dist_continue_ack:
+                    {
+                       lk_Sensor_Data.distance = (UInt16)(buf[0] << 8 | buf[1]);
+                        display();
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.dist_once_ack:
+                    {
+                        UInt16 distance = (UInt16)(buf[0] << 8 | buf[1]);
+                        lk_log(distance.ToString());
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.dist_stop_ack:
+                    {
+                        lk_log("停止测量成功！");
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.get_paramAll_base: //
+                    {
+                        sensor_param_refresh(buf);
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.getParam_baudRate_ack:
+                    {
+
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.getParam_frontSwich_ack:
+                    {
+
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.getParam_backSwich_ack:
+                    {
+
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.getParam_disBase_ack:
+                    {
+
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.getParam_powerOn_mode_ack:
+                    {
+
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.cfgParam_all:
+                    {
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.cfgParam_baudRate_ack:
+                    {
+                        lk_log("波特率设置成功！");
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.cfgParam_frontSwich_ack:
+                    {
+                        lk_log("设置前开关量成功！");
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.cfgParam_backSwich_ack:
+                    {
+                        lk_log("设置后开关量成功！");
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.cfgParam_distBase_ack:
+                    {
+                        lk_log("设置基准成功！");
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.cfgParam_powerOn_mode_ack:
+                    {
+                        lk_log("开机自动运行成功！");
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.cfgParam_outData_freq_ack:
+                    {
+                        lk_log("输出频率设置成功");
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.system_boot_paramReset_ack:
+                    {
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.system_boot_firmware_ctl_ack:
+                    {
+                    }
+                    break;
+                case Protecl_typical_cmd.user_ack_id.system_boot_firmware_pakage_ack:
+                    {
+                    }
+                    break;
+
+
+            }
+
         }
     }
 

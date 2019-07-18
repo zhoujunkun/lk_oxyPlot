@@ -46,7 +46,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock HorizontalAlignment="Left" Margin="2,6,0,0" TextWrapping="Wrap" Text="提示：标定都使用黑板标定" VerticalAlignment="Top" Height="40" Width="136" FontSize="10" Foreground="#FFE08282"/>
                     <Button Content="开始" Click="btn_start" Margin="33,58,0,0" VerticalAlignment="Top" Height="27" HorizontalAlignment="Left" Width="96"/>
-                    <Button Content="停止" Click="btn_stop" Margin="195,58,0,0" VerticalAlignment="Top" Height="27" HorizontalAlignment="Left" Width="96"/>
+                    <Button Content="停止" Click="btn_stop" Margin="36,168,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="96"/>
 
                 </Grid>
             </TabItem>
@@ -74,10 +74,10 @@
                                 <TextBox Height="26" x:Name="textBox_gain_1" Margin="0,72,6,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="16" HorizontalAlignment="Right" Width="135" />
                                 <Label Content="增益值:" Margin="0,72,144,0" VerticalAlignment="Top" Height="26" FontSize="12" RenderTransformOrigin="1.224,0.25" HorizontalAlignment="Right" Width="51"/>
                                 <Button  Content="切换"  Click="Btn_first_click" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="47"  FontSize="18"/>
-                                <Button Content="计算标定" x:Name="btn_stand1" Click="Btn_Clicked_Stand" HorizontalAlignment="Left" Margin="8,121.944,0,0" VerticalAlignment="Top" Width="87.667" Height="27"/>
                                 <Button Content="保存" Click="Btn_Clicked_saveParam" Margin="0,122,13,0" VerticalAlignment="Top" Height="27" HorizontalAlignment="Right" Width="75"/>
-                                <Button Content="计算标定" x:Name="btn_stand" Click="Btn_Clicked_Stand" HorizontalAlignment="Left" Margin="8,121.944,0,0" VerticalAlignment="Top" Width="87.667" Height="27"/>
-                                <Button  Content="重标"  Click="btn_reset_stand_click" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="47"  FontSize="18"/>
+                                <Button Content="计算标定" x:Name="btn_stand" Click="Btn_Clicked_Stand" HorizontalAlignment="Left" Margin="93,123,0,0" VerticalAlignment="Top" Width="87" Height="27"/>
+                                <Button  Name="btn_reStandFirst" Content="重标"  Click="btn_reset_stand_click" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="47"  FontSize="18"/>
+                                <TextBlock Name="texblock_standFirstLog" HorizontalAlignment="Left" Margin="16,123,0,0" TextWrapping="Wrap" Text="未标定" VerticalAlignment="Top" Height="27" Width="59" Foreground="#FFD46B6B"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="2档" Margin="-2,-1.667,-0.333,1.667">
@@ -89,9 +89,10 @@
                                 <TextBox Height="26" x:Name="textBox_gain_2" Margin="0,72,6,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="16" HorizontalAlignment="Right" Width="135" />
                                 <Label Content="增益值:" Margin="0,72,144,0" VerticalAlignment="Top" Height="26" FontSize="12" RenderTransformOrigin="1.224,0.25" HorizontalAlignment="Right" Width="51"/>
                                 <Button Content="切换"  Click="Btn_second_click" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="47" Height="38" FontSize="18"/>
-                                <Button Content="计算标定" x:Name="btn_stand_2" Click="Btn_Clicked_Stand_2" HorizontalAlignment="Left" Margin="8,121.944,0,0" VerticalAlignment="Top" Width="87.667" Height="27"/>
+                                <Button Content="计算标定" x:Name="btn_stand_2" Click="Btn_Clicked_Stand_2" HorizontalAlignment="Left" Margin="87,123,0,0" VerticalAlignment="Top" Width="87" Height="27"/>
                                 <Button Content="保存" Click="Btn_Clicked_saveParam_2" HorizontalAlignment="Right" Margin="0,122,13,0" VerticalAlignment="Top" Width="75" Height="27"/>
-                                <Button  Content="重标"  Click="btn_reset_stand2_click" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="47"  FontSize="18"/>
+                                <Button Name="btn_reStandSecond" Content="重标"  Click="btn_reset_stand2_click" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="47"  FontSize="18"/>
+                                <TextBlock x:Name="texblock_standSecondLog" HorizontalAlignment="Left" Margin="12,124,0,0" TextWrapping="Wrap" Text="未标定" VerticalAlignment="Top" Height="27" Width="59" Foreground="#FFD46B6B"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="3档" Margin="-2,-2.333,-0.333,5">
@@ -103,9 +104,10 @@
                                 <TextBox Height="26" x:Name="textBox_gain_3" Margin="0,72,6,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="16" HorizontalAlignment="Right" Width="135" />
                                 <Label Content="增益值:" Margin="0,72,144,0" VerticalAlignment="Top" Height="26" FontSize="12" RenderTransformOrigin="1.224,0.25" HorizontalAlignment="Right" Width="51"/>
                                 <Button Content="切换"  Click="Btn_third_click" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="47" FontSize="18"/>
-                                <Button Content="计算标定" x:Name="btn_stand_3" Click="Btn_Clicked_Stand_3" HorizontalAlignment="Left" Margin="8,121.944,0,0" VerticalAlignment="Top" Width="87.667" Height="27"/>
+                                <Button Content="计算标定" x:Name="btn_stand_3" Click="Btn_Clicked_Stand_3" HorizontalAlignment="Left" Margin="87,123,0,0" VerticalAlignment="Top" Width="88" Height="27"/>
                                 <Button Content="保存" Click="Btn_Clicked_saveParam_3" Margin="0,122,13,0" VerticalAlignment="Top" Height="27" HorizontalAlignment="Right" Width="75"/>
-                                <Button  Content="重标"  Click="btn_reset_stand3_click" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="47"  FontSize="18"/>
+                                <Button  Name="btn_reStandThird" Content="重标"  Click="btn_reset_stand3_click" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="47"  FontSize="18"/>
+                                <TextBlock x:Name="texblock_standThirdLog" HorizontalAlignment="Left" Margin="10,125,0,0" TextWrapping="Wrap" Text="未标定" VerticalAlignment="Top" Height="27" Width="59" Foreground="#FFD46B6B"/>
                             </Grid>
                         </TabItem>
                         <Label Content="Label" Height="100" Width="100"/>
@@ -121,19 +123,19 @@
                     <RadioButton  Click="radioBtn_front_click" x:Name="RadioBtn_Front" Content="前基准测量" HorizontalAlignment="Left" Margin="10,0,0,42.663" Width="90" RenderTransformOrigin="0.422,1.667" Foreground="#FFA46161" Height="18" VerticalAlignment="Bottom"/>
                     <RadioButton  Click="radioBtn_base_click"  x:Name="RadioBtn_Base"  Content="后基准测量" HorizontalAlignment="Left" Margin="10,0,0,19.663" RenderTransformOrigin="0.393,1.111" Foreground="#FFA46161" Height="18" VerticalAlignment="Bottom"/>
                     <Button  Content="恢复出厂设置" Margin="239,0,0,8" BorderBrush="#FF975252" FontFamily="Microsoft YaHei UI" HorizontalAlignment="Left" Width="86" Click="reset_button_click" Height="27" RenderTransformOrigin="0.533,0.815" VerticalAlignment="Bottom"/>
-                    <Button Content="获取传感器参数"  Click="Btn_Click_getParam" x:Name="Btn_Get_Parm" HorizontalAlignment="Right" Margin="0,0,20,205" Width="86" FontWeight="Normal" FontSize="10" Height="27" VerticalAlignment="Bottom" RenderTransformOrigin="2.547,1.63"/>
+                    <Button Content="获取传感器参数"  Click="Btn_Click_getParam" x:Name="Btn_Get_Parm" HorizontalAlignment="Right" Margin="0,28,14,0" Width="86" FontWeight="Normal" FontSize="10" RenderTransformOrigin="2.547,1.63" Height="26" VerticalAlignment="Top"/>
                     <Button Content="设置波特率" Click="btn_click_setBaudRate" HorizontalAlignment="Left" Height="26" Margin="10,10,0,0" VerticalAlignment="Top" Width="63"/>
-                    <ComboBox Name="sensor_baudRate_combox" Margin="0,10,168,224" HorizontalAlignment="Right" Width="89"/>
+                    <ComboBox Name="sensor_baudRate_combox" Margin="78,10,0,0" HorizontalAlignment="Left" Width="117" Height="26" VerticalAlignment="Top"/>
                     <Button Content="上电模式" Click="btn_click_powerOn_mode" HorizontalAlignment="Left" Height="26" Margin="10,48.25,0,0" VerticalAlignment="Top" Width="63"/>
-                    <ComboBox Name="sensor_autoRun_mode_combox" Margin="0,48,168,186" HorizontalAlignment="Right" Width="89"/>
-                    <Slider Name="sensor_ouput_data_freq_slider" IsSnapToTickEnabled="True" TickFrequency="1"  Maximum="1000"  HorizontalAlignment="Left" Margin="87,87.5,0,0" VerticalAlignment="Top" Width="124.5"/>
-                    <TextBlock HorizontalAlignment="Left" Text="{Binding Value, ElementName=sensor_ouput_data_freq_slider}" Margin="216,82,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" Width="67" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25"/>
+                    <ComboBox Name="sensor_autoRun_mode_combox" Margin="78,48,0,0" HorizontalAlignment="Left" Width="116" Height="26" VerticalAlignment="Top"/>
+                    <Slider Name="sensor_ouput_data_freq_slider" IsSnapToTickEnabled="True" TickFrequency="1"  Maximum="1000" Margin="87,88,57,0" VerticalAlignment="Top"/>
+                    <TextBlock Text="{Binding Value, ElementName=sensor_ouput_data_freq_slider}" Margin="0,82,3,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25" HorizontalAlignment="Right" Width="49"/>
                     <Button Content="输出频率" Click="btn_click_ouput_data_freq" HorizontalAlignment="Left" Height="26" Margin="10,82.5,0,0" VerticalAlignment="Top" Width="63" />
-                    <Slider HorizontalAlignment="Left" IsSnapToTickEnabled="True" TickFrequency="1"  Maximum="100" Name="sensor_front_switch_slider" Margin="87,126,0,0" VerticalAlignment="Top" Width="124.5"/>
-                    <TextBlock HorizontalAlignment="Left" Text="{Binding Value, ElementName=sensor_front_switch_slider}" Margin="215,120,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" Width="47" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25"/>
+                    <Slider IsSnapToTickEnabled="True" TickFrequency="1"  Maximum="100" Name="sensor_front_switch_slider" Margin="87,126,56,0" VerticalAlignment="Top"/>
+                    <TextBlock Text="{Binding Value, ElementName=sensor_front_switch_slider}" Margin="0,119,5,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25" HorizontalAlignment="Right" Width="47"/>
                     <Button Content="前开关量" Click="btn_click_front_switch"  HorizontalAlignment="Left" Height="26" Margin="10,121,0,0" VerticalAlignment="Top" Width="63" />
-                    <Slider HorizontalAlignment="Left" IsSnapToTickEnabled="True" TickFrequency="1"  Maximum="100" Name="sensor_base_switch_slider" Margin="87,163.5,0,0" VerticalAlignment="Top" Width="124.5"/>
-                    <TextBlock HorizontalAlignment="Left" Text="{Binding Value, ElementName=sensor_base_switch_slider}" Margin="215,158,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" Width="49" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25"/>
+                    <Slider IsSnapToTickEnabled="True" TickFrequency="1"  Maximum="100" Name="sensor_base_switch_slider" Margin="87,164,58,0" VerticalAlignment="Top"/>
+                    <TextBlock Text="{Binding Value, ElementName=sensor_base_switch_slider}" Margin="0,161,3,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25" HorizontalAlignment="Right" Width="49"/>
                     <Button Content="后开关量" Click="btn_click_base_switch" HorizontalAlignment="Left" Height="26" Margin="10,158.5,0,0" VerticalAlignment="Top" Width="63" />
                 </Grid>
 
@@ -166,6 +168,6 @@
                 <TextBox x:Name="text_string" TextWrapping="Wrap" FontSize="12" Margin="0,0,0,-0.333"/>
             </Grid>
         </GroupBox>
-        <TextBlock Margin="6,0,0,0" x:Name="text_Log" TextWrapping="Wrap" Text="提示：" FontSize="10" Foreground="#FFC46969" Grid.Row="3"/>
+        <TextBlock Margin="6,0,0,0" x:Name="text_Log" TextWrapping="Wrap" Text="提示：" FontSize="10" Foreground="#FFC46969" Grid.Row="3" Height="30" VerticalAlignment="Bottom"/>
     </Grid>
 </Controls:MetroWindow>
