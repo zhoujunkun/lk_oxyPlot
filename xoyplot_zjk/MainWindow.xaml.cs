@@ -68,6 +68,7 @@ namespace xoyplot_zjk
             this.Points = new List<DataPoint>();
             DataContext = this;
             Thread mangeta_thread = new Thread(thread_func_mangage);
+            tableItem_ifEnable(false);
             //tinyFrame
             lkFrame.addGenralListener(genral_ack.genralListen);
             genral_ack.add_usr_ackId(user_ack_id);   //用户应答id
@@ -123,6 +124,14 @@ namespace xoyplot_zjk
             }), new object[0]);
         }
         
+        private void tableItem_ifEnable(bool t)
+        {
+            tabitem_ctl.IsEnabled = t;
+            tabitem_stand.IsEnabled = t;
+            tabitem_programer.IsEnabled = t;
+            tabitem_cfg.IsEnabled = t;
+        }
+
         /// <summary>
         /// 传感器参数更新,
         /// </summary>
@@ -282,7 +291,12 @@ namespace xoyplot_zjk
         /// <param name="e"></param>
         private void btn_start(object sender, RoutedEventArgs e)
         {
-            cmdFuncLists.dist_continue();
+            if(lk_serial.check())
+            {
+                cmdFuncLists.dist_continue();
+            }
+            else { MessageBox.Show("请打开串口连接！"); }
+
         }
         int set_range_display = 20;
         int dist_ave { set; get; }
@@ -374,6 +388,7 @@ namespace xoyplot_zjk
            if( lk_serial.Com_connect())
             {
                 lk_serial.add_data_handelRecieved(serial_recieve);
+                tableItem_ifEnable(true);
             }
         }
         /// <summary>
@@ -398,7 +413,10 @@ namespace xoyplot_zjk
         /// <param name="e"></param>
         private void btn_stop(object sender, RoutedEventArgs e)
         {
-            cmdFuncLists.dist_stop();
+            if (lk_serial.check())
+            {
+                cmdFuncLists.dist_stop();
+            }else { MessageBox.Show("请打开串口连接！"); }
         }
        
         private void Btn_Clicked_Stand(object sender, RoutedEventArgs e)
@@ -428,23 +446,35 @@ namespace xoyplot_zjk
 
         private void Btn_Clicked_getStandParam(object sender, RoutedEventArgs e)
         {
-            cmdFuncLists.qc_get_param();
+            if (lk_serial.check())
+            {
+                cmdFuncLists.qc_get_param();
+            }
         }
 
         private void Btn_first_click(object sender, RoutedEventArgs e)
         {
-            cmdFuncLists.qc_first_switch();
+            if (lk_serial.check())
+            {
+                cmdFuncLists.qc_first_switch();
+            }
 
         }
 
         private void Btn_third_click(object sender, RoutedEventArgs e)
         {
-            cmdFuncLists.qc_third_switch();
+            if (lk_serial.check())
+            {
+                cmdFuncLists.qc_third_switch();
+            }
         }
 
         private void Btn_second_click(object sender, RoutedEventArgs e)
         {
-            cmdFuncLists.qc_second_switch();
+            if (lk_serial.check())
+            {
+                cmdFuncLists.qc_second_switch();
+            }
         }
 
         private void window_close_click(object sender, EventArgs e)
@@ -457,12 +487,15 @@ namespace xoyplot_zjk
 
         private void Btn_Clicked_saveParam_2(object sender, RoutedEventArgs e)
         {
-            byte[] setByte = new byte[4];
-            setByte[0] = (byte)(lk_Sensor_Data.qc_distCalibration_arry[1] >> 8);
-            setByte[1] = (byte)(lk_Sensor_Data.qc_distCalibration_arry[1] & 0xff);
-            setByte[2] = (byte)(lk_Sensor_Data.qc_gain_arry[1] >> 8);
-            setByte[3] = (byte)(lk_Sensor_Data.qc_gain_arry[1] & 0xff);
-            cmdFuncLists.qc_save_second_param(setByte);
+            if (lk_serial.check())
+            {
+                byte[] setByte = new byte[4];
+                setByte[0] = (byte)(lk_Sensor_Data.qc_distCalibration_arry[1] >> 8);
+                setByte[1] = (byte)(lk_Sensor_Data.qc_distCalibration_arry[1] & 0xff);
+                setByte[2] = (byte)(lk_Sensor_Data.qc_gain_arry[1] >> 8);
+                setByte[3] = (byte)(lk_Sensor_Data.qc_gain_arry[1] & 0xff);
+                cmdFuncLists.qc_save_second_param(setByte);
+            }
         }
 
         private void Btn_Clicked_Stand_2(object sender, RoutedEventArgs e)
@@ -479,13 +512,15 @@ namespace xoyplot_zjk
 
         private void Btn_Clicked_saveParam_3(object sender, RoutedEventArgs e)
         {
-
-            byte[] setByte = new byte[4];        
-            setByte[0] = (byte)(lk_Sensor_Data.qc_distCalibration_arry[2] >> 8);
-            setByte[1] = (byte)(lk_Sensor_Data.qc_distCalibration_arry[2] & 0xff);
-            setByte[2] = (byte)(lk_Sensor_Data.qc_gain_arry[2] >> 8);
-            setByte[3] = (byte)(lk_Sensor_Data.qc_gain_arry[2] & 0xff);
-            cmdFuncLists.qc_save_third_param(setByte);
+            if (lk_serial.check())
+            {
+                byte[] setByte = new byte[4];
+                setByte[0] = (byte)(lk_Sensor_Data.qc_distCalibration_arry[2] >> 8);
+                setByte[1] = (byte)(lk_Sensor_Data.qc_distCalibration_arry[2] & 0xff);
+                setByte[2] = (byte)(lk_Sensor_Data.qc_gain_arry[2] >> 8);
+                setByte[3] = (byte)(lk_Sensor_Data.qc_gain_arry[2] & 0xff);
+                cmdFuncLists.qc_save_third_param(setByte);
+            }
         }
 
         private void Btn_Clicked_Stand_3(object sender, RoutedEventArgs e)
@@ -502,7 +537,11 @@ namespace xoyplot_zjk
        
         private void btn_reset_stand_click(object sender, RoutedEventArgs e)
         {
-            cmdFuncLists.qc_reset_first_parm();
+            if (lk_serial.check())
+            {
+                cmdFuncLists.qc_reset_first_parm();
+            }
+            else { MessageBox.Show("请打开串口连接！"); }
         }
         /// <summary>
         /// 重新标定时清楚对应数据
@@ -548,14 +587,20 @@ namespace xoyplot_zjk
 
         private void btn_reset_stand2_click(object sender, RoutedEventArgs e)
         {
-            cmdFuncLists.qc_reset_second_parm();
-            texblock_standSecondLog.Text = "未标定";
+            if (lk_serial.check())
+            {
+                cmdFuncLists.qc_reset_second_parm();
+            }
+            else { MessageBox.Show("请打开串口连接！"); }
         }
 
         private void btn_reset_stand3_click(object sender, RoutedEventArgs e)
         {
-            cmdFuncLists.qc_reset_third_parm();
-            texblock_standThirdLog.Text = "未标定";
+            if (lk_serial.check())
+            {
+                cmdFuncLists.qc_reset_third_parm();
+            }
+            else { MessageBox.Show("请打开串口连接！"); }
         }
         private info infoWin;
         private void Btn_Clicked_About(object sender, RoutedEventArgs e)
@@ -581,88 +626,126 @@ namespace xoyplot_zjk
 
         private void radioBtn_front_click(object sender, RoutedEventArgs e)
         {
-            cmdFuncLists.sensor_front_base(set_high);
+            if (lk_serial.check())
+            {
+                cmdFuncLists.sensor_front_base(set_high);
+            }
+            else { MessageBox.Show("请打开串口连接！"); }
         }
 
         private void radioBtn_base_click(object sender, RoutedEventArgs e)
         {
-            cmdFuncLists.sensor_front_base(set_low);
+            if (lk_serial.check())
+            {
+                cmdFuncLists.sensor_front_base(set_low);
+            }
+            else { MessageBox.Show("请打开串口连接！"); }
         }
 
 
         private void Btn_Click_getParam(object sender, RoutedEventArgs e)
         {
-            cmdFuncLists.sensor_get_param();
+            if (lk_serial.check())
+            {
+                cmdFuncLists.sensor_get_param();
+            }
+            else { MessageBox.Show("请打开串口连接！"); }
         }               
         byte[] set_high = new byte[] { 1 };
         byte[] set_low = new byte[] { 0 };
         private void checkBox_Atuo_click(object sender, RoutedEventArgs e)
-        {        
-            
-            cmdFuncLists.sensor_autoMel(set_high);
+        {
+            if (lk_serial.check())
+            {
+                cmdFuncLists.sensor_autoMel(set_high);
+            }
+            else { MessageBox.Show("请打开串口连接！"); }
         }
 
         private void reset_button_click(object sender, RoutedEventArgs e)
         {
-            cmdFuncLists.sensor_reset();
+            if (lk_serial.check())
+            {
+                cmdFuncLists.sensor_reset();
+            }
+            else { MessageBox.Show("请打开串口连接！"); }
         }
 
         private void btn_click_powerOn_mode(object sender, RoutedEventArgs e)
         {
-            string text = sensor_autoRun_mode_combox.SelectedItem.ToString();
-            if (text == "自动测量")
+            if (lk_serial.check())
             {
-                cmdFuncLists.sensor_autoMel(set_high);
+                string text = sensor_autoRun_mode_combox.SelectedItem.ToString();
+                if (text == "自动测量")
+                {
+                    cmdFuncLists.sensor_autoMel(set_high);
+                }
+                else if (text == "关闭自动测量")
+                {
+                    cmdFuncLists.sensor_autoMel(set_low);
+                }
+                else
+                {
+                    MessageBox.Show("请选择模式");
+                }
             }
-            else if(text == "关闭自动测量")
-            {
-                cmdFuncLists.sensor_autoMel(set_low);
-            }
-            else
-            {
-                MessageBox.Show("请选择模式");
-            }
+            else { MessageBox.Show("请打开串口连接！"); }
         }
 
 
         private void btn_click_setBaudRate(object sender, RoutedEventArgs e)
         {
-            int baudRate_index = sensor_baudRate_combox.SelectedIndex;
-            byte[] set = new byte[] { (byte)baudRate_index };
-            if(baudRate_index == -1)
+            if (lk_serial.check())
             {
-                MessageBox.Show("请选择对应的波特率");
+                int baudRate_index = sensor_baudRate_combox.SelectedIndex;
+                byte[] set = new byte[] { (byte)baudRate_index };
+                if (baudRate_index == -1)
+                {
+                    MessageBox.Show("请选择对应的波特率");
+                }
+                cmdFuncLists.sensor_baudRate(set);
             }
-            cmdFuncLists.sensor_baudRate(set);
-           
-            
+            else { MessageBox.Show("请打开串口连接！"); }
+
         }
 
         private void btn_click_ouput_data_freq(object sender, RoutedEventArgs e)
         {
-            UInt16 ouput_data_freq = (UInt16)sensor_ouput_data_freq_slider.Value;
-            byte[] data = new byte[2];
-            data[0]=(byte) (ouput_data_freq >> 8);
-            data[1] = (byte)(ouput_data_freq & 0xff);
-            cmdFuncLists.sensor_outdata_freq(data);
+            if (lk_serial.check())
+            {
+                UInt16 ouput_data_freq = (UInt16)sensor_ouput_data_freq_slider.Value;
+                byte[] data = new byte[2];
+                data[0] = (byte)(ouput_data_freq >> 8);
+                data[1] = (byte)(ouput_data_freq & 0xff);
+                cmdFuncLists.sensor_outdata_freq(data);
+            }
+            else { MessageBox.Show("请打开串口连接！"); }
         }
 
         private void btn_click_front_switch(object sender, RoutedEventArgs e)
         {
-            UInt16 ouput_data_freq = (UInt16)sensor_front_switch_slider.Value;
-            byte[] data = new byte[2];
-            data[0] = (byte)(ouput_data_freq >> 8);
-            data[1] = (byte)(ouput_data_freq & 0xff);
-            cmdFuncLists.sensor_set_switch_front(data);
+            if (lk_serial.check())
+            {
+                UInt16 ouput_data_freq = (UInt16)sensor_front_switch_slider.Value;
+                byte[] data = new byte[2];
+                data[0] = (byte)(ouput_data_freq >> 8);
+                data[1] = (byte)(ouput_data_freq & 0xff);
+                cmdFuncLists.sensor_set_switch_front(data);
+            }
+            else { MessageBox.Show("请打开串口连接！"); }
         }
 
         private void btn_click_base_switch(object sender, RoutedEventArgs e)
         {
-            UInt16 ouput_data_freq = (UInt16)sensor_base_switch_slider.Value;
-            byte[] data = new byte[2];
-            data[0] = (byte)(ouput_data_freq >> 8);
-            data[1] = (byte)(ouput_data_freq & 0xff);
-            cmdFuncLists.sensor_set_switch_base(data);
+            if (lk_serial.check())
+            {
+                UInt16 ouput_data_freq = (UInt16)sensor_base_switch_slider.Value;
+                byte[] data = new byte[2];
+                data[0] = (byte)(ouput_data_freq >> 8);
+                data[1] = (byte)(ouput_data_freq & 0xff);
+                cmdFuncLists.sensor_set_switch_base(data);
+            }
+            else { MessageBox.Show("请打开串口连接！"); }
         }
         /// <summary>
         /// 开发人员应答
@@ -676,6 +759,7 @@ namespace xoyplot_zjk
                 case Protecl_typical_cmd.programer_ack_id.qc_get_param_ack:
                     {
                         sensor_programer_qc_refresh(buf);
+                        lk_log("标定参数更新");
                     }
                     break;
                 case Protecl_typical_cmd.programer_ack_id.qc_standFirst_switch_ack:
@@ -795,9 +879,15 @@ namespace xoyplot_zjk
                         lk_log("停止测量成功！");
                     }
                     break;
+                case Protecl_typical_cmd.user_ack_id.dist_null_ack:
+                    {
+                        lk_log("数据无效！");
+                    }
+                    break;
                 case Protecl_typical_cmd.user_ack_id.get_paramAll_base: //
                     {
                         sensor_param_refresh(buf);
+                        lk_log("已更新传感器参数！");
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.getParam_baudRate_ack:
@@ -861,6 +951,7 @@ namespace xoyplot_zjk
                     break;
                 case Protecl_typical_cmd.user_ack_id.system_boot_paramReset_ack:
                     {
+                        lk_log("恢复为出厂设置");
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.system_boot_firmware_ctl_ack:

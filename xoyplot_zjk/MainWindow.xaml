@@ -36,7 +36,7 @@
             <ColumnDefinition Width="583*"/>
         </Grid.ColumnDefinitions>
         <TabControl BorderBrush="{x:Null}" Background="#FFF1F1F1" Grid.RowSpan="2">
-            <TabItem Header="显示" FontSize="18">
+            <TabItem Name="tabitem_ctl" Header="控制" FontSize="18">
                 <Grid Background="#FFF1F1F1" Margin="0,0,-0.667,0">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -50,7 +50,7 @@
 
                 </Grid>
             </TabItem>
-            <TabItem Header="标定" FontSize="18">
+            <TabItem Name="tabitem_stand"  Header="标定" FontSize="18">
                 <TabItem.Background>
                     <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
                         <GradientStop Color="#FFF0F0F0" Offset="0"/>
@@ -104,21 +104,22 @@
                                 <TextBox Height="26" x:Name="textBox_gain_3" Margin="0,72,6,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="16" HorizontalAlignment="Right" Width="135" />
                                 <Label Content="增益值:" Margin="0,72,144,0" VerticalAlignment="Top" Height="26" FontSize="12" RenderTransformOrigin="1.224,0.25" HorizontalAlignment="Right" Width="51"/>
                                 <Button Content="切换"  Click="Btn_third_click" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="47" FontSize="18"/>
-                                <Button Content="计算标定" x:Name="btn_stand_3" Click="Btn_Clicked_Stand_3" HorizontalAlignment="Left" Margin="87,123,0,0" VerticalAlignment="Top" Width="88" Height="27"/>
+                                <Button Content="计算标定" x:Name="btn_stand_3" Click="Btn_Clicked_Stand_3" HorizontalAlignment="Right" Margin="0,123,98,0" VerticalAlignment="Top" Width="88" Height="27"/>
                                 <Button Content="保存" Click="Btn_Clicked_saveParam_3" Margin="0,122,13,0" VerticalAlignment="Top" Height="27" HorizontalAlignment="Right" Width="75"/>
                                 <Button  Name="btn_reStandThird" Content="重标"  Click="btn_reset_stand3_click" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="47"  FontSize="18"/>
                                 <TextBlock x:Name="texblock_standThirdLog" HorizontalAlignment="Left" Margin="10,125,0,0" TextWrapping="Wrap" Text="未标定" VerticalAlignment="Top" Height="27" Width="59" Foreground="#FFD46B6B"/>
                             </Grid>
                         </TabItem>
+
                         <Label Content="Label" Height="100" Width="100"/>
                     </TabControl>
                     <Label Content="标定距离(m)：" x:Name="label_first" HorizontalAlignment="Left" Margin="115.785,10,0,0" VerticalAlignment="Top" FontSize="18" Height="32" Width="121"/>
                     <Slider ValueChanged="slider_value_change" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True" x:Name="stand_slider" Margin="13.667,46,18.882,0" VerticalAlignment="Top" Height="16"/>
-                    <TextBlock HorizontalAlignment="Left" Text="{Binding Value, ElementName=stand_slider}" Margin="263.118,16,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" Width="26" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25"/>
+                    <TextBlock HorizontalAlignment="Left" Text="{Binding Value, ElementName=stand_slider}" Margin="263,16,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" Width="59" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25"/>
                     <Button Content="获取标定参数" Click="Btn_Clicked_getStandParam" HorizontalAlignment="Left" Margin="13.667,7.033,0,0" VerticalAlignment="Top" Width="75" Height="27"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="配置" FontSize="18">
+            <TabItem Name="tabitem_cfg" Header="配置" FontSize="18">
                 <Grid Margin="0,0,0,-3">
                     <RadioButton  Click="radioBtn_front_click" x:Name="RadioBtn_Front" Content="前基准测量" HorizontalAlignment="Left" Margin="10,0,0,42.663" Width="90" RenderTransformOrigin="0.422,1.667" Foreground="#FFA46161" Height="18" VerticalAlignment="Bottom"/>
                     <RadioButton  Click="radioBtn_base_click"  x:Name="RadioBtn_Base"  Content="后基准测量" HorizontalAlignment="Left" Margin="10,0,0,19.663" RenderTransformOrigin="0.393,1.111" Foreground="#FFA46161" Height="18" VerticalAlignment="Bottom"/>
@@ -140,16 +141,19 @@
                 </Grid>
 
             </TabItem>
+            <TabItem  Name="tabitem_programer" Header="调试" FontSize="18">
+
+            </TabItem>
             <Button Content="Button" Height="100" Width="75"/>
         </TabControl>
         <Button Click="btn_serial_connect" x:Name="btn_connect" Content="连接" Margin="0,5,58,0" VerticalAlignment="Top" Height="25" HorizontalAlignment="Right" Width="68" Grid.Column="1"/>
-        <ComboBox x:Name="baud_Selcet" HorizontalAlignment="Left" Margin="52,5,0,0" VerticalAlignment="Top" Width="88" Height="26" Grid.Column="1"/>
+        <ComboBox x:Name="baud_Selcet" HorizontalAlignment="Left" Margin="88,6,0,0" VerticalAlignment="Top" Width="88" Height="26" Grid.Column="1"/>
         <ComboBox x:Name="Com_Selcet" Margin="0,5,187,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="158" Grid.Column="1"/>
         <GroupBox Header="曲线" Margin="1,0,0,0" BorderBrush="{x:Null}" Grid.RowSpan="3" Grid.Row="1" Grid.Column="1" Background="#CC119EDA">
             <Grid Margin="0">
                 <oxy:Plot InvalidateFlag="{Binding Refresh}" Margin="0" Background="White">
                     <oxy:Plot.Axes>
-                        <oxy:LinearAxis Title="Distance" Unit="cm" MaximumPadding="0.1" MinimumPadding="0.1" MinorStep="5" Position="Left" MinimumRange="5"/>
+                        <oxy:LinearAxis Title="Distance" Unit="cm" MaximumPadding="0.1" MinimumPadding="0.1" MinorStep="5" Position="Left" MinimumRange="50"/>
                         <oxy:LinearAxis  MaximumRange="20"  Minimum="{Binding lk_Minimum}" x:Name="lk_yaxi"  Position="Bottom"  />
                     </oxy:Plot.Axes>
                     <oxy:LineSeries MarkerFill="Green" MarkerType="Circle" Title="距离" DataFieldX="Time"
@@ -168,6 +172,8 @@
                 <TextBox x:Name="text_string" TextWrapping="Wrap" FontSize="12" Margin="0,0,0,-0.333"/>
             </Grid>
         </GroupBox>
-        <TextBlock Margin="6,0,0,0" x:Name="text_Log" TextWrapping="Wrap" Text="提示：" FontSize="10" Foreground="#FFC46969" Grid.Row="3" Height="30" VerticalAlignment="Bottom"/>
+        <TextBlock Margin="6,0,0,0" x:Name="text_Log" TextWrapping="Wrap" Text="提示：" FontSize="14" Foreground="#FFC46969" Grid.Row="3" Height="30" VerticalAlignment="Bottom"/>
+        <Label Content="波特率" Grid.Column="1" HorizontalAlignment="Left" Margin="29,6,0,0" VerticalAlignment="Top" Width="46"/>
+        <Label Content="COM" Grid.Column="1" HorizontalAlignment="Left" Margin="249,7,0,0" VerticalAlignment="Top" Width="46"/>
     </Grid>
 </Controls:MetroWindow>

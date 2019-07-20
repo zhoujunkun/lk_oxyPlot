@@ -119,6 +119,7 @@ namespace ZSeial
             }
             catch (Exception ex)
             {
+               
                 result = false;
             }
             return result;

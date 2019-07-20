@@ -31,8 +31,8 @@ namespace lk_verify
                                programer_ack = 0xf0,
         };
         public enum dist_ctl_id { dist_continue = 0x01, dist_once=0x02, dist_stop=0x03};
-        public enum user_ack_id { dist_base=0,          dist_continue_ack, dist_once_ack, dist_stop_ack,
-                                  get_paramAll_base= 0x10, getParam_baudRate_ack, getParam_frontSwich_ack, getParam_backSwich_ack, getParam_disBase_ack, getParam_powerOn_mode_ack, getParam_outData_freq_ack,
+        public enum user_ack_id { dist_base=0,          dist_continue_ack, dist_once_ack, dist_stop_ack, dist_null_ack,
+                                  get_paramAll_base = 0x10, getParam_baudRate_ack, getParam_frontSwich_ack, getParam_backSwich_ack, getParam_disBase_ack, getParam_powerOn_mode_ack, getParam_outData_freq_ack,
                                   cfgParam_all = 0x40, cfgParam_baudRate_ack, cfgParam_frontSwich_ack, cfgParam_backSwich_ack, cfgParam_distBase_ack, cfgParam_powerOn_mode_ack, cfgParam_outData_freq_ack,
                                   system_boot_paramReset_ack = 0xf0, system_boot_firmware_ctl_ack, system_boot_firmware_pakage_ack,
         };
