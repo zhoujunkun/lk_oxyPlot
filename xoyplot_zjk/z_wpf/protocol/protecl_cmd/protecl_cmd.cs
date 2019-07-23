@@ -42,8 +42,12 @@ namespace lk_verify
         public enum firmware_ctl_id { firmware_begin = 1 };
 
         //programer
-        public enum programer_id { qc_get_param = 0x00, qc_standFirst_switch, qc_standSecond_switch, qc_standthird_switch, qc_standFirst_reset, qc_standSecond_reset, qc_standthird_reset, qc_standFirst_save, qc_standSecond_save, qc_standthird_save };
-        public enum programer_ack_id { qc_get_param_ack = 0x00, qc_standFirst_switch_ack, qc_standSecond_switch_ack, qc_standthird_switch_ack, qc_standFirst_reset_ack, qc_standSecond_reset_ack, qc_standthird_reset_ack, qc_standFirst_save_ack, qc_standSecond_save_ack, qc_standthird_save_ack };
+        public enum programer_id { qc_get_param = 0x00, qc_standFirst_switch, qc_standSecond_switch, qc_standthird_switch, qc_standFirst_reset, qc_standSecond_reset, qc_standthird_reset, qc_standFirst_save, qc_standSecond_save, qc_standthird_save,
+                                   debug_dist_continue = 0xf1,
+        };
+        public enum programer_ack_id { qc_get_param_ack = 0x00, qc_standFirst_switch_ack, qc_standSecond_switch_ack, qc_standthird_switch_ack, qc_standFirst_reset_ack, qc_standSecond_reset_ack, qc_standthird_reset_ack, qc_standFirst_save_ack, qc_standSecond_save_ack, qc_standthird_save_ack,
+                                       sensor_debugMode_switch = 0xf1, sensor_dist_standMode_switch, sensor_normalMode_switch
+        };
 
 
 

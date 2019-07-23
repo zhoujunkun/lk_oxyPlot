@@ -47,6 +47,39 @@ namespace xoyplot_zjk
             frame.ifHeadOnly = true;
             frame.sendFrame( frame);
         }
+        /// <summary>
+        /// 调试模式测量
+        /// </summary>
+        public void sensor_debugMode_switch()
+        {
+            tinyFrame frame = new tinyFrame();
+            frame.Type = (byte)(Protecl_typical_cmd.ctl_type.programer_ctl);
+            frame.id = (byte)(Protecl_typical_cmd.programer_ack_id.sensor_debugMode_switch);
+            frame.ifHeadOnly = true;
+            frame.sendFrame(frame);
+        }
+        /// <summary>
+        /// 标定模式
+        /// </summary>
+        public void sensor_qcStandMode_switch()
+        {
+            tinyFrame frame = new tinyFrame();
+            frame.Type = (byte)(Protecl_typical_cmd.ctl_type.programer_ctl);
+            frame.id = (byte)(Protecl_typical_cmd.programer_ack_id.sensor_dist_standMode_switch);
+            frame.ifHeadOnly = true;
+            frame.sendFrame(frame);
+        }
+        /// <summary>
+        /// 正常模式
+        /// </summary>
+        public void sensor_mormalMode_switch()
+        {
+            tinyFrame frame = new tinyFrame();
+            frame.Type = (byte)(Protecl_typical_cmd.ctl_type.programer_ctl);
+            frame.id = (byte)(Protecl_typical_cmd.programer_ack_id.sensor_normalMode_switch);
+            frame.ifHeadOnly = true;
+            frame.sendFrame(frame);
+        }
         #endregion
 
         #region 配置

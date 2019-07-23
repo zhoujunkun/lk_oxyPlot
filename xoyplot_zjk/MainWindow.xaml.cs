@@ -210,9 +210,9 @@ namespace xoyplot_zjk
         {
             base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
             {
-                //string log_d = "提示：==>" + log + "\r\n";
-                //text_Log.Text = log_d;
-                text_string.Text+= logg + "\r\n";
+                
+                text_string.Text = "["+ DateTime.Now.ToString("mm:ss.fff") +"] :       "+logg + "\r\n";
+               // text_string.ScrollToEnd();
             }), new object[0]);
 
         }
@@ -378,6 +378,27 @@ namespace xoyplot_zjk
             task.Start();
 
         }
+
+
+        public void text_box_display()
+        {
+            task = new Task(() =>
+            {
+                lock (locker)
+                {
+                    base.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+                {
+                    string log = lk_Sensor_Data.distance.ToString() + "cm";
+                    string text= "[" + DateTime.Now.ToString("mm:ss.fff") + "] :       " + log + "\r\n";
+                    //text_string.Text = "[" + DateTime.Now.ToString("mm:ss.fff") + "] :       " + log + "\r\n";
+                    // text_string.ScrollToEnd();
+                    text_string.AppendText(text);
+                    text_string.ScrollToEnd();
+                }), new object[0]);
+                }
+            });
+            task.Start();
+        }
         /// <summary>
         /// 串口连接
         /// </summary>
@@ -424,7 +445,6 @@ namespace xoyplot_zjk
 
             if (lk_Sensor_Data.qc_current_stand == 1)
                 {
-                  stand_slider.Value = 10;
                   ifCalculate = true;
                 }
                 else
@@ -679,10 +699,12 @@ namespace xoyplot_zjk
                 if (text == "自动测量")
                 {
                     cmdFuncLists.sensor_autoMel(set_high);
+                    cureent_autoRunMode = "上电自动测量";
                 }
                 else if (text == "关闭自动测量")
                 {
                     cmdFuncLists.sensor_autoMel(set_low);
+                    cureent_autoRunMode = "上电关闭自动测量";
                 }
                 else
                 {
@@ -692,18 +714,28 @@ namespace xoyplot_zjk
             else { MessageBox.Show("请打开串口连接！"); }
         }
 
+        string current_baudRate { set; get; }
+        string cureent_distBase { set; get; }
+        string cureent_outFreq  { set; get; }
+        string cureent_autoRunMode { set; get; }
 
         private void btn_click_setBaudRate(object sender, RoutedEventArgs e)
         {
             if (lk_serial.check())
             {
                 int baudRate_index = sensor_baudRate_combox.SelectedIndex;
+              
                 byte[] set = new byte[] { (byte)baudRate_index };
                 if (baudRate_index == -1)
                 {
                     MessageBox.Show("请选择对应的波特率");
                 }
-                cmdFuncLists.sensor_baudRate(set);
+                else
+                {
+                    cmdFuncLists.sensor_baudRate(set);
+                    current_baudRate = sensor_baudRate_combox.Items[baudRate_index].ToString();
+                }
+                
             }
             else { MessageBox.Show("请打开串口连接！"); }
 
@@ -718,6 +750,7 @@ namespace xoyplot_zjk
                 data[0] = (byte)(ouput_data_freq >> 8);
                 data[1] = (byte)(ouput_data_freq & 0xff);
                 cmdFuncLists.sensor_outdata_freq(data);
+                cureent_outFreq = ouput_data_freq.ToString();
             }
             else { MessageBox.Show("请打开串口连接！"); }
         }
@@ -731,6 +764,7 @@ namespace xoyplot_zjk
                 data[0] = (byte)(ouput_data_freq >> 8);
                 data[1] = (byte)(ouput_data_freq & 0xff);
                 cmdFuncLists.sensor_set_switch_front(data);
+                cureent_distBase = "前基准";
             }
             else { MessageBox.Show("请打开串口连接！"); }
         }
@@ -744,9 +778,50 @@ namespace xoyplot_zjk
                 data[0] = (byte)(ouput_data_freq >> 8);
                 data[1] = (byte)(ouput_data_freq & 0xff);
                 cmdFuncLists.sensor_set_switch_base(data);
+                cureent_distBase = "后基准";
             }
             else { MessageBox.Show("请打开串口连接！"); }
         }
+
+        /// <summary>
+        /// 调试数据显示
+        /// </summary>
+        /// <param name="buf"></param>
+        private void debug_display(byte[] buf)
+        {
+            UInt16 distance = (UInt16)(buf[0] << 8 | buf[1]);
+            UInt16 agc = (UInt16)(buf[2] << 8 | buf[3]);
+            UInt16 sighal = (UInt16)(buf[4] << 8 | buf[5]);
+            byte mode =(byte) (buf[6] >> 4);
+            byte gear = (byte)(buf[6] &0x0f);
+            string mode_str = "";
+            if (mode == 0)
+            {
+                mode_str = "IDLE";
+            }else if(mode == 1)
+            {
+                mode_str = "START";
+            }
+            else if (mode == 2)
+            {
+                mode_str = "FIRST";
+            }
+            else if (mode == 3)
+            {
+                mode_str = "SECOND";
+            }
+            else if (mode == 4)
+            {
+                mode_str = "THIRD";
+            }
+            else if (mode == 5)
+            {
+                mode_str = "STYLE";
+            }
+            lk_texboclog("距离："+ distance.ToString()+ " 增益："+agc.ToString()+"模式："+ mode_str+" 档位：" +gear.ToString());
+        }
+
+
         /// <summary>
         /// 开发人员应答
         /// </summary>
@@ -756,6 +831,22 @@ namespace xoyplot_zjk
         {
             switch (id)
             {
+                case Protecl_typical_cmd.programer_ack_id.sensor_debugMode_switch:
+                    {
+                        debug_display(buf);
+                        lk_log("debug模式下");
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.sensor_dist_standMode_switch:
+                    {
+                        lk_log("标定模式下");
+                    }
+                    break;
+                case Protecl_typical_cmd.programer_ack_id.sensor_normalMode_switch:
+                    {
+                        lk_log("正常模式下");
+                    }
+                    break;
                 case Protecl_typical_cmd.programer_ack_id.qc_get_param_ack:
                     {
                         sensor_programer_qc_refresh(buf);
@@ -865,7 +956,14 @@ namespace xoyplot_zjk
                 case Protecl_typical_cmd.user_ack_id.dist_continue_ack:
                     {
                        lk_Sensor_Data.distance = (UInt16)(buf[0] << 8 | buf[1]);
-                        display();
+                        if(ifStringDisplay==true)
+                        {
+                            text_box_display();
+                        }else
+                        {
+                            display();
+                        }
+                        
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.dist_once_ack:
@@ -921,7 +1019,7 @@ namespace xoyplot_zjk
                     break;
                 case Protecl_typical_cmd.user_ack_id.cfgParam_baudRate_ack:
                     {
-                        lk_log("波特率设置成功！");
+                        lk_log("波特率("+ current_baudRate+ ")设置成功！");
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.cfgParam_frontSwich_ack:
@@ -936,17 +1034,17 @@ namespace xoyplot_zjk
                     break;
                 case Protecl_typical_cmd.user_ack_id.cfgParam_distBase_ack:
                     {
-                        lk_log("设置基准成功！");
+                        lk_log("基准("+cureent_distBase+")设置成功");
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.cfgParam_powerOn_mode_ack:
                     {
-                        lk_log("开机自动运行成功！");
+                        lk_log("开机模式("+cureent_autoRunMode+ ")设置成功！");
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.cfgParam_outData_freq_ack:
                     {
-                        lk_log("输出频率设置成功");
+                        lk_log("输出频率("+cureent_outFreq+ "HZ)设置成功");
                     }
                     break;
                 case Protecl_typical_cmd.user_ack_id.system_boot_paramReset_ack:
@@ -965,6 +1063,48 @@ namespace xoyplot_zjk
 
 
             }
+
+        }
+
+        bool ifStringDisplay { set; get; }
+        bool cureet_string_display;
+        private void btn_click_display(object sender, RoutedEventArgs e)
+        {
+            if(cureet_string_display == false)
+            {
+                cureet_string_display = true;
+                btn_display_switch.Content = "字符显示";
+                ifStringDisplay = true;
+            }
+            else if(cureet_string_display == true)
+            {
+                cureet_string_display = false;
+                btn_display_switch.Content = "波形显示";
+                ifStringDisplay = false ;
+            }
+        }
+
+        private void btn_debug_start(object sender, RoutedEventArgs e)
+        {
+            if (lk_serial.check())
+            {
+                 cmdFuncLists.sensor_debugMode_switch();
+            }
+            else { MessageBox.Show("请打开串口连接！"); }
+           
+        }
+
+        private void btn_standMode_switch(object sender, RoutedEventArgs e)
+        {
+            if (lk_serial.check())
+            {
+                cmdFuncLists.sensor_qcStandMode_switch();
+            }
+            else { MessageBox.Show("请打开串口连接！"); }
+        }
+
+        private void btn_click_display_clear(object sender, RoutedEventArgs e)
+        {
 
         }
     }

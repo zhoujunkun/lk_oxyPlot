@@ -8,9 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("z_wpf/logo/lk_logo.ico")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("z_wpf/logo/logo%e8%bf%88%e6%b5%8b_%e5%8e%9f%e5%a7%8b.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("z_wpf/logo/maice.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("z_wpf/logo/title.ico")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("title.ico")]
 
 

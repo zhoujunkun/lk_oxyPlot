@@ -46,8 +46,9 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock HorizontalAlignment="Left" Margin="2,6,0,0" TextWrapping="Wrap" Text="提示：标定都使用黑板标定" VerticalAlignment="Top" Height="40" Width="136" FontSize="10" Foreground="#FFE08282"/>
                     <Button Content="开始" Click="btn_start" Margin="33,58,0,0" VerticalAlignment="Top" Height="27" HorizontalAlignment="Left" Width="96"/>
-                    <Button Content="停止" Click="btn_stop" Margin="36,168,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="96"/>
-
+                    <Button Content="停止" Click="btn_stop" Margin="196,63,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="96"/>
+                    <Button Name="btn_display_clear" Click="btn_click_display_clear" Content="清除显示" HorizontalAlignment="Left" Margin="243,216,0,0" VerticalAlignment="Top" Width="75"/>
+                    <Button Name="btn_display_switch" Click="btn_click_display" Content="字符显示" HorizontalAlignment="Left" Margin="148,216,0,0" VerticalAlignment="Top" Width="75"/>
                 </Grid>
             </TabItem>
             <TabItem Name="tabitem_stand"  Header="标定" FontSize="18">
@@ -117,6 +118,7 @@
                     <Slider ValueChanged="slider_value_change" TickFrequency="1"  Maximum="100" IsSnapToTickEnabled="True" x:Name="stand_slider" Margin="13.667,46,18.882,0" VerticalAlignment="Top" Height="16"/>
                     <TextBlock HorizontalAlignment="Left" Text="{Binding Value, ElementName=stand_slider}" Margin="263,16,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" Width="59" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25"/>
                     <Button Content="获取标定参数" Click="Btn_Clicked_getStandParam" HorizontalAlignment="Left" Margin="13.667,7.033,0,0" VerticalAlignment="Top" Width="75" Height="27"/>
+                    <Button Content="标定模式" HorizontalAlignment="Left" Margin="2,213,0,0" VerticalAlignment="Top" Width="53" Height="35" Click="btn_standMode_switch"/>
                 </Grid>
             </TabItem>
             <TabItem Name="tabitem_cfg" Header="配置" FontSize="18">
@@ -129,22 +131,25 @@
                     <ComboBox Name="sensor_baudRate_combox" Margin="78,10,0,0" HorizontalAlignment="Left" Width="117" Height="26" VerticalAlignment="Top"/>
                     <Button Content="上电模式" Click="btn_click_powerOn_mode" HorizontalAlignment="Left" Height="26" Margin="10,48.25,0,0" VerticalAlignment="Top" Width="63"/>
                     <ComboBox Name="sensor_autoRun_mode_combox" Margin="78,48,0,0" HorizontalAlignment="Left" Width="116" Height="26" VerticalAlignment="Top"/>
-                    <Slider Name="sensor_ouput_data_freq_slider" IsSnapToTickEnabled="True" TickFrequency="1"  Maximum="1000" Margin="87,88,57,0" VerticalAlignment="Top"/>
+                    <Slider Name="sensor_ouput_data_freq_slider" IsSnapToTickEnabled="True" TickFrequency="1"  Maximum="100" Margin="87,88,57,0" VerticalAlignment="Top"/>
                     <TextBlock Text="{Binding Value, ElementName=sensor_ouput_data_freq_slider}" Margin="0,82,3,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25" HorizontalAlignment="Right" Width="49"/>
-                    <Button Content="输出频率" Click="btn_click_ouput_data_freq" HorizontalAlignment="Left" Height="26" Margin="10,82.5,0,0" VerticalAlignment="Top" Width="63" />
+                    <Button Content="输出频率HZ" Click="btn_click_ouput_data_freq" HorizontalAlignment="Left" Height="26" Margin="10,82,0,0" VerticalAlignment="Top" Width="68" />
                     <Slider IsSnapToTickEnabled="True" TickFrequency="1"  Maximum="100" Name="sensor_front_switch_slider" Margin="87,126,56,0" VerticalAlignment="Top"/>
                     <TextBlock Text="{Binding Value, ElementName=sensor_front_switch_slider}" Margin="0,119,5,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25" HorizontalAlignment="Right" Width="47"/>
-                    <Button Content="前开关量" Click="btn_click_front_switch"  HorizontalAlignment="Left" Height="26" Margin="10,121,0,0" VerticalAlignment="Top" Width="63" />
+                    <Button Content="前开关量M" Click="btn_click_front_switch"  HorizontalAlignment="Left" Height="26" Margin="10,121,0,0" VerticalAlignment="Top" Width="63" />
                     <Slider IsSnapToTickEnabled="True" TickFrequency="1"  Maximum="100" Name="sensor_base_switch_slider" Margin="87,164,58,0" VerticalAlignment="Top"/>
                     <TextBlock Text="{Binding Value, ElementName=sensor_base_switch_slider}" Margin="0,161,3,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="-1.382,0.702" Foreground="#FF298BF2" Height="25" HorizontalAlignment="Right" Width="49"/>
-                    <Button Content="后开关量" Click="btn_click_base_switch" HorizontalAlignment="Left" Height="26" Margin="10,158.5,0,0" VerticalAlignment="Top" Width="63" />
+                    <Button Content="后开关量M" Click="btn_click_base_switch" HorizontalAlignment="Left" Height="26" Margin="10,158.5,0,0" VerticalAlignment="Top" Width="63" />
                 </Grid>
 
             </TabItem>
             <TabItem  Name="tabitem_programer" Header="调试" FontSize="18">
-
+                <Grid>
+                    <Button Content="调试开始" Click="btn_debug_start" VerticalAlignment="Top" Height="27" HorizontalAlignment="Left" Width="96" Margin="103,51,0,0"/>
+                    <Button Content="停止" Click="btn_stop" Margin="101,127,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="96"/>
+                </Grid>
             </TabItem>
-            <Button Content="Button" Height="100" Width="75"/>
+
         </TabControl>
         <Button Click="btn_serial_connect" x:Name="btn_connect" Content="连接" Margin="0,5,58,0" VerticalAlignment="Top" Height="25" HorizontalAlignment="Right" Width="68" Grid.Column="1"/>
         <ComboBox x:Name="baud_Selcet" HorizontalAlignment="Left" Margin="88,6,0,0" VerticalAlignment="Top" Width="88" Height="26" Grid.Column="1"/>
@@ -169,7 +174,7 @@
         </GroupBox>
         <GroupBox Header="字符" Grid.Row="2" Background="#CC119EDA" BorderBrush="{x:Null}" Margin="0,0,0,29" Grid.RowSpan="2">
             <Grid Margin="0">
-                <TextBox x:Name="text_string" TextWrapping="Wrap" FontSize="12" Margin="0,0,0,-0.333"/>
+                <TextBox x:Name="text_string" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto"  TextWrapping="Wrap" FontSize="12" Margin="0,0,0,-0.333"/>
             </Grid>
         </GroupBox>
         <TextBlock Margin="6,0,0,0" x:Name="text_Log" TextWrapping="Wrap" Text="提示：" FontSize="14" Foreground="#FFC46969" Grid.Row="3" Height="30" VerticalAlignment="Bottom"/>
